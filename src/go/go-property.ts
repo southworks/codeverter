@@ -1,3 +1,4 @@
+import { AccessLevel } from "../shared/access-level";
 import { Property } from "../shared/property";
 import { Writter } from "../writter/writter";
 import { GoTypeMapper } from "./go-type-mapper";
@@ -12,7 +13,10 @@ export class GoProperty extends Property<GoTypeMapper> {
     }
 
     public print(writter: Writter): void {
-        let typeName = this.getType() || "error";
-        writter.write(`${this.capitalize(this.getName())}: ${typeName}`)
+        const typeName = this.getType() || "error";
+        const propertyName = this.getAccessLevel() == AccessLevel.Public
+            ? this.capitalize(this.getName())
+            : this.getName().toLowerCase();
+        writter.write(`${propertyName}: ${typeName}`)
     }
 }

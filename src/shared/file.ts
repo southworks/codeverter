@@ -4,7 +4,7 @@ import { Class } from "./class";
 import { Parseable } from "./parseable";
 import { Printable } from "./printable";
 
-export abstract class File<Cls extends Class> implements Printable, Parseable<SourceFile> {
+export abstract class File<Cls extends Class = Class> implements Printable, Parseable<SourceFile> {
     private classes: Cls[] = [];
     private classFactory: new () => Cls;
 
@@ -25,7 +25,7 @@ export abstract class File<Cls extends Class> implements Printable, Parseable<So
         }
         node.forEachChild(child => this.visitNode(child));
     }
-    
+
     protected getClasses(): Cls[] {
         return this.classes;
     }

@@ -1,10 +1,11 @@
 import { createSourceFile, ScriptTarget } from "typescript";
-import { print } from "../index";
-import { StringWritter } from "../writter/string-writter";
+import { GoFile } from "../../go/go-file";
+import { printFile } from "../../print-file";
+import { StringWritter } from "../../writter/string-writter";
 
 const filename = "test.ts";
 
-describe("class", () => {
+describe("GO: class", () => {
     test("simple class", () => {
         const code = `
             export class Test {
@@ -16,8 +17,7 @@ describe("class", () => {
         );
 
         const strWritter = new StringWritter();
-
-        print(sourceFile, strWritter);
+        printFile(sourceFile, strWritter, new GoFile());
         expect(strWritter.getString()).toBe("type Test struct {\n  Foo: int\n}");
     });
 
@@ -32,8 +32,7 @@ describe("class", () => {
         );
 
         const strWritter = new StringWritter();
-
-        print(sourceFile, strWritter);
+        printFile(sourceFile, strWritter, new GoFile());
         expect(strWritter.getString()).toBe("type Test struct {\n  Foo: time.Time\n}");
     });
 
@@ -52,9 +51,7 @@ describe("class", () => {
         );
 
         const strWritter = new StringWritter();
-
-        print(sourceFile, strWritter);
-
+        printFile(sourceFile, strWritter, new GoFile());
         expect(strWritter.getString()).toBe("type Test struct {\n  Foo: int\n}\ntype Test2 struct {\n  Foo2: Test\n}");
     });
 });

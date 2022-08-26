@@ -1,6 +1,6 @@
 import { Identifier, SyntaxKind, TypeNode, TypeReferenceNode } from "typescript";
 
-export enum KnownTypes { 
+export enum KnownTypes {
     Number,
     String,
     Boolean,
@@ -10,8 +10,11 @@ export enum KnownTypes {
 export interface TypeMapper {
     get(node: TypeNode): string | undefined;
 }
+
+export abstract class TypeMapperImpl implements TypeMapper {
+
     private getReferenceType(value: string): string {
-        switch(value) {
+        switch (value) {
             case "Date": return this.getKnownType(KnownTypes.Date);
             default: return value;
         }

@@ -1,31 +1,32 @@
-import { 
-    createSourceFile, 
-    ScriptTarget,
-    SourceFile, 
-} from "typescript";
-import { GoFile } from "./go/go-file";
+import { createProgram } from "typescript";
+import { File } from "./shared/file";
+import { printFile } from "./print-file";
 import { ConsoleWritter } from "./writter/console-writter";
-import { Writter } from "./writter/writter";
+import { GoFile } from "./go/go-file";
 
-const filename = "test.ts";
+const [, , ...args] = process.argv;
 
-// delete, testing purposes
-const code = `
-    export class Foo {
-        dummy: number;
+if (args.indexOf("--help") > -1) {
+    console.log("--file:");
+    console.log("    Path to the file. Default value: 'index.ts'");
+    console.log("--lang:");
+    console.log("    Target language. Default value: 'go'");
+} else {
+    const fileIndex = args.indexOf('--file');
+    const fileName = fileIndex > -1 ? args[fileIndex + 1] : "./tmp/codeverter.ts";
+
+    const langIndex = args.indexOf('--lang');
+    const langName = langIndex > -1 ? args[fileIndex + 1] : "go";
+
+    let program = createProgram([fileName], { allowJs: true });
+    const sourceFile = program.getSourceFile(fileName);
+
+    if (!sourceFile) {
+        console.error("file not found:", fileName);
+    } else {
+        const langMapper: { [x: string]: () => File } = {
+            go: () => new GoFile()
+        }
+        printFile(sourceFile!, new ConsoleWritter(), langMapper[langName]());
     }
-`;
-
-const sourceFile = createSourceFile(
-    filename, code, ScriptTarget.Latest
-);
-
-export function print(
-  node: SourceFile, writter: Writter
-): void {
-    const file = new GoFile();
-    file.parse(node);
-    file.print(writter);
 }
-
-print(sourceFile, new ConsoleWritter());

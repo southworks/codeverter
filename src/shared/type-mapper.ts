@@ -1,4 +1,6 @@
 import { Identifier, SyntaxKind, TypeNode, TypeReferenceNode } from "typescript";
+import { Importer } from "./importer";
+import { Imports } from "./imports";
 
 export enum KnownTypes {
     Number,
@@ -11,7 +13,8 @@ export interface TypeMapper {
     get(node: TypeNode): string | undefined;
 }
 
-export abstract class TypeMapperImpl implements TypeMapper {
+export abstract class TypeMapperImpl implements TypeMapper, Importer {
+    private importHandler!: Imports;
 
     private getReferenceType(value: string): string {
         switch (value) {
@@ -21,6 +24,14 @@ export abstract class TypeMapperImpl implements TypeMapper {
     }
 
     protected abstract getKnownType(type: KnownTypes): string;
+
+    public setImportHandler(handler: Imports): void {
+        this.importHandler = handler;
+    }
+
+    public getImportHandler(): Imports {
+        return this.importHandler;
+    }
 
     public get(node: TypeNode): string | undefined {
         switch (node?.kind) {

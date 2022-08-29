@@ -12,11 +12,11 @@ export class GoProperty extends Property<GoTypeMapper> {
         return val[0].toUpperCase() + val.substring(1);
     }
 
-    public print(writter: Writter): void {
-        const typeName = this.getType() || "error";
+    public print(writter: Writter): boolean {
         const propertyName = this.getAccessLevel() == AccessLevel.Public
             ? this.capitalize(this.getName())
             : this.getName().toLowerCase();
-        writter.write(`${propertyName}: ${typeName}`)
+        writter.write(`${propertyName}: ${this.getType()}`)
+        return true;
     }
 }

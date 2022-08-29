@@ -21,21 +21,6 @@ describe("GO: class", () => {
         expect(strWritter.getString()).toBe("type Test struct {\n  Foo: int\n}");
     });
 
-    test("simple class date property", () => {
-        const code = `
-            export class Test {
-                foo: Date;
-            }
-        `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
-
-        const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
-        expect(strWritter.getString()).toBe("type Test struct {\n  Foo: time.Time\n}");
-    });
-
     test("simple class with class reference", () => {
         const code = `
             export class Test {

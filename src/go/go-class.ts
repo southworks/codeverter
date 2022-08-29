@@ -8,15 +8,14 @@ export class GoClass extends Class<GoProperty> {
         super(GoProperty);
     }
 
-    public print(writter: Writter): void {
+    public print(writter: Writter): boolean {
         writter.write(`type ${this.getName()} struct {`);
-
         writter.incDeepLevel();
         for (let prop of this.getProperties()) {
             prop.print(writter);
         }
         writter.decDeepLevel();
-
         writter.write(`}`);
+        return true;
     }
 }

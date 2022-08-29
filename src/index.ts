@@ -8,12 +8,12 @@ const [, , ...args] = process.argv;
 
 if (args.indexOf("--help") > -1) {
     console.log("--file:");
-    console.log("    Path to the file. Default value: 'index.ts'");
+    console.log("    Path to the file. Default value: 'tmp/index.ts'");
     console.log("--lang:");
     console.log("    Target language. Default value: 'go'");
 } else {
     const fileIndex = args.indexOf('--file');
-    const fileName = fileIndex > -1 ? args[fileIndex + 1] : "./tmp/codeverter.ts";
+    const fileName = fileIndex > -1 ? args[fileIndex + 1] : "./tmp/index.ts";
 
     const langIndex = args.indexOf('--lang');
     const langName = langIndex > -1 ? args[fileIndex + 1] : "go";

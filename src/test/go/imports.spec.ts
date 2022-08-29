@@ -5,11 +5,11 @@ import { StringWritter } from "../../writter/string-writter";
 
 const filename = "test.ts";
 
-describe("GO: class", () => {
-    test("simple class", () => {
+describe("GO: imports", () => {
+    test("simple date property", () => {
         const code = `
             export class Test {
-                foo: number;
+                foo: Date;
             }
         `;
         const sourceFile = createSourceFile(
@@ -18,17 +18,14 @@ describe("GO: class", () => {
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
-        expect(strWritter.getString()).toBe("type Test struct {\n  Foo: int\n}");
+        expect(strWritter.getString()).toBe(`import "time"\n\ntype Test struct {\n  Foo: time.Time\n}`);
     });
 
-    test("simple class with class reference", () => {
+    test("multiple date property", () => {
         const code = `
             export class Test {
-                foo: number;
-            }
-        
-            export class Test2 {
-                foo2: Test;
+                foo: Date;
+                bar: Date;
             }
         `;
         const sourceFile = createSourceFile(
@@ -37,6 +34,6 @@ describe("GO: class", () => {
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
-        expect(strWritter.getString()).toBe("type Test struct {\n  Foo: int\n}\ntype Test2 struct {\n  Foo2: Test\n}");
+        expect(strWritter.getString()).toBe(`import "time"\n\ntype Test struct {\n  Foo: time.Time\n  Bar: time.Time\n}`);
     });
 });

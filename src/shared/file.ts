@@ -1,19 +1,23 @@
 import { SourceFile, Node, ClassDeclaration, SyntaxKind } from "typescript";
 import { Writter } from "../writter/writter";
 import { Class } from "./class";
-import { Parseable } from "./parseable";
-import { Printable } from "./printable";
+import { Factory } from "./factory";
+import { Imports } from "./imports";
+import { RootSourceElement, SourceElement } from "./source-element";
 
-export abstract class File<Cls extends Class = Class> implements Printable, Parseable<SourceFile> {
-    private classes: Cls[] = [];
-    private classFactory: new () => Cls;
+export abstract class File<C extends SourceElement = Class, I extends Imports = Imports> implements RootSourceElement<SourceFile> {
+    private classes: C[] = [];
+    private classFactory: Factory<C>;
+    private importsHandler: I;
 
-    protected constructor(classFactory: { new(): Cls }) {
+    protected constructor(classFactory: Factory<C>, importsFactory: Factory<I>) {
         this.classFactory = classFactory;
+        this.importsHandler = new importsFactory();
     }
 
     private visitClass(node: ClassDeclaration): void {
         let cls = new this.classFactory();
+        cls.setImportHandler(this.importsHandler);
         cls.parse(node);
         this.classes.push(cls);
     }
@@ -26,7 +30,7 @@ export abstract class File<Cls extends Class = Class> implements Printable, Pars
         node.forEachChild(child => this.visitNode(child));
     }
 
-    protected getClasses(): Cls[] {
+    protected getClasses(): C[] {
         return this.classes;
     }
 
@@ -34,5 +38,9 @@ export abstract class File<Cls extends Class = Class> implements Printable, Pars
         this.visitNode(node);
     }
 
-    public abstract print(writter: Writter): void;
+    public getImportHandler(): Imports {
+        return this.importsHandler;
+    }
+
+    public abstract print(writter: Writter): boolean;
 }

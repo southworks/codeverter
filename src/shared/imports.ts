@@ -1,5 +1,5 @@
-import { Writter } from "../writter/writter";
-import { Printable } from "./printable";
+import { Writteable } from "../writter/writter";
+import { Printable } from "./types/printable";
 
 export abstract class Imports implements Printable {
     private imports: string[] = [];
@@ -14,5 +14,5 @@ export abstract class Imports implements Printable {
         }
     }
 
-    public abstract print(writter: Writter): boolean;
+    public abstract print(writter: Writteable): boolean;
 }

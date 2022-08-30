@@ -13,7 +13,10 @@ type SourceElementDef<T extends Declaration = Declaration> = Printable & Parseab
 /**
  * A source element needs to set the importer so implements Importer interface
  */
-export interface SourceElement<T extends Declaration = Declaration> extends SourceElementDef<T> { };
+export interface SourceElement<T extends Declaration = Declaration> extends SourceElementDef<T> {
+    setParent(element: SourceElement): void;
+    getName(): string;
+};
 
 /**
  * print(writter: Writter): boolean;

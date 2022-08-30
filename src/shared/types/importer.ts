@@ -1,4 +1,4 @@
-import { Imports } from "./imports";
+import { Imports } from "../imports";
 
 export interface ImporterGetter {
     getImportHandler(): Imports;

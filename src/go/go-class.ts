@@ -2,12 +2,13 @@ import { SourceFile } from "typescript";
 import { Class } from "../shared/class";
 import { Writteable } from "../writter/writter";
 import { GoConstructor } from "./go-constructor";
+import { GoMethod } from "./go-method";
 import { GoProperty } from "./go-property";
 
 export class GoClass extends Class {
 
     constructor(sourceFile: SourceFile) {
-        super(sourceFile, GoProperty, GoConstructor);
+        super(sourceFile, GoProperty, GoConstructor, GoMethod);
     }
 
     public print(writter: Writteable): boolean {
@@ -19,9 +20,14 @@ export class GoClass extends Class {
         writter.decDeepLevel();
         writter.write(`}`);
         writter.write("");
-        for (let ctr of this.getValues("ctr")) {
-            ctr.print(writter);
-        }
+        this.getValues("ctr").forEach(c => {
+            c.print(writter);
+            writter.write("");
+        });
+        this.getValues("method").forEach(m => {
+            m.print(writter);
+            writter.write("");
+        });
         return true;
     }
 }

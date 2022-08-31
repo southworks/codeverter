@@ -1,11 +1,12 @@
 import { SourceFile } from "typescript";
-import { Constructor } from "../shared/constructor";
+import { AccessLevel } from "../shared/access-level";
+import { Method } from "../shared/method";
 import { ArrayWritter } from "../writter/array-writter";
 import { Writteable } from "../writter/writter";
 import { GoParameter } from "./go-parameter";
 import { GoTypeMapper } from "./go-type-mapper";
 
-export class GoConstructor extends Constructor {
+export class GoMethod extends Method {
     constructor(sourceFile: SourceFile) {
         super(sourceFile, GoParameter, GoTypeMapper);
     }
@@ -15,14 +16,24 @@ export class GoConstructor extends Constructor {
         this.getValues("parameter").map(p => p.print(arrWritter));
         const paramStr = arrWritter.getContent().join(", ");
 
-        writter.write(`func New${this.capitalize(this.getName())}(${paramStr}) *${this.getName()} {`);
-        writter.incDeepLevel();
+        let methodName = this.getAccessLevel() == AccessLevel.Private
+            ? this.camelize(this.getName())
+            : this.capitalize(this.getName());
+
+        let returnValue = this.getType();
+        if (!!returnValue) {
+            returnValue = " " + returnValue;
+        }
+
         const firstLetter = this.getName().charAt(0).toLowerCase();
-        writter.write(`${firstLetter} := new(${this.getName()})`);
+        const receiver = `${firstLetter} *${this.getParent()?.getName()}`;
+
+        writter.write(`func (${receiver}) ${methodName}(${paramStr})${returnValue} {`);
+        writter.incDeepLevel();
         for (const line of this.getContent()) {
             writter.write(`//${line}`);
         }
-        writter.write(`return ${firstLetter}`);
+        writter.write(`return`);
         writter.decDeepLevel();
         writter.write(`}`);
         return true;

@@ -6,14 +6,14 @@ import { GoTypeMapper } from "./go-type-mapper";
 
 export class GoProperty extends Property {
     constructor(sourceFile: SourceFile) {
-        super(sourceFile, GoTypeMapper)
+        super(sourceFile, GoTypeMapper);
     }
 
     public print(writter: Writteable): boolean {
         const propertyName = this.getAccessLevel() == AccessLevel.Public
             ? this.capitalize(this.getName())
             : this.getName().toLowerCase();
-        writter.write(`${propertyName} ${this.getType()}`)
+        writter.write(`${propertyName} ${this.getType()}`);
         return true;
     }
 }

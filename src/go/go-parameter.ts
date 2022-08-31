@@ -5,7 +5,7 @@ import { GoTypeMapper } from "./go-type-mapper";
 
 export class GoParameter extends Parameter {
     constructor(sourceFile: SourceFile) {
-        super(sourceFile, GoTypeMapper)
+        super(sourceFile, GoTypeMapper);
     }
 
     public print(writter: Writteable): boolean {

@@ -15,7 +15,7 @@ export abstract class Constructor<P extends SourceElement = Parameter, T extends
         this.setFactory("parameter", parameterFactory);
     }
 
-    private addParameter(node: ParameterDeclaration) {
+    private addParameter(node: ParameterDeclaration): void {
         this.addElement("parameter", node);
     }
 

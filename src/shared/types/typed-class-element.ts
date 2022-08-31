@@ -21,7 +21,7 @@ export abstract class TypedClassElement<K extends TypedDeclaration, T extends Ty
 
     public parse(node: K): void {
         super.parse(node);
-        this.type = this.typeMapper.get(node.type!) || "error";
+        this.type = this.typeMapper.get(node.type!) || "";
     }
 
     public setImportHandler(handler: Imports): void {

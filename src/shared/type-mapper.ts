@@ -1,5 +1,5 @@
 import { Identifier, SyntaxKind, TypeNode, TypeReferenceNode } from "typescript";
-import { Importer } from "./importer";
+import { Importer } from "./types/importer";
 import { Imports } from "./imports";
 
 export enum KnownTypes {

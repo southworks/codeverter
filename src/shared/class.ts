@@ -1,51 +1,36 @@
 import { Writter } from "../writter/writter";
-import { ClassDeclaration, isPropertyDeclaration } from "typescript";
+import { ClassDeclaration, ConstructorDeclaration, isConstructorDeclaration, isPropertyDeclaration, PropertyDeclaration, SourceFile } from "typescript";
 import { Property } from "./property";
-import { Factory } from "./factory";
-import { Imports } from "./imports";
-import { SourceElement } from "./source-element";
+import { Factory } from "./types/factory";
+import { SourceElement } from "./types/source-element";
+import { Constructor } from "./constructor";
+import { ClassElement } from "./class-element";
 
-export abstract class Class<P extends SourceElement = Property> implements SourceElement<ClassDeclaration> {
-    private propertyFactory: Factory<P>;
-    private properties: P[] = [];
-    private name!: string;
-    private importHandler!: Imports;
+export abstract class Class<P extends SourceElement = Property, C extends SourceElement = Constructor> extends ClassElement<ClassDeclaration> {
 
-    protected constructor(propertyFactory: Factory<P>) {
-        this.propertyFactory = propertyFactory;
+    protected constructor(sourceFile: SourceFile, propertyFactory: Factory<P>, constructorFactory: Factory<C>) {
+        super(sourceFile);
+        this.setFactory("ctr", constructorFactory);
+        this.setFactory("property", propertyFactory);
     }
 
-    protected getProperties(): P[] {
-        return this.properties;
-    }
-
-    protected addProperty(): P {
-        let prop = new this.propertyFactory();
-        prop.setImportHandler(this.importHandler);
-        this.properties.push(prop);
-        return prop;
+    protected addProperty(node: PropertyDeclaration): void {
+        this.addElement("property", node);
     };
 
-    protected getName(): string {
-        return this.name;
+    protected addConstructor(node: ConstructorDeclaration): void {
+        this.addElement("ctr", node);
     }
 
     public parse(node: ClassDeclaration): void {
-        this.name = node.name?.escapedText!;
+        super.parse(node);
         node.members.forEach(m => {
             if (isPropertyDeclaration(m)) {
-                let property = this.addProperty();
-                property.parse(m);
+                this.addProperty(m);
+            } else if (isConstructorDeclaration(m)) {
+                this.addConstructor(m);
             }
-        })
-    }
-
-    public setImportHandler(handler: Imports): void {
-        this.importHandler = handler;
-    }
-
-    public getImportHandler(): Imports {
-        return this.importHandler;
+        });
     }
 
     public abstract print(writter: Writter): boolean;

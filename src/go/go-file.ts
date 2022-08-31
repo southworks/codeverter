@@ -1,5 +1,5 @@
 import { File } from "../shared/file";
-import { Writter } from "../writter/writter";
+import { Writteable } from "../writter/writter";
 import { GoClass } from "./go-class";
 import { GoImports } from "./go-imports";
 
@@ -8,7 +8,7 @@ export class GoFile extends File<GoClass, GoImports> {
         super(GoClass, GoImports);
     }
 
-    public print(writter: Writter): boolean {
+    public print(writter: Writteable): boolean {
         if (this.getImportHandler().print(writter)) {
             writter.write("");
         }

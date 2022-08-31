@@ -18,7 +18,7 @@ describe("GO: property access level", () => {
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
-        expect(strWritter.getString()).toBe("type Test struct {\n  Foo: int\n}");
+        expect(strWritter.getString()).toBe("type Test struct {\n  Foo int\n}\n");
     });
 
     test("public access modifier", () => {
@@ -33,7 +33,7 @@ describe("GO: property access level", () => {
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
-        expect(strWritter.getString()).toBe("type Test struct {\n  Foo: int\n}");
+        expect(strWritter.getString()).toBe("type Test struct {\n  Foo int\n}\n");
     });
 
     test("protected access modifier", () => {
@@ -48,7 +48,7 @@ describe("GO: property access level", () => {
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
-        expect(strWritter.getString()).toBe("type Test struct {\n  foo: int\n}");
+        expect(strWritter.getString()).toBe("type Test struct {\n  foo int\n}\n");
     });
 
     test("private access modifier", () => {
@@ -63,6 +63,6 @@ describe("GO: property access level", () => {
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
-        expect(strWritter.getString()).toBe("type Test struct {\n  foo: int\n}");
+        expect(strWritter.getString()).toBe("type Test struct {\n  foo int\n}\n");
     });
 });

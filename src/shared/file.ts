@@ -7,6 +7,7 @@ import { RootSourceElement, SourceElement } from "./types/source-element";
 import { Element } from "./element";
 import { Function } from "./function";
 import { Variable } from "./variable";
+import { basename, extname } from "path";
 
 export abstract class File<C extends SourceElement = Class,
     CN extends Variable = Variable,
@@ -64,6 +65,7 @@ export abstract class File<C extends SourceElement = Class,
     }
 
     public parse(node: SourceFile): void {
+        this.setName(basename(node.fileName).replace(extname(node.fileName), ""));
         this.sourceFile = node;
         this.visitNode(node);
     }

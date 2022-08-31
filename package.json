@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "out/index.js",
-  "bin": "out/index.js",
+  "bin": {
+    "codeverter": "out/index.js"
+  },
   "scripts": {
     "build": "npx tsc",
     "test": "npx jest"
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "path": "0.12.7"
+  },
   "devDependencies": {
     "@types/jest": "28.1.8",
     "ts-jest": "28.0.8",

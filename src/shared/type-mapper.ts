@@ -25,6 +25,8 @@ export abstract class TypeMapperImpl implements TypeMapper, Importer {
 
     protected abstract getKnownType(type: KnownTypes): string;
 
+    protected abstract getVoidType(): string;
+
     public setImportHandler(handler: Imports): void {
         this.importHandler = handler;
     }
@@ -46,6 +48,7 @@ export abstract class TypeMapperImpl implements TypeMapper, Importer {
                     const referenceType = ((node as TypeReferenceNode).typeName as Identifier).escapedText!;
                     return this.getReferenceType(referenceType);
                 }
+                return this.getVoidType();
             }
         }
     }

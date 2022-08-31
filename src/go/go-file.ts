@@ -5,7 +5,7 @@ import { GoVariable } from "./go-variable";
 import { GoFunction } from "./go-function";
 import { GoImports } from "./go-imports";
 
-export class GoFile extends File<GoClass, GoVariable, GoImports, GoFunction> {
+export class GoFile extends File {
     constructor() {
         super(GoClass, GoVariable, GoImports, GoFunction);
     }

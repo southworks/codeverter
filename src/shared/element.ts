@@ -68,10 +68,14 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
         return this.parent;
     }
 
+    protected setName(val: string): void {
+        this.name = val;
+    }
+
     protected abstract getSourceFile(): SourceFile;
 
     public parse(node: K): void {
-        this.name = (node.name as Identifier)?.escapedText ?? "";
+        this.setName((node.name as Identifier)?.escapedText ?? "");
     }
 
     public setImportHandler(handler: Imports): void {

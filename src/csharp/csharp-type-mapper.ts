@@ -1,8 +1,9 @@
 import { KnownTypes, TypeMapperImpl } from "../shared/type-mapper";
 
-export class GoTypeMapper extends TypeMapperImpl {
+export class CSharpTypeMapper extends TypeMapperImpl {
+
     protected getVoidType(): string {
-        return "";
+        return "void";
     }
 
     protected getKnownType(type: KnownTypes): string {
@@ -11,8 +12,8 @@ export class GoTypeMapper extends TypeMapperImpl {
             case KnownTypes.Number: return "int"; // review
             case KnownTypes.String: return "string";
             case KnownTypes.Date: {
-                this.getImportHandler().add("time");
-                return "time.Time";
+                this.getImportHandler().add("system");
+                return "DateTime";
             }
             default:
                 console.error("Not supported", type);

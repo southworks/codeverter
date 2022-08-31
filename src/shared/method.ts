@@ -7,8 +7,4 @@ import { Function } from "./function";
 
 export abstract class Method<P extends SourceElement = Parameter, T extends TypeMapper & Importer = TypeMapperImpl>
     extends Function<MethodDeclaration, P, T> {
-
-    public parse(node: MethodDeclaration): void {
-        super.parse(node);
-    }
 }

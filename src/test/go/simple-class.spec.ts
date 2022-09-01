@@ -18,7 +18,16 @@ describe("GO: class", () => {
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
-        expect(strWritter.getString()).toBe("type Test struct {\n  Foo int\n}\n");
+
+        const expected = new StringWritter("\t", 1);
+        expected.write(`package test`);
+        expected.writeNewLine();
+        expected.write("type Test struct {");
+        expected.write("\tFoo int");
+        expected.write("}");
+        expected.writeNewLine();
+
+        expect(strWritter.getString()).toBe(expected.getString());
     });
 
     test("simple class with class reference", () => {
@@ -37,6 +46,19 @@ describe("GO: class", () => {
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
-        expect(strWritter.getString()).toBe("type Test struct {\n  Foo int\n}\n\ntype Test2 struct {\n  Foo2 Test\n}\n");
+
+        const expected = new StringWritter("\t", 1);
+        expected.write(`package test`);
+        expected.writeNewLine();
+        expected.write("type Test struct {");
+        expected.write("\tFoo int");
+        expected.write("}");
+        expected.writeNewLine();
+        expected.write("type Test2 struct {");
+        expected.write("\tFoo2 Test");
+        expected.write("}");
+        expected.writeNewLine();
+
+        expect(strWritter.getString()).toBe(expected.getString());
     });
 });

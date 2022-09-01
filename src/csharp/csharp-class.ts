@@ -22,16 +22,14 @@ export class CSharpClass extends Class {
             prop.print(writter);
         }
 
-        writter.write("");
         this.getValues("ctr").forEach(c => {
+            writter.writeNewLine();
             c.print(writter);
-            writter.write("");
+
         });
-        this.getValues("method").forEach((m, i, a) => {
+        this.getValues("method").forEach(m => {
+            writter.writeNewLine();
             m.print(writter);
-            if (i != a.length - 1) {
-                writter.write("");
-            }
         });
 
         writter.decDeepLevel();

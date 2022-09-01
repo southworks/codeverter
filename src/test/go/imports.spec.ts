@@ -18,7 +18,17 @@ describe("GO: imports", () => {
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
-        expect(strWritter.getString()).toBe(`import "time"\n\ntype Test struct {\n  Foo time.Time\n}\n`);
+        const expected = new StringWritter("\t", 1);
+        expected.write(`package test`);
+        expected.writeNewLine();
+        expected.write(`import "time"`);
+        expected.writeNewLine();
+        expected.write("type Test struct {");
+        expected.write("\tFoo time.Time");
+        expected.write("}");
+        expected.writeNewLine();
+
+        expect(strWritter.getString()).toBe(expected.getString());
     });
 
     test("multiple date property", () => {
@@ -34,6 +44,16 @@ describe("GO: imports", () => {
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
-        expect(strWritter.getString()).toBe(`import "time"\n\ntype Test struct {\n  Foo time.Time\n  Bar time.Time\n}\n`);
+        const expected = new StringWritter("\t", 1);
+        expected.write(`package test`);
+        expected.writeNewLine();
+        expected.write(`import "time"`);
+        expected.writeNewLine();
+        expected.write("type Test struct {");
+        expected.write("\tFoo time.Time");
+        expected.write("\tBar time.Time");
+        expected.write("}");
+        expected.writeNewLine();
+        expect(strWritter.getString()).toBe(expected.getString());
     });
 });

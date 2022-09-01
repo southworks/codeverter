@@ -1,5 +1,6 @@
 export interface Writteable {
     write(value: string): void;
+    writeNewLine(): void;
     getCurrentDeepLevel(): number;
     setDeepLevel(value: number): number;
     incDeepLevel(): number;
@@ -8,6 +9,8 @@ export interface Writteable {
 }
 
 export abstract class Writter implements Writteable {
+    private newLine = process.platform === "win32" ? "\r\n" : "\n";
+
     private deepLevel: number = 0;
     private prevDeepLevel: number = 0;
     private indentChar!: string;
@@ -21,6 +24,10 @@ export abstract class Writter implements Writteable {
 
     public write(value: string): void {
         this.writeImpl(`${this.getIndent()}${value}`);
+    }
+
+    public writeNewLine(): void {
+        this.writeImpl(this.newLine);
     }
 
     public getCurrentDeepLevel(): number {

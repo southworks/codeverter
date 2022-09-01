@@ -1,7 +1,6 @@
 import { File } from "../shared/file";
 import { Writteable } from "../writter/writter";
 import { GoClass } from "./go-class";
-import { GoVariable } from "./go-variable";
 import { GoFunction } from "./go-function";
 import { GoImports } from "./go-imports";
 
@@ -20,24 +19,32 @@ export class GoFile extends File {
 
     public print(writter: Writteable): boolean {
         writter.write(`package ${this.getName().toLowerCase()}`);
-        writter.write("");
-
+        writter.writeNewLine();
         if (this.getImportHandler().print(writter)) {
-            writter.write("");
+            writter.writeNewLine();
         }
-        this.getValues("class").forEach(c => {
-            c.print(writter);
+        let printContent = false;
+
+        this.getValues("class").forEach((c, i, a) => {
+            printContent = c.print(writter) || printContent;
+            writter.writeNewLine();
         });
+
         this.getValues("function").forEach(f => {
-            f.print(writter);
-            writter.write("");
+            printContent = f.print(writter) || printContent;
+            writter.writeNewLine();
         });
+
         this.getValues("constant").forEach(v => {
             v.print(writter);
         })
         this.getValues("variable").forEach(v => {
             v.print(writter);
         })
+
+        if (!printContent) {
+            writter.writeNewLine();
+        }
         return true;
     }
 }

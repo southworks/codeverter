@@ -20,18 +20,22 @@ describe("GO: constructor", () => {
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
 
-        let expected = "import \"time\"\n";
-        expected += "\ntype Test struct {";
-        expected += "\n  Bar time.Time";
-        expected += "\n}";
-        expected += "\n";
-        expected += "\nfunc NewTest() *Test {";
-        expected += "\n  t := Test{}";
-        expected += "\n  // this.bar = new Date(); ";
-        expected += "\n  return &t";
-        expected += "\n}";
-        expected += "\n";
-        expect(strWritter.getString()).toBe(expected);
+        const expected = new StringWritter("\t", 1);
+        expected.write(`package test`);
+        expected.writeNewLine();
+        expected.write(`import "time"`);
+        expected.writeNewLine();
+        expected.write("type Test struct {");
+        expected.write("\tBar time.Time");
+        expected.write("}");
+        expected.writeNewLine();
+        expected.write("func NewTest() *Test {");
+        expected.write("\tt := new(Test)");
+        expected.write("\t// this.bar = new Date(); ");
+        expected.write("\treturn t");
+        expected.write("}");
+        expected.writeNewLine();
+        expect(strWritter.getString()).toBe(expected.getString());
     });
 
     test("parameters", () => {
@@ -48,17 +52,22 @@ describe("GO: constructor", () => {
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
 
-        let expected = "import \"time\"\n";
-        expected += "\ntype Test struct {";
-        expected += "\n  Bar time.Time";
-        expected += "\n}";
-        expected += "\n";
-        expected += "\nfunc NewTest(val int, val2 string) *Test {";
-        expected += "\n  t := Test{}";
-        expected += "\n  // this.bar = new Date(); ";
-        expected += "\n  return &t";
-        expected += "\n}";
-        expected += "\n";
-        expect(strWritter.getString()).toBe(expected);
+        const expected = new StringWritter("\t", 1);
+        expected.write(`package test`);
+        expected.writeNewLine();
+        expected.write(`import "time"`);
+        expected.writeNewLine();
+        expected.write("type Test struct {");
+        expected.write("\tBar time.Time");
+        expected.write("}");
+        expected.writeNewLine();
+        expected.write("func NewTest(val int, val2 string) *Test {");
+        expected.write("\tt := new(Test)");
+        expected.write("\t// this.bar = new Date(); ");
+        expected.write("\treturn t");
+        expected.write("}");
+        expected.writeNewLine();
+
+        expect(strWritter.getString()).toBe(expected.getString());
     });
 });

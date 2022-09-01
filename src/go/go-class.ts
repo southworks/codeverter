@@ -19,14 +19,14 @@ export class GoClass extends Class {
         }
         writter.decDeepLevel();
         writter.write(`}`);
-        writter.write("");
         this.getValues("ctr").forEach(c => {
+            writter.writeNewLine();
             c.print(writter);
-            writter.write("");
+
         });
         this.getValues("method").forEach(m => {
+            writter.writeNewLine();
             m.print(writter);
-            writter.write("");
         });
         return true;
     }

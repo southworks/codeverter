@@ -19,14 +19,14 @@ export class CSharpFile extends File {
 
     public print(writter: Writteable): boolean {
         if (this.getImportHandler().print(writter)) {
-            writter.write("");
+            writter.writeNewLine();
         }
         writter.write(`namespace ${this.capitalize(this.getName())}`);
         writter.write("{");
         writter.incDeepLevel();
         this.getValues("class").forEach(c => {
+            writter.writeNewLine();
             c.print(writter);
-            writter.write("");
         });
 
         const globalFunctions = this.getValues("function");
@@ -35,11 +35,9 @@ export class CSharpFile extends File {
             writter.write("public static class Helper");
             writter.write("{");
             writter.incDeepLevel();
-            this.getValues("function").forEach((f, i, a) => {
+            this.getValues("function").forEach(f => {
+                writter.writeNewLine();
                 f.print(writter);
-                if (i != a.length - 1) {
-                    writter.write("");
-                }
             });
             writter.decDeepLevel();
             writter.write("}");

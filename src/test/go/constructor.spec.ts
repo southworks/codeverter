@@ -26,9 +26,9 @@ describe("GO: constructor", () => {
         expected += "\n}";
         expected += "\n";
         expected += "\nfunc NewTest() *Test {";
-        expected += "\n  t := new(Test)";
+        expected += "\n  t := Test{}";
         expected += "\n  // this.bar = new Date(); ";
-        expected += "\n  return t";
+        expected += "\n  return &t";
         expected += "\n}";
         expected += "\n";
         expect(strWritter.getString()).toBe(expected);
@@ -54,9 +54,9 @@ describe("GO: constructor", () => {
         expected += "\n}";
         expected += "\n";
         expected += "\nfunc NewTest(val int, val2 string) *Test {";
-        expected += "\n  t := new(Test)";
+        expected += "\n  t := Test{}";
         expected += "\n  // this.bar = new Date(); ";
-        expected += "\n  return t";
+        expected += "\n  return &t";
         expected += "\n}";
         expected += "\n";
         expect(strWritter.getString()).toBe(expected);

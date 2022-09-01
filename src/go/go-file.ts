@@ -10,7 +10,18 @@ export class GoFile extends File {
         super(GoClass, GoVariable, GoImports, GoFunction);
     }
 
+    public getIndentChar(): string {
+        return "\t";
+    }
+
+    public getIndentValue(): number {
+        return 1;
+    }
+
     public print(writter: Writteable): boolean {
+        writter.write(`package ${this.getName().toLowerCase()}`);
+        writter.write("");
+
         if (this.getImportHandler().print(writter)) {
             writter.write("");
         }

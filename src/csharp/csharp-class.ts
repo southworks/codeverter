@@ -27,9 +27,11 @@ export class CSharpClass extends Class {
             c.print(writter);
             writter.write("");
         });
-        this.getValues("method").forEach(m => {
+        this.getValues("method").forEach((m, i, a) => {
             m.print(writter);
-            writter.write("");
+            if (i != a.length - 1) {
+                writter.write("");
+            }
         });
 
         writter.decDeepLevel();

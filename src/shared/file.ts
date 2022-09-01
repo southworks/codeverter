@@ -64,6 +64,9 @@ export abstract class File<C extends SourceElement = Class,
         return this.sourceFile;
     }
 
+    public abstract getIndentChar(): string;
+    public abstract getIndentValue(): number;
+
     public parse(node: SourceFile): void {
         this.setName(basename(node.fileName).replace(extname(node.fileName), ""));
         this.sourceFile = node;

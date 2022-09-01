@@ -11,10 +11,7 @@ export class CSharpTypeMapper extends TypeMapperImpl {
             case KnownTypes.Boolean: return "bool";
             case KnownTypes.Number: return "int"; // review
             case KnownTypes.String: return "string";
-            case KnownTypes.Date: {
-                this.getImportHandler().add("system");
-                return "DateTime";
-            }
+            case KnownTypes.Date: return "DateTime";
             default:
                 console.error("Not supported", type);
                 return "error";

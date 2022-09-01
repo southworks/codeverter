@@ -9,6 +9,14 @@ export class CSharpFile extends File {
         super(CSharpClass, CSharpImports, CSharpFunction);
     }
 
+    public getIndentChar(): string {
+        return " ";
+    }
+
+    public getIndentValue(): number {
+        return 4;
+    }
+
     public print(writter: Writteable): boolean {
         if (this.getImportHandler().print(writter)) {
             writter.write("");
@@ -27,9 +35,11 @@ export class CSharpFile extends File {
             writter.write("public static class Helper");
             writter.write("{");
             writter.incDeepLevel();
-            this.getValues("function").forEach(f => {
+            this.getValues("function").forEach((f, i, a) => {
                 f.print(writter);
-                writter.write("");
+                if (i != a.length - 1) {
+                    writter.write("");
+                }
             });
             writter.decDeepLevel();
             writter.write("}");

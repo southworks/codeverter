@@ -19,7 +19,7 @@ export class CSharpFunctionHelper {
         for (const line of content) {
             writter.write(`//${line}`);
         }
-        writter.write(`return`);
+        writter.write(`return${returnType != "void" ? ` default(${returnType});` : ";"}`);
         writter.decDeepLevel();
         writter.write(`}`);
     }

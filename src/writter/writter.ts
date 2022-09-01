@@ -10,14 +10,14 @@ export interface Writteable {
 export abstract class Writter implements Writteable {
     private deepLevel: number = 0;
     private prevDeepLevel: number = 0;
+    private indentChar!: string;
+    private indentValue!: number;
 
     private getIndent(): string {
-        return this.getIndentChar().repeat(this.getIndentValue() * this.deepLevel)
+        return this.indentChar.repeat(this.indentValue * this.deepLevel)
     }
 
     protected abstract writeImpl(value: string): void;
-    protected abstract getIndentChar(): string;
-    protected abstract getIndentValue(): number;
 
     public write(value: string): void {
         this.writeImpl(`${this.getIndent()}${value}`);
@@ -31,7 +31,7 @@ export abstract class Writter implements Writteable {
         if (value < 0) {
             value = 0;
         }
-        
+
         this.prevDeepLevel = this.deepLevel;
         this.deepLevel = value;
         return value;
@@ -44,8 +44,16 @@ export abstract class Writter implements Writteable {
     public decDeepLevel(): number {
         return this.setDeepLevel(this.deepLevel - 1);
     }
-    
+
     public restorePreviousDeepLevel(): number {
         return this.setDeepLevel(this.prevDeepLevel);
+    }
+
+    public setIndentChar(val: string): void {
+        this.indentChar = val;
+    }
+
+    public setIndentValue(val: number): void {
+        this.indentValue = val;
     }
 }

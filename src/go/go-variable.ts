@@ -17,7 +17,7 @@ export class GoVariable extends Variable {
 
         const declaration = this.isConst() ? "const" : "var";
 
-        writter.write(`${declaration} ${name} ${this.getType()} ${this.getValue()}`);
+        writter.write(`${declaration} ${name} ${this.getType()} = ${this.getValue()}`);
         return true;
     }
 }

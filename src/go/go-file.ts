@@ -23,11 +23,9 @@ export class GoFile extends File<GoClass, GoVariable, GoImports, GoFunction> {
         });
         this.getValues("constant").forEach(v => {
             v.print(writter);
-            writter.write("");
         })
         this.getValues("variable").forEach(v => {
             v.print(writter);
-            writter.write("");
         })
         return true;
     }

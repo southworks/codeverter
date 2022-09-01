@@ -1,13 +1,13 @@
 import { File } from "../shared/file";
 import { Writteable } from "../writter/writter";
 import { GoClass } from "./go-class";
-import { GoConstant } from "./go-constant";
+import { GoVariable } from "./go-variable";
 import { GoFunction } from "./go-function";
 import { GoImports } from "./go-imports";
 
-export class GoFile extends File<GoClass, GoConstant, GoImports, GoFunction> {
+export class GoFile extends File<GoClass, GoVariable, GoImports, GoFunction> {
     constructor() {
-        super(GoClass, GoConstant, GoImports, GoFunction);
+        super(GoClass, GoVariable, GoImports, GoFunction);
     }
 
     public print(writter: Writteable): boolean {
@@ -23,6 +23,10 @@ export class GoFile extends File<GoClass, GoConstant, GoImports, GoFunction> {
             writter.write("");
         });
         this.getValues("constant").forEach(v => {
+            v.print(writter);
+            writter.write("");
+        })
+        this.getValues("variable").forEach(v => {
             v.print(writter);
             writter.write("");
         })

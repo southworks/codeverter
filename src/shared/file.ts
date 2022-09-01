@@ -6,10 +6,10 @@ import { Imports } from "./imports";
 import { RootSourceElement, SourceElement } from "./types/source-element";
 import { Element } from "./element";
 import { Function } from "./function";
-import { Constant } from "./constant";
+import { Variable } from "./variable";
 
 export abstract class File<C extends SourceElement = Class,
-    CN extends Constant = Constant,
+    CN extends Variable = Variable,
     I extends Imports = Imports,
     F extends SourceElement = Function>
     extends Element<SourceFile>
@@ -23,6 +23,7 @@ export abstract class File<C extends SourceElement = Class,
         this.setFactory("class", classFactory);
         this.setFactory("function", functionFactory);
         this.setFactory("constant", constantsFactory);
+        this.setFactory("variable", constantsFactory);
         this.importsHandler = new importsFactory();
     }
 
@@ -38,6 +39,10 @@ export abstract class File<C extends SourceElement = Class,
         if (node.flags == NodeFlags.Const) {
             node.declarations.forEach(d => {
                 this.addElement("constant", d);
+            });
+        } else if (node.flags == NodeFlags.Let) {
+            node.declarations.forEach(d => {
+                this.addElement("variable", d);
             });
         }
     }

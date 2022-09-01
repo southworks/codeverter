@@ -5,5 +5,5 @@ export interface Initable {
 }
 
 export function isInitable(obj: any): obj is Initable {
-	return 'init' in obj;
+    return "init" in obj;
 }

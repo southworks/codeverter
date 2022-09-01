@@ -4,7 +4,7 @@ import { Imports } from "./imports";
 import { ElementKind, ElementValues } from "./types/elements";
 import { Factories, Factory } from "./types/factory";
 import { SourceElement } from "./types/source-element";
-import { Initable, isInitable } from "../shared/types/initable"
+import { Initable, isInitable } from "../shared/types/initable";
 
 export abstract class Element<K extends NamedDeclaration> implements SourceElement<K> {
     private name!: string;

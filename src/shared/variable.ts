@@ -10,6 +10,14 @@ export abstract class Variable<T extends TypeMapper & Importer = TypeMapperImpl>
     private valueKind: SyntaxKind = SyntaxKind.StringLiteral; 
     private varKind: ElementKind = "constant";
 
+    protected isConst(): boolean {
+        return this.varKind == "constant";
+    }
+
+    protected getValue(): string {
+        return this.valueKind == SyntaxKind.StringLiteral ? `"${this.value}"` : this.value;
+    }
+    
     public parse(node: VariableDeclaration): void {
         super.parse(node);
         this.value = (node.initializer as LiteralExpression).text;
@@ -18,13 +26,5 @@ export abstract class Variable<T extends TypeMapper & Importer = TypeMapperImpl>
 
     public init(kind: ElementKind): void {
         this.varKind = kind;
-    }
-
-    protected isConst(): boolean {
-        return this.varKind == "constant";
-    }
-
-    protected getValue(): string {
-        return this.valueKind == SyntaxKind.StringLiteral ? `"${this.value}"` : this.value;
     }
 }

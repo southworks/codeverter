@@ -17,9 +17,14 @@ describe("GO: constant", () => {
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile());
 
-        let expected = "const Constant string = \"test\"";
-        expected += "\n";
-        expected += "const NumberConstant int = 123";
-        expect(strWritter.getString()).toBe(expected);
+        const expected = new StringWritter("\t", 1);
+        expected.write(`package test`);
+        expected.writeNewLine();
+        expected.write(`const Constant string = "test"`);
+        expected.writeNewLine();
+        expected.write("const NumberConstant int = 123");
+        expected.writeNewLine();
+
+        expect(strWritter.getString()).toBe(expected.getString());
     });
 });

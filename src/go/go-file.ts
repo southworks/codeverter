@@ -3,6 +3,7 @@ import { Writteable } from "../writter/writter";
 import { GoClass } from "./go-class";
 import { GoFunction } from "./go-function";
 import { GoImports } from "./go-imports";
+import { GoVariable } from "./go-variable";
 
 export class GoFile extends File {
     constructor() {
@@ -36,11 +37,14 @@ export class GoFile extends File {
         });
 
         this.getValues("constant").forEach(v => {
-            v.print(writter);
-        })
+            printContent = v.print(writter) || printContent;
+            writter.writeNewLine();
+        });
+
         this.getValues("variable").forEach(v => {
-            v.print(writter);
-        })
+            printContent = v.print(writter) || printContent;
+            writter.writeNewLine();
+        });
 
         if (!printContent) {
             writter.writeNewLine();

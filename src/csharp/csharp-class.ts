@@ -18,18 +18,36 @@ export class CSharpClass extends Class {
         writter.write(`${visibility} class ${this.getName()}`);
         writter.write("{");
         writter.incDeepLevel();
-        for (let prop of this.getValues("property")) {
-            prop.print(writter);
-        }
 
-        this.getValues("ctr").forEach(c => {
-            writter.writeNewLine();
-            c.print(writter);
+        let blockPrinted = false;
 
+        this.getValues("property").forEach((p, i, a) => {
+            blockPrinted = p.print(writter) || blockPrinted;
+            if (i != a.length - 1) {
+                writter.writeNewLine();
+            }
         });
-        this.getValues("method").forEach(m => {
-            writter.writeNewLine();
-            m.print(writter);
+
+        this.getValues("ctr").forEach((c, i, a) => {
+            if (i == 0 && blockPrinted) {
+                writter.writeNewLine();
+                blockPrinted = false;
+            }
+            blockPrinted = c.print(writter) || blockPrinted;
+            if (i != a.length - 1) {
+                writter.writeNewLine();
+            }
+        });
+
+        this.getValues("method").forEach((m, i, a) => {
+            if (i == 0 && blockPrinted) {
+                writter.writeNewLine();
+                blockPrinted = false;
+            }
+            blockPrinted = m.print(writter) || blockPrinted;
+            if (i != a.length - 1) {
+                writter.writeNewLine();
+            }
         });
 
         writter.decDeepLevel();

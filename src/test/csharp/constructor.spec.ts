@@ -1,11 +1,11 @@
 import { createSourceFile, ScriptTarget } from "typescript";
-import { GoFile } from "../../go/go-file";
+import { CSharpFile } from "../../csharp/csharp-file";
 import { printFile } from "../../print-file";
 import { StringWritter } from "../../writter/string-writter";
 
 const filename = "test.ts";
 
-describe("GO: constructor", () => {
+describe("CSharp: constructor", () => {
     test("paramless", () => {
         const code = `
             export class Test {
@@ -18,21 +18,20 @@ describe("GO: constructor", () => {
         );
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new CSharpFile());
 
-        const expected = new StringWritter("\t", 1);
-        expected.write(`package test`);
+        const expected = new StringWritter(" ", 4);
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public class Test");
+        expected.write(`    {`);
+        expected.write("        public DateTime Bar { get; set; }");
         expected.writeNewLine();
-        expected.write(`import "time"`);
-        expected.writeNewLine();
-        expected.write("type Test struct {");
-        expected.write("\tBar time.Time");
-        expected.write("}");
-        expected.writeNewLine();
-        expected.write("func NewTest() *Test {");
-        expected.write("\tt := Test{}");
-        expected.write("\t// this.bar = new Date(); ");
-        expected.write("\treturn &t");
+        expected.write("        public Test()");
+        expected.write(`        {`);
+        expected.write(`            // this.bar = new Date(); `);
+        expected.write("        }");
+        expected.write("    }");
         expected.write("}");
         expected.writeNewLine();
         expect(strWritter.getString()).toBe(expected.getString());
@@ -50,21 +49,20 @@ describe("GO: constructor", () => {
         );
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new CSharpFile());
 
-        const expected = new StringWritter("\t", 1);
-        expected.write(`package test`);
+        const expected = new StringWritter(" ", 4);
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public class Test");
+        expected.write(`    {`);
+        expected.write("        public DateTime Bar { get; set; }");
         expected.writeNewLine();
-        expected.write(`import "time"`);
-        expected.writeNewLine();
-        expected.write("type Test struct {");
-        expected.write("\tBar time.Time");
-        expected.write("}");
-        expected.writeNewLine();
-        expected.write("func NewTest(val int, val2 string) *Test {");
-        expected.write("\tt := Test{}");
-        expected.write("\t// this.bar = new Date(); ");
-        expected.write("\treturn &t");
+        expected.write("        public Test(int val, string val2)");
+        expected.write(`        {`);
+        expected.write(`            // this.bar = new Date(); `);
+        expected.write("        }");
+        expected.write("    }");
         expected.write("}");
         expected.writeNewLine();
 

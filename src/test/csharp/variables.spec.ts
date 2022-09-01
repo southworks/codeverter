@@ -5,7 +5,7 @@ import { StringWritter } from "../../writter/string-writter";
 
 const filename = "test.ts";
 
-describe("GO: variables", () => {
+xdescribe("CSharp: variables", () => {
     test("Variables different types", () => {
         const code = `
             let constant: string = "test";\n

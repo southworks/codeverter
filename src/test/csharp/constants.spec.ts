@@ -5,11 +5,11 @@ import { StringWritter } from "../../writter/string-writter";
 
 const filename = "test.ts";
 
-describe("GO: variables", () => {
-    test("Variables different types", () => {
+xdescribe("CSharp: constant", () => {
+    test("Constants different types", () => {
         const code = `
-            let constant: string = "test";\n
-            let numberConstant: number = 123;`;
+            const constant: string = "test";\n
+            const numberConstant: number = 123;`;
         const sourceFile = createSourceFile(
             filename, code, ScriptTarget.Latest
         );
@@ -20,9 +20,9 @@ describe("GO: variables", () => {
         const expected = new StringWritter("\t", 1);
         expected.write(`package test`);
         expected.writeNewLine();
-        expected.write(`var Constant string = "test"`);
+        expected.write(`const Constant string = "test"`);
         expected.writeNewLine();
-        expected.write("var NumberConstant int = 123");
+        expected.write("const NumberConstant int = 123");
         expected.writeNewLine();
 
         expect(strWritter.getString()).toBe(expected.getString());

@@ -30,6 +30,7 @@ describe("GO: constructor", () => {
         expected += "\n  // this.bar = new Date(); ";
         expected += "\n  return t";
         expected += "\n}";
+        expected += "\n";
         expect(strWritter.getString()).toBe(expected);
     });
 
@@ -57,6 +58,7 @@ describe("GO: constructor", () => {
         expected += "\n  // this.bar = new Date(); ";
         expected += "\n  return t";
         expected += "\n}";
+        expected += "\n";
         expect(strWritter.getString()).toBe(expected);
     });
 });

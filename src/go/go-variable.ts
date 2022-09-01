@@ -5,7 +5,6 @@ import { Writteable } from "../writter/writter";
 import { GoTypeMapper } from "./go-type-mapper";
 
 export class GoVariable extends Variable {
-
     constructor(sourceFile: SourceFile) {
         super(sourceFile, GoTypeMapper);
     }

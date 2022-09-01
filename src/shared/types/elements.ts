@@ -3,7 +3,7 @@ import { SourceElement } from "./source-element";
 /**
  * Available factory types
  */
-export type ElementKind = "class" | "ctr" | "property" | "parameter" | "function" | "method";
+export type ElementKind = "class" | "ctr" | "property" | "parameter" | "function" | "method" | "constant" | "variable";
 
 /**
  * Dictionary to hold created elements

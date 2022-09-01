@@ -18,11 +18,11 @@ export class GoConstructor extends Constructor {
         writter.write(`func New${this.capitalize(this.getName())}(${paramStr}) *${this.getName()} {`);
         writter.incDeepLevel();
         const firstLetter = this.getName().charAt(0).toLowerCase();
-        writter.write(`${firstLetter} := new(${this.getName()})`);
+        writter.write(`${firstLetter} := ${this.getName()}{}`);
         for (const line of this.getContent()) {
             writter.write(`//${line}`);
         }
-        writter.write(`return ${firstLetter}`);
+        writter.write(`return &${firstLetter}`);
         writter.decDeepLevel();
         writter.write(`}`);
         return true;

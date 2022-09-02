@@ -10,7 +10,6 @@ export interface Writteable {
 
 export abstract class Writter implements Writteable {
     private newLine = process.platform === "win32" ? "\r\n" : "\n";
-
     private deepLevel: number = 0;
     private prevDeepLevel: number = 0;
     private indentChar!: string;

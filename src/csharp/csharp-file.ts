@@ -1,4 +1,5 @@
 import { File } from "../shared/file";
+import { printBlock } from "../shared/helpers/print-helper";
 import { Writteable } from "../writter/writter";
 import { CSharpClass } from "./csharp-class";
 import { CSharpFunction } from "./csharp-function";
@@ -27,28 +28,23 @@ export class CSharpFile extends File {
         writter.write(`namespace ${this.capitalize(this.getName())}`);
         writter.write("{");
         writter.incDeepLevel();
-        this.getValues("class").forEach((c, i, a) => {
-            contentPrinted = c.print(writter) || contentPrinted;
-            if (i != a.length - 1) {
-                writter.writeNewLine();
-            }
-        });
+        const printOpt = { splitted: true };
+        contentPrinted = printBlock(writter, this.getValues("class"), printOpt);
 
         const globalFunctions = this.getValues("function");
-        if (globalFunctions.length > 0) {
-            if (!contentPrinted) {
+        const globalVars = this.getValues("variable");
+        const globalConstants = this.getValues("constant");
+        if ((globalFunctions.length || globalVars.length || globalConstants.length) > 0) {
+            if (contentPrinted) {
                 writter.writeNewLine();
             }
             // if there are some global functions we need to create a helper class to hold them
             writter.write("public static class Helper");
             writter.write("{");
             writter.incDeepLevel();
-            this.getValues("function").forEach((f, i, a) => {
-                f.print(writter);
-                if (i != a.length - 1) {
-                    writter.writeNewLine();
-                }
-            });
+            printBlock(writter, globalVars, printOpt);
+            printBlock(writter, globalConstants, printOpt);
+            printBlock(writter, globalFunctions, printOpt);
             writter.decDeepLevel();
             writter.write("}");
         }

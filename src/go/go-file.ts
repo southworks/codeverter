@@ -1,4 +1,5 @@
 import { File } from "../shared/file";
+import { printBlock } from "../shared/helpers/print-helper";
 import { Writteable } from "../writter/writter";
 import { GoClass } from "./go-class";
 import { GoFunction } from "./go-function";
@@ -24,27 +25,11 @@ export class GoFile extends File {
         if (this.getImportHandler().print(writter)) {
             writter.writeNewLine();
         }
-        let printContent = false;
-
-        this.getValues("class").forEach((c, i, a) => {
-            printContent = c.print(writter) || printContent;
-            writter.writeNewLine();
-        });
-
-        this.getValues("function").forEach(f => {
-            printContent = f.print(writter) || printContent;
-            writter.writeNewLine();
-        });
-
-        this.getValues("constant").forEach(v => {
-            printContent = v.print(writter) || printContent;
-            writter.writeNewLine();
-        });
-
-        this.getValues("variable").forEach(v => {
-            printContent = v.print(writter) || printContent;
-            writter.writeNewLine();
-        });
+        const printOpt = { splitted: false, trailingNewLine: true };
+        let printContent = printBlock(writter, this.getValues("class"), printOpt);
+        printContent = printBlock(writter, this.getValues("function"), printOpt) || printContent;
+        printContent = printBlock(writter, this.getValues("constant"), printOpt) || printContent;
+        printContent = printBlock(writter, this.getValues("variable"), printOpt) || printContent;
 
         if (!printContent) {
             writter.writeNewLine();

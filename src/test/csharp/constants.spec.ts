@@ -1,11 +1,11 @@
 import { createSourceFile, ScriptTarget } from "typescript";
-import { GoFile } from "../../go/go-file";
+import { CSharpFile } from "../../csharp/csharp-file";
 import { printFile } from "../../print-file";
 import { StringWritter } from "../../writter/string-writter";
 
 const filename = "test.ts";
 
-xdescribe("CSharp: constant", () => {
+describe("CSharp: constant", () => {
     test("Constants different types", () => {
         const code = `
             const constant: string = "test";\n
@@ -15,14 +15,18 @@ xdescribe("CSharp: constant", () => {
         );
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new CSharpFile());
 
-        const expected = new StringWritter("\t", 1);
-        expected.write(`package test`);
+        const expected = new StringWritter(" ", 4);
+        expected.write(`namespace Test`);
+        expected.write("{");
+        expected.write("    public static class Helper");
+        expected.write("    {");
+        expected.write(`        public const string CONSTANT = "test";`);
         expected.writeNewLine();
-        expected.write(`const Constant string = "test"`);
-        expected.writeNewLine();
-        expected.write("const NumberConstant int = 123");
+        expected.write(`        public const int NUMBERCONSTANT = 123;`);
+        expected.write("    }");
+        expected.write("}");
         expected.writeNewLine();
 
         expect(strWritter.getString()).toBe(expected.getString());

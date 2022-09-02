@@ -11,17 +11,17 @@ import {
 } from "typescript";
 import { Property } from "./property";
 import { Factory } from "./types/factory";
-import { SourceElement } from "./types/source-element";
 import { Constructor } from "./constructor";
 import { Method } from "./method";
 import { ClassElement } from "./class-element";
 
-export abstract class Class<P extends SourceElement = Property,
-    C extends SourceElement = Constructor, M extends SourceElement = Method>
-    extends ClassElement<ClassDeclaration> {
+export abstract class Class extends ClassElement<ClassDeclaration> {
 
-    protected constructor(sourceFile: SourceFile, propertyFactory: Factory<P>,
-        constructorFactory: Factory<C>, methodFactory: Factory<M>) {
+    protected constructor(sourceFile: SourceFile,
+        propertyFactory: Factory<Property>,
+        constructorFactory: Factory<Constructor>,
+        methodFactory: Factory<Method>) {
+
         super(sourceFile);
         this.setFactory("ctr", constructorFactory);
         this.setFactory("property", propertyFactory);

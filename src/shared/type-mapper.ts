@@ -1,4 +1,9 @@
-import { Identifier, SyntaxKind, TypeNode, TypeReferenceNode } from "typescript";
+import {
+    Identifier,
+    SyntaxKind,
+    TypeNode,
+    TypeReferenceNode
+} from "typescript";
 import { Importer } from "./types/importer";
 import { Imports } from "./imports";
 

@@ -12,11 +12,11 @@ const [, , ...args] = process.argv;
 
 if (args.indexOf("--help") > -1) {
     console.log("--file:");
-    console.log("    Path to the file. Default value: 'tmp/index.ts'");
+    console.log("    Path to the source file. Default value: 'tmp/index.ts'");
     console.log("--lang: [csharp | go]");
     console.log("    Target language. Default value: 'go'");
     console.log("--dest: [console | file] <destination path>");
-    console.log("    Target language. Default value: 'console'");
+    console.log("    Console output or file name. Default value: 'console'");
 } else {
     const fileIndex = args.indexOf('--file');
     const fileName = fileIndex > -1 ? args[fileIndex + 1] : "./tmp/index.ts";

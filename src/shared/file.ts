@@ -7,7 +7,9 @@ import {
     FunctionDeclaration,
     VariableDeclarationList,
     isVariableDeclarationList,
-    NodeFlags
+    NodeFlags,
+    isEnumDeclaration,
+    EnumDeclaration
 } from "typescript";
 import { Writter } from "../writter/writter";
 import { Class } from "./class";
@@ -18,6 +20,7 @@ import { Element } from "./element";
 import { Function } from "./function";
 import { Variable } from "./variable";
 import { basename, extname } from "path";
+import { Enum } from "./enum";
 
 export abstract class File extends Element<SourceFile> implements RootSourceElement<SourceFile> {
     private importsHandler: Imports;
@@ -26,13 +29,15 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
     protected constructor(classFactory: Factory<Class>,
         constantsFactory: Factory<Variable>,
         importsFactory: Factory<Imports, void>,
-        functionFactory: Factory<Function>) {
+        functionFactory: Factory<Function>,
+        enumsFactory: Factory<Enum>) {
 
         super()
         this.setFactory("class", classFactory);
         this.setFactory("function", functionFactory);
         this.setFactory("constant", constantsFactory);
         this.setFactory("variable", constantsFactory);
+        this.setFactory("enum", enumsFactory);
         this.importsHandler = new importsFactory();
     }
 
@@ -42,6 +47,10 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
 
     private addFunction(node: FunctionDeclaration): void {
         this.addElement("function", node);
+    }
+
+    private addEnumerate(node: EnumDeclaration): void {
+        this.addElement("enum", node);
     }
 
     private addDeclaration(node: VariableDeclarationList): void {
@@ -63,6 +72,8 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
             this.addFunction(node);
         } else if (isVariableDeclarationList(node)) {
             this.addDeclaration(node as VariableDeclarationList);
+        } else if (isEnumDeclaration(node)) {
+            this.addEnumerate(node);
         } else {
             node.forEachChild(child => this.visitNode(child));
         }

@@ -2,13 +2,14 @@ import { File } from "../shared/file";
 import { printBlock } from "../shared/helpers/print-helper";
 import { Writteable } from "../writter/writter";
 import { CSharpClass } from "./csharp-class";
+import { CSharpEnum } from "./csharp-enum";
 import { CSharpFunction } from "./csharp-function";
 import { CSharpImports } from "./csharp-imports";
 import { CSharpVariable } from "./csharp-variable";
 
 export class CSharpFile extends File {
     constructor() {
-        super(CSharpClass, CSharpVariable, CSharpImports, CSharpFunction);
+        super(CSharpClass, CSharpVariable, CSharpImports, CSharpFunction, CSharpEnum);
     }
 
     public getIndentChar(): string {
@@ -34,7 +35,8 @@ export class CSharpFile extends File {
         const globalFunctions = this.getValues("function");
         const globalVars = this.getValues("variable");
         const globalConstants = this.getValues("constant");
-        if ((globalFunctions.length || globalVars.length || globalConstants.length) > 0) {
+        const globalEnums = this.getValues("enum");
+        if ((globalFunctions.length || globalVars.length || globalConstants.length || globalEnums.length) > 0) {
             if (contentPrinted) {
                 writter.writeNewLine();
             }
@@ -42,6 +44,7 @@ export class CSharpFile extends File {
             writter.write("public static class Helper");
             writter.write("{");
             writter.incDeepLevel();
+            printBlock(writter, globalEnums, printOpt);
             printBlock(writter, globalVars, printOpt);
             printBlock(writter, globalConstants, printOpt);
             printBlock(writter, globalFunctions, printOpt);

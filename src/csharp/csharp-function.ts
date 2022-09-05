@@ -1,13 +1,14 @@
 import { SourceFile } from "typescript";
 import { Function } from "../shared/function";
 import { Writteable } from "../writter/writter";
+import { CSharpDefaultValueMapper } from "./csharp-default-value-mapper";
 import { CSharpFunctionHelper } from "./csharp-function-helper";
 import { CSharpParameter } from "./csharp-parameter";
 import { CSharpTypeMapper } from "./csharp-type-mapper";
 
 export class CSharpFunction extends Function {
     constructor(sourceFile: SourceFile) {
-        super(sourceFile, CSharpParameter, CSharpTypeMapper);
+        super(sourceFile, CSharpParameter, CSharpTypeMapper, CSharpDefaultValueMapper);
     }
 
     public print(writter: Writteable): boolean {
@@ -15,6 +16,7 @@ export class CSharpFunction extends Function {
             this.capitalize(this.getName()),
             this.getContent(),
             this.getType(),
+            this.getReturnValue()!,
             this.getAccessLevel(),
             true,
             this.getValues("parameter"));

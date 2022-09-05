@@ -1,7 +1,7 @@
 import { SourceFile } from "typescript";
 import { ClassElement } from "../class-element";
 import { Imports } from "../imports";
-import { TypeMapper } from "../type-mapper";
+import { KnownTypes, TypeMapper } from "../type-mapper";
 import { Factory } from "./factory";
 import { Importer } from "./importer";
 import { TypedDeclaration } from "./typed-declaration";
@@ -9,6 +9,7 @@ import { TypedDeclaration } from "./typed-declaration";
 export abstract class TypedClassElement<K extends TypedDeclaration> extends ClassElement<K> {
     private typeMapper: TypeMapper & Importer;
     private type!: string;
+    private knownType!: KnownTypes;
 
     protected constructor(sourceFile: SourceFile, typeMapperFactory: Factory<TypeMapper & Importer, void>) {
         super(sourceFile);
@@ -19,8 +20,13 @@ export abstract class TypedClassElement<K extends TypedDeclaration> extends Clas
         return this.type;
     }
 
+    protected getKnownType(): KnownTypes {
+        return this.knownType;
+    }
+
     public parse(node: K): void {
         super.parse(node);
+        this.knownType = this.typeMapper.toKnownType(node.type!);
         this.type = this.typeMapper.get(node.type!) || "";
     }
 

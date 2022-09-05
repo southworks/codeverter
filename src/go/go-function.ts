@@ -3,12 +3,13 @@ import { AccessLevel } from "../shared/access-level";
 import { Function } from "../shared/function";
 import { ArrayWritter } from "../writter/array-writter";
 import { Writteable } from "../writter/writter";
+import { GoDefaultValueMapper } from "./go-default-value-mapper";
 import { GoParameter } from "./go-parameter";
 import { GoTypeMapper } from "./go-type-mapper";
 
 export class GoFunction extends Function {
     constructor(sourceFile: SourceFile) {
-        super(sourceFile, GoParameter, GoTypeMapper);
+        super(sourceFile, GoParameter, GoTypeMapper, new GoDefaultValueMapper());
     }
 
     public print(writter: Writteable): boolean {
@@ -20,17 +21,17 @@ export class GoFunction extends Function {
             ? this.camelize(this.getName())
             : this.capitalize(this.getName());
 
-        let returnValue = this.getType();
-        if (!!returnValue) {
-            returnValue = " " + returnValue;
+        let returnType = this.getType();
+        if (!!returnType) {
+            returnType = " " + returnType;
         }
 
-        writter.write(`func ${methodName}(${paramStr})${returnValue} {`);
+        writter.write(`func ${methodName}(${paramStr})${returnType} {`);
         writter.incDeepLevel();
         for (const line of this.getContent()) {
             writter.write(`//${line}`);
         }
-        writter.write(`return`);
+        writter.write(`return ${this.getReturnValue()}`);
         writter.decDeepLevel();
         writter.write(`}`);
         return true;

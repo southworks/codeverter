@@ -4,6 +4,7 @@ import {
     ParameterDeclaration,
     SourceFile
 } from "typescript";
+import { ValueMapper } from "./default-value-mapper";
 import { Parameter } from "./parameter";
 import { TypeMapper } from "./type-mapper";
 import { Factory } from "./types/factory";
@@ -14,12 +15,16 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
     extends TypedClassElement<K> {
 
     private content!: string[];
+    private defaultValueMapper?: ValueMapper;
+    private returnValue?: string;
 
     protected constructor(sourceFile: SourceFile,
         parameterFactory: Factory<Parameter>,
-        typeMapperFactory: Factory<TypeMapper & Importer, void>) {
+        typeMapperFactory: Factory<TypeMapper & Importer, void>,
+        defaultValueMapper?: ValueMapper) {
 
         super(sourceFile, typeMapperFactory);
+        this.defaultValueMapper = defaultValueMapper;
         this.setFactory("parameter", parameterFactory);
     }
 
@@ -29,6 +34,10 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
 
     protected getContent(): string[] {
         return this.content;
+    }
+
+    protected getReturnValue(): string | undefined {
+        return this.returnValue;
     }
 
     /**
@@ -51,6 +60,8 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
     public parse(node: K): void {
         super.parse(node);
         this.content = this.trimBody(node.body?.getText(this.getSourceFile()) ?? "");
+        this.returnValue = this.defaultValueMapper?.get(this.getKnownType());
+
         node.parameters.forEach(m => {
             this.addParameter(m);
         });

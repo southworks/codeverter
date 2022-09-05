@@ -3,12 +3,13 @@ import { AccessLevel } from "../shared/access-level";
 import { Method } from "../shared/method";
 import { ArrayWritter } from "../writter/array-writter";
 import { Writteable } from "../writter/writter";
+import { GoDefaultValueMapper } from "./go-default-value-mapper";
 import { GoParameter } from "./go-parameter";
 import { GoTypeMapper } from "./go-type-mapper";
 
 export class GoMethod extends Method {
     constructor(sourceFile: SourceFile) {
-        super(sourceFile, GoParameter, GoTypeMapper);
+        super(sourceFile, GoParameter, GoTypeMapper, new GoDefaultValueMapper());
     }
 
     public print(writter: Writteable): boolean {
@@ -33,7 +34,7 @@ export class GoMethod extends Method {
         for (const line of this.getContent()) {
             writter.write(`//${line}`);
         }
-        writter.write(`return`);
+        writter.write(`return ${this.getReturnValue()}`);
         writter.decDeepLevel();
         writter.write(`}`);
         return true;

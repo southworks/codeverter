@@ -5,7 +5,7 @@ import { Writteable } from "../writter/writter";
 
 export class CSharpFunctionHelper {
     public static Write(writter: Writteable, name: string, content: string[],
-        returnType: string, accessLevel: AccessLevel, isStatic: boolean, parameters: Printable[]): void {
+        returnType: string, returnValue: string, accessLevel: AccessLevel, isStatic: boolean, parameters: Printable[]): void {
 
         const visibility = AccessLevel[accessLevel].toLowerCase();
 
@@ -19,7 +19,7 @@ export class CSharpFunctionHelper {
         for (const line of content) {
             writter.write(`//${line}`);
         }
-        writter.write(`return${returnType != "void" ? ` default(${returnType});` : ";"}`);
+        writter.write(`return${!!returnValue ? " " + returnValue : ""};`);
         writter.decDeepLevel();
         writter.write(`}`);
     }

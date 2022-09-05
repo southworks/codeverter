@@ -18,13 +18,22 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
     private defaultValueMapper?: ValueMapper;
     private returnValue?: string;
 
+    /**
+     * Protected constructor to be accessed only by the concrete implementations
+     * @param sourceFile 
+     * @param parameterFactory 
+     * @param typeMapperFactory 
+     * @param defaultValueMapper is using factory just for be consistent with the other parameters.
+     */
     protected constructor(sourceFile: SourceFile,
         parameterFactory: Factory<Parameter>,
         typeMapperFactory: Factory<TypeMapper & Importer, void>,
-        defaultValueMapper?: ValueMapper) {
+        defaultValueMapper?: Factory<ValueMapper, void>) {
 
         super(sourceFile, typeMapperFactory);
-        this.defaultValueMapper = defaultValueMapper;
+        if (defaultValueMapper) {
+            this.defaultValueMapper = new defaultValueMapper();
+        }
         this.setFactory("parameter", parameterFactory);
     }
 

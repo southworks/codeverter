@@ -8,7 +8,7 @@ import { CSharpTypeMapper } from "./csharp-type-mapper";
 
 export class CSharpFunction extends Function {
     constructor(sourceFile: SourceFile) {
-        super(sourceFile, CSharpParameter, CSharpTypeMapper, new CSharpDefaultValueMapper());
+        super(sourceFile, CSharpParameter, CSharpTypeMapper, CSharpDefaultValueMapper);
     }
 
     public print(writter: Writteable): boolean {

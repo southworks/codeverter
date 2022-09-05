@@ -1,7 +1,7 @@
 import { ValueMapper } from "../shared/default-value-mapper";
 import { KnownTypes } from "../shared/type-mapper";
 
-export class CSharpDefaultValueMapper implements ValueMapper {
+export class CSharpDefaultValueMapper extends ValueMapper {
     public get(type: KnownTypes): string {
         switch (type) {
             case KnownTypes.Boolean: return "false";

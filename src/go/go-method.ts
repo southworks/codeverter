@@ -9,7 +9,7 @@ import { GoTypeMapper } from "./go-type-mapper";
 
 export class GoMethod extends Method {
     constructor(sourceFile: SourceFile) {
-        super(sourceFile, GoParameter, GoTypeMapper, new GoDefaultValueMapper());
+        super(sourceFile, GoParameter, GoTypeMapper, GoDefaultValueMapper);
     }
 
     public print(writter: Writteable): boolean {

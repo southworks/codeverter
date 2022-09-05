@@ -1,13 +1,11 @@
 import { LiteralExpression, SyntaxKind, VariableDeclaration } from "typescript";
-import { TypeMapper, TypeMapperImpl } from "./type-mapper";
 import { ElementKind } from "./types/elements";
-import { Importer } from "./types/importer";
 import { Initable } from "./types/initable";
 import { TypedClassElement } from "./types/typed-class-element";
 
-export abstract class Variable<T extends TypeMapper & Importer = TypeMapperImpl> extends TypedClassElement<VariableDeclaration, T> implements Initable {
+export abstract class Variable extends TypedClassElement<VariableDeclaration> implements Initable {
     private value: string = "";
-    private valueKind: SyntaxKind = SyntaxKind.StringLiteral; 
+    private valueKind: SyntaxKind = SyntaxKind.StringLiteral;
     private varKind: ElementKind = "constant";
 
     protected isConst(): boolean {
@@ -17,7 +15,7 @@ export abstract class Variable<T extends TypeMapper & Importer = TypeMapperImpl>
     protected getValue(): string {
         return this.valueKind == SyntaxKind.StringLiteral ? `"${this.value}"` : this.value;
     }
-    
+
     public parse(node: VariableDeclaration): void {
         super.parse(node);
         this.value = (node.initializer as LiteralExpression).text;

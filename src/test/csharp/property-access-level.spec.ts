@@ -1,11 +1,11 @@
 import { createSourceFile, ScriptTarget } from "typescript";
 import { printFile } from "../../print-file";
-import { GoFile } from "../../go/go-file";
 import { StringWritter } from "../../writter/string-writter";
+import { CSharpFile } from "../../csharp/csharp-file";
 
 const filename = "test.ts";
 
-describe("GO: property access level", () => {
+describe("CSharp: property access level", () => {
     test("no access modifier", () => {
         const code = `
             export class Test {
@@ -17,13 +17,15 @@ describe("GO: property access level", () => {
         );
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new CSharpFile());
 
-        const expected = new StringWritter("\t", 1);
-        expected.write(`package test`);
-        expected.writeNewLine();
-        expected.write("type Test struct {");
-        expected.write("\tFoo int");
+        const expected = new StringWritter(" ", 4);
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public class Test");
+        expected.write(`    {`);
+        expected.write("        public int Foo { get; set; }");
+        expected.write("    }");
         expected.write("}");
         expected.writeNewLine();
 
@@ -41,13 +43,15 @@ describe("GO: property access level", () => {
         );
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new CSharpFile());
 
-        const expected = new StringWritter("\t", 1);
-        expected.write(`package test`);
-        expected.writeNewLine();
-        expected.write("type Test struct {");
-        expected.write("\tFoo int");
+        const expected = new StringWritter(" ", 4);
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public class Test");
+        expected.write(`    {`);
+        expected.write("        public int Foo { get; set; }");
+        expected.write("    }");
         expected.write("}");
         expected.writeNewLine();
 
@@ -65,13 +69,15 @@ describe("GO: property access level", () => {
         );
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new CSharpFile());
 
-        const expected = new StringWritter("\t", 1);
-        expected.write(`package test`);
-        expected.writeNewLine();
-        expected.write("type Test struct {");
-        expected.write("\tfoo int");
+        const expected = new StringWritter(" ", 4);
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public class Test");
+        expected.write(`    {`);
+        expected.write("        protected int Foo { get; set; }");
+        expected.write("    }");
         expected.write("}");
         expected.writeNewLine();
 
@@ -89,13 +95,15 @@ describe("GO: property access level", () => {
         );
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new CSharpFile());
 
-        const expected = new StringWritter("\t", 1);
-        expected.write(`package test`);
-        expected.writeNewLine();
-        expected.write("type Test struct {");
-        expected.write("\tfoo int");
+        const expected = new StringWritter(" ", 4);
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public class Test");
+        expected.write(`    {`);
+        expected.write("        private int Foo { get; set; }");
+        expected.write("    }");
         expected.write("}");
         expected.writeNewLine();
 

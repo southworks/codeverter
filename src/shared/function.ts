@@ -1,18 +1,24 @@
-import { FunctionDeclaration, FunctionLikeDeclarationBase, ParameterDeclaration, SourceFile } from "typescript";
+import {
+    FunctionDeclaration,
+    FunctionLikeDeclarationBase,
+    ParameterDeclaration,
+    SourceFile
+} from "typescript";
 import { Parameter } from "./parameter";
-import { TypeMapper, TypeMapperImpl } from "./type-mapper";
+import { TypeMapper } from "./type-mapper";
 import { Factory } from "./types/factory";
 import { Importer } from "./types/importer";
-import { SourceElement } from "./types/source-element";
 import { TypedClassElement } from "./types/typed-class-element";
 
-export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionDeclaration,
-    P extends SourceElement = Parameter, T extends TypeMapper & Importer = TypeMapperImpl>
-    extends TypedClassElement<K, T> {
+export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionDeclaration>
+    extends TypedClassElement<K> {
 
     private content!: string[];
 
-    protected constructor(sourceFile: SourceFile, parameterFactory: Factory<P>, typeMapperFactory: Factory<T, void>) {
+    protected constructor(sourceFile: SourceFile,
+        parameterFactory: Factory<Parameter>,
+        typeMapperFactory: Factory<TypeMapper & Importer, void>) {
+
         super(sourceFile, typeMapperFactory);
         this.setFactory("parameter", parameterFactory);
     }

@@ -1,24 +1,33 @@
-import { SourceFile, Node, ClassDeclaration, isClassDeclaration, isFunctionDeclaration, FunctionDeclaration, VariableDeclarationList, isVariableDeclarationList, isVariableDeclaration, NodeFlags } from "typescript";
+import {
+    SourceFile,
+    Node,
+    ClassDeclaration,
+    isClassDeclaration,
+    isFunctionDeclaration,
+    FunctionDeclaration,
+    VariableDeclarationList,
+    isVariableDeclarationList,
+    NodeFlags
+} from "typescript";
 import { Writter } from "../writter/writter";
 import { Class } from "./class";
 import { Factory } from "./types/factory";
 import { Imports } from "./imports";
-import { RootSourceElement, SourceElement } from "./types/source-element";
+import { RootSourceElement } from "./types/source-element";
 import { Element } from "./element";
 import { Function } from "./function";
 import { Variable } from "./variable";
+import { basename, extname } from "path";
 
-export abstract class File<C extends SourceElement = Class,
-    CN extends Variable = Variable,
-    I extends Imports = Imports,
-    F extends SourceElement = Function>
-    extends Element<SourceFile>
-    implements RootSourceElement<SourceFile> {
-
-    private importsHandler: I;
+export abstract class File extends Element<SourceFile> implements RootSourceElement<SourceFile> {
+    private importsHandler: Imports;
     private sourceFile!: SourceFile;
 
-    protected constructor(classFactory: Factory<C>, constantsFactory: Factory<CN>, importsFactory: Factory<I, void>, functionFactory: Factory<F>) {
+    protected constructor(classFactory: Factory<Class>,
+        constantsFactory: Factory<Variable>,
+        importsFactory: Factory<Imports, void>,
+        functionFactory: Factory<Function>) {
+
         super()
         this.setFactory("class", classFactory);
         this.setFactory("function", functionFactory);
@@ -63,7 +72,11 @@ export abstract class File<C extends SourceElement = Class,
         return this.sourceFile;
     }
 
+    public abstract getIndentChar(): string;
+    public abstract getIndentValue(): number;
+
     public parse(node: SourceFile): void {
+        this.setName(basename(node.fileName).replace(extname(node.fileName), ""));
         this.sourceFile = node;
         this.visitNode(node);
     }

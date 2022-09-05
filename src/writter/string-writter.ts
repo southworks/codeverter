@@ -1,14 +1,19 @@
 import { Writter } from "./writter";
 
+/**
+ * For testing purpose
+ */
 export class StringWritter extends Writter {
     private content: string[] = [];
 
-    protected getIndentChar(): string {
-        return " ";
-    }
-
-    protected getIndentValue(): number {
-        return 2;
+    constructor(indentChar?: string, indentValue?: number) {
+        super();
+        if (indentChar) {
+            this.setIndentChar(indentChar);
+        }
+        if (indentValue) {
+            this.setIndentValue(indentValue);
+        }
     }
 
     protected writeImpl(value: string): void {

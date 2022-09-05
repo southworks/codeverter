@@ -10,6 +10,10 @@ export class ArrayWritter implements Writteable {
         this.content.push(value);
     }
 
+    public writeNewLine(): void {
+        this.content.push("");
+    }
+
     public getCurrentDeepLevel(): number {
         return 0;
     }

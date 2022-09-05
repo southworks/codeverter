@@ -1,11 +1,11 @@
 import { createSourceFile, ScriptTarget } from "typescript";
-import { GoFile } from "../../go/go-file";
+import { CSharpFile } from "../../csharp/csharp-file";
 import { printFile } from "../../print-file";
 import { StringWritter } from "../../writter/string-writter";
 
 const filename = "test.ts";
 
-describe("GO: class", () => {
+describe("CSharp: class", () => {
     test("simple class", () => {
         const code = `
             export class Test {
@@ -17,13 +17,15 @@ describe("GO: class", () => {
         );
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new CSharpFile());
 
-        const expected = new StringWritter("\t", 1);
-        expected.write(`package test`);
-        expected.writeNewLine();
-        expected.write("type Test struct {");
-        expected.write("\tFoo int");
+        const expected = new StringWritter(" ", 4);
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public class Test");
+        expected.write(`    {`);
+        expected.write("        public int Foo { get; set; }");
+        expected.write("    }");
         expected.write("}");
         expected.writeNewLine();
 
@@ -45,17 +47,20 @@ describe("GO: class", () => {
         );
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new CSharpFile());
 
-        const expected = new StringWritter("\t", 1);
-        expected.write(`package test`);
+        const expected = new StringWritter(" ", 4);
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public class Test");
+        expected.write(`    {`);
+        expected.write("        public int Foo { get; set; }");
+        expected.write("    }");
         expected.writeNewLine();
-        expected.write("type Test struct {");
-        expected.write("\tFoo int");
-        expected.write("}");
-        expected.writeNewLine();
-        expected.write("type Test2 struct {");
-        expected.write("\tFoo2 Test");
+        expected.write("    public class Test2");
+        expected.write(`    {`);
+        expected.write("        public Test Foo2 { get; set; }");
+        expected.write("    }");
         expected.write("}");
         expected.writeNewLine();
 

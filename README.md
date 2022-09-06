@@ -107,6 +107,16 @@ _*pending_
 |Implementation|Y|Y|
 
 ## Classes
+#### Support
+||C#|GO|
+|-|-|-|
+|Inheritance|Y|Y*|
+|Interfaces|Y|Y|
+|Visibility|Y|Y**|
+|Static|P|P|
+_*In a go way, using composition_
+_\*\*Using naming conventions_
+
 ### Constructors
 #### Examples
 Consider a class named **Cat**
@@ -146,5 +156,3 @@ _*Naming convention for pubic or private, protected is considered private_
 |Return type|Y|Y|
 |Default return value|Y|Y|
 _*Naming convention for pubic or private, protected is considered private_
-
-## Full example

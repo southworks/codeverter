@@ -9,7 +9,7 @@ export class GoEnum extends Enum {
     }
 
     public print(writter: Writteable): boolean {
-        writter.write(`const {`);
+        writter.write(`const (`);
         writter.incDeepLevel();
         let values = this.getEnumValues();
         Object.keys(values).forEach((k, i) => {
@@ -23,7 +23,7 @@ export class GoEnum extends Enum {
             }
         });
         writter.decDeepLevel();
-        writter.write(`}`);
+        writter.write(`)`);
         return true;
     }
 }

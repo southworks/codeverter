@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { createProgram } from "typescript";
 import { File } from "./shared/file";
 import { printFile } from "./print-file";

@@ -24,11 +24,11 @@ describe("GO: Enum", () => {
         const expected = new StringWritter("\t", 1);
         expected.write("package test");
         expected.writeNewLine();
-        expected.write("const {");
+        expected.write("const (");
         expected.write("\tSmall int = 0");
         expected.write("\tMedium = 1");
         expected.write("\tLarge = 2");
-        expected.write("}");
+        expected.write(")}");
         expected.writeNewLine();
 
         expect(strWritter.getString()).toBe(expected.getString());
@@ -52,11 +52,11 @@ describe("GO: Enum", () => {
         const expected = new StringWritter("\t", 1);
         expected.write("package test");
         expected.writeNewLine();
-        expected.write("const {");
+        expected.write("const (");
         expected.write(`\tOne string = "1"`);
         expected.write(`\tTwo = "2"`);
         expected.write(`\tThree = "3"`);
-        expected.write("}");
+        expected.write(")");
         expected.writeNewLine();
 
         expect(strWritter.getString()).toBe(expected.getString());

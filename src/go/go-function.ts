@@ -6,10 +6,11 @@ import { Writteable } from "../writter/writter";
 import { GoDefaultValueMapper } from "./go-default-value-mapper";
 import { GoParameter } from "./go-parameter";
 import { GoTypeMapper } from "./go-type-mapper";
+import { GoVariable } from "./go-variable";
 
 export class GoFunction extends Function {
     constructor(sourceFile: SourceFile) {
-        super(sourceFile, GoParameter, GoTypeMapper, GoDefaultValueMapper);
+        super(sourceFile, GoParameter, GoVariable, GoTypeMapper, GoDefaultValueMapper);
     }
 
     public print(writter: Writteable): boolean {
@@ -28,6 +29,13 @@ export class GoFunction extends Function {
 
         writter.write(`func ${methodName}(${paramStr})${returnType} {`);
         writter.incDeepLevel();
+        
+        arrWritter.clear();
+        this.getValues("constant").concat(this.getValues("variable")).map(p => p.print(arrWritter));
+        arrWritter.getContent().forEach(c => {
+            writter.write(c);
+        });
+
         for (const line of this.getContent()) {
             writter.write(`//${line}`);
         }

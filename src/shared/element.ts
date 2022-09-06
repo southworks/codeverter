@@ -1,4 +1,4 @@
-import { Declaration, Identifier, NamedDeclaration, SourceFile } from "typescript";
+import { Declaration, Identifier, NamedDeclaration, NodeFlags, SourceFile, VariableDeclarationList } from "typescript";
 import { Writter } from "../writter/writter";
 import { Imports } from "./imports";
 import { ElementKind, ElementValues } from "./types/elements";
@@ -12,6 +12,16 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
     private parent!: SourceElement;
     private factories: Factories = {};
     private values: ElementValues = new ElementValues();
+
+    private addElementAndParse(kind: ElementKind, node: Declaration, isFunc: boolean): void {
+        let element = this.createElement(kind, isFunc);
+        element.setImportHandler(this.getImportHandler());
+        element.setParent(this);
+        if (node) {
+            element.parse(node);
+        }
+        this.values.add(kind, element);
+    }
 
     /**
      * Helper function
@@ -43,25 +53,31 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
         return this.values.get<SourceElement>(kind);
     }
 
-    protected createElement(kind: ElementKind): SourceElement {
+    protected createElement(kind: ElementKind, isFunc: boolean): SourceElement {
         const factory = this.getFactory(kind);
         const created = new factory(this.getSourceFile());
         
         if (isInitable(created)) {
-            (created as Initable).init(kind);
+            (created as Initable).init(kind, isFunc);
         }
         
         return created;
     }
 
-    protected addElement(kind: ElementKind, node: Declaration): void {
-        let element = this.createElement(kind);
-        element.setImportHandler(this.getImportHandler());
-        element.setParent(this);
-        if (node) {
-            element.parse(node);
+    protected addElementVariables(node: VariableDeclarationList, isFunc: boolean) {
+        if (node.flags == NodeFlags.Const) {
+            node.declarations.forEach(d => {
+                this.addElementAndParse("constant", d, isFunc);
+            });
+        } else if (node.flags == NodeFlags.Let) {
+            node.declarations.forEach(d => {
+                this.addElementAndParse("variable", d, isFunc);
+            });
         }
-        this.values.add(kind, element);
+    }
+
+    protected addElement(kind: ElementKind, node: Declaration): void {
+        this.addElementAndParse(kind, node, false);
     };
 
     protected getParent(): SourceElement {

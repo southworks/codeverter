@@ -5,8 +5,8 @@ import { Writteable } from "../writter/writter";
 
 export class CSharpFunctionHelper {
     public static Write(writter: Writteable, name: string, content: string[],
-        returnType: string, returnValue: string, accessLevel: AccessLevel, isStatic: boolean, parameters: Printable[]): void {
-
+        returnType: string, returnValue: string, accessLevel: AccessLevel, isStatic: boolean, parameters: Printable[],
+        declarations: Printable[]): void {
         const visibility = AccessLevel[accessLevel].toLowerCase();
 
         const arrWritter = new ArrayWritter();
@@ -16,6 +16,11 @@ export class CSharpFunctionHelper {
         writter.write(`${visibility}${isStatic ? " static " : " "}${returnType} ${name}(${paramStr})`);
         writter.write("{");
         writter.incDeepLevel();
+
+        arrWritter.clear();
+        declarations.map(p => p.print(arrWritter));
+        arrWritter.getContent().forEach(d => writter.write(d));
+
         for (const line of content) {
             writter.write(`//${line}`);
         }

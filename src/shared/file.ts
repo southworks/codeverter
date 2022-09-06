@@ -54,15 +54,7 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
     }
 
     private addDeclaration(node: VariableDeclarationList): void {
-        if (node.flags == NodeFlags.Const) {
-            node.declarations.forEach(d => {
-                this.addElement("constant", d);
-            });
-        } else if (node.flags == NodeFlags.Let) {
-            node.declarations.forEach(d => {
-                this.addElement("variable", d);
-            });
-        }
+        this.addElementVariables(node, false);
     }
 
     private visitNode(node: Node): void {

@@ -5,10 +5,11 @@ import { ArrayWritter } from "../writter/array-writter";
 import { Writteable } from "../writter/writter";
 import { CSharpParameter } from "./csharp-parameter";
 import { CSharpTypeMapper } from "./csharp-type-mapper";
+import { CSharpVariable } from "./csharp-variable";
 
 export class CSharpConstructor extends Constructor {
     constructor(sourceFile: SourceFile) {
-        super(sourceFile, CSharpParameter, CSharpTypeMapper);
+        super(sourceFile, CSharpParameter, CSharpVariable, CSharpTypeMapper);
     }
 
     public print(writter: Writteable): boolean {

@@ -7,6 +7,11 @@ export abstract class Variable extends TypedClassElement<VariableDeclaration> im
     private value: string = "";
     private valueKind: SyntaxKind = SyntaxKind.StringLiteral;
     private varKind: ElementKind = "constant";
+    private funcVariable: boolean = false;
+
+    protected isFuncVariable(): boolean {
+        return this.funcVariable; 
+    }
 
     protected isConst(): boolean {
         return this.varKind == "constant";
@@ -22,7 +27,8 @@ export abstract class Variable extends TypedClassElement<VariableDeclaration> im
         this.valueKind = node.initializer!.kind;
     }
 
-    public init(kind: ElementKind): void {
+    public init(kind: ElementKind, isFunc: boolean): void {
         this.varKind = kind;
+        this.funcVariable = isFunc;
     }
 }

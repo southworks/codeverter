@@ -37,4 +37,8 @@ export class ArrayWritter implements Writteable {
     public getContent(): string[] {
         return this.content;
     }
+
+    public clear(): void {
+        this.content.length = 0;
+    }
 }

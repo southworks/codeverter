@@ -1,8 +1,12 @@
 import {
+    Block,
     FunctionDeclaration,
     FunctionLikeDeclarationBase,
+    isBlock,
+    isVariableStatement,
     ParameterDeclaration,
-    SourceFile
+    SourceFile,
+    Statement
 } from "typescript";
 import { ValueMapper } from "./default-value-mapper";
 import { Parameter } from "./parameter";
@@ -10,11 +14,13 @@ import { TypeMapper } from "./type-mapper";
 import { Factory } from "./types/factory";
 import { Importer } from "./types/importer";
 import { TypedClassElement } from "./types/typed-class-element";
+import { Variable } from "./variable";
 
 export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionDeclaration>
     extends TypedClassElement<K> {
 
-    private content!: string[];
+    private statements: Statement[] = [];
+    private content: string[] = [];
     private defaultValueMapper?: ValueMapper;
     private returnValue?: string;
 
@@ -27,14 +33,16 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
      */
     protected constructor(sourceFile: SourceFile,
         parameterFactory: Factory<Parameter>,
+        variableFactory: Factory<Variable>,
         typeMapperFactory: Factory<TypeMapper & Importer, void>,
         defaultValueMapper?: Factory<ValueMapper, void>) {
-
         super(sourceFile, typeMapperFactory);
         if (defaultValueMapper) {
             this.defaultValueMapper = new defaultValueMapper();
         }
         this.setFactory("parameter", parameterFactory);
+        this.setFactory("constant", variableFactory);
+        this.setFactory("variable", variableFactory);
     }
 
     private addParameter(node: ParameterDeclaration): void {
@@ -43,6 +51,10 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
 
     protected getContent(): string[] {
         return this.content;
+    }
+
+    protected getStatements(): Statement[] {
+        return this.statements;
     }
 
     protected getReturnValue(): string | undefined {
@@ -56,7 +68,7 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
      */
     protected trimBody(body: string): string[] {
         let currentBody = body.substring(1, body.length - 1);
-        let values = currentBody.split("\r\n");
+        let values = currentBody.split("\n");
         if (values[0].trim() == "") {
             values = values.splice(1);
         }
@@ -70,6 +82,18 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
         super.parse(node);
         this.content = this.trimBody(node.body?.getText(this.getSourceFile()) ?? "");
         this.returnValue = this.defaultValueMapper?.get(this.getKnownType());
+
+
+        if (node.body && isBlock(node.body!)) {
+            (node.body! as Block).
+                statements
+                .forEach(s => {
+                    if (isVariableStatement(s)) {
+                        this.addElementVariables(s.declarationList, true);
+                    }
+                    this.statements.push(s)
+                });
+        }
 
         node.parameters.forEach(m => {
             this.addParameter(m);

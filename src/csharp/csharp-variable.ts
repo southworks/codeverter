@@ -11,9 +11,15 @@ export class CSharpVariable extends Variable {
 
     public print(writter: Writteable): boolean {
         const accessLevel = AccessLevel[this.getAccessLevel()].toLowerCase();
-        const declaration = this.isConst() ? "const" : "static";
         const name = this.isConst() ? this.getName().toUpperCase() : this.capitalize(this.getName());
-        writter.write(`${accessLevel} ${declaration} ${this.getType()} ${name} = ${this.getValue()};`);
+        
+        if (this.isFuncVariable()) {
+            const declaration = this.isConst() ? "const " : "";
+            writter.write(`${declaration}${this.getType()} ${name} = ${this.getValue()};`);
+        } else {
+            const declaration = this.isConst() ? "const" : "static";
+            writter.write(`${accessLevel} ${declaration} ${this.getType()} ${name} = ${this.getValue()};`);
+        }
         return true;
     }
 }

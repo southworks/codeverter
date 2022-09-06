@@ -10,13 +10,18 @@ export class GoVariable extends Variable {
     }
 
     public print(writter: Writteable): boolean {
-        const name = this.getAccessLevel() == AccessLevel.Public
+        const name = (this.getAccessLevel() == AccessLevel.Public && !this.isFuncVariable())
             ? this.capitalize(this.getName())
             : this.getName().toLowerCase();
 
         const declaration = this.isConst() ? "const" : "var";
 
-        writter.write(`${declaration} ${name} ${this.getType()} = ${this.getValue()}`);
+        if (!this.getType().trim() && !this.isConst()) {
+            writter.write(`${declaration} ${name} := ${this.getValue()}`);
+        } else {
+            writter.write(`${declaration} ${name} ${this.getType()} = ${this.getValue()}`);   
+        }
+
         return true;
     }
 }

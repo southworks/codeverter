@@ -27,4 +27,22 @@ describe("GO: variables", () => {
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
+
+    test("Variable inferred type", () => {
+        const code = `let constant = "test";`;
+        const sourceFile = createSourceFile(
+            filename, code, ScriptTarget.Latest
+        );
+
+        const strWritter = new StringWritter();
+        printFile(sourceFile, strWritter, new GoFile());
+
+        const expected = new StringWritter("\t", 1);
+        expected.write(`package test`);
+        expected.writeNewLine();
+        expected.write(`var Constant := "test"`);
+        expected.writeNewLine();
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 });

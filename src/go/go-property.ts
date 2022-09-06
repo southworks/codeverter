@@ -13,7 +13,11 @@ export class GoProperty extends Property {
         const propertyName = this.getAccessLevel() == AccessLevel.Public
             ? this.capitalize(this.getName())
             : this.getName().toLowerCase();
-        writter.write(`${propertyName} ${this.getType()}`);
+
+        // In Go interfaces we should only print methods/functions
+        if (!this.isSignature()) {
+            writter.write(`${propertyName} ${this.getType()}`);
+        }
         return true;
     }
 }

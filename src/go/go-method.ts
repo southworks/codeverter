@@ -31,7 +31,10 @@ export class GoMethod extends Method {
         const firstLetter = this.getName().charAt(0).toLowerCase();
         const receiver = `${firstLetter} *${this.getParent()?.getName()}`;
 
-        writter.write(`func (${receiver}) ${methodName}(${paramStr})${returnValue} {`);
+if (this.isSignature()) {
+            writter.write(`${methodName}() ${returnValue}`);
+        } else {        
+writter.write(`func (${receiver}) ${methodName}(${paramStr})${returnValue} {`);
         writter.incDeepLevel();
         
         arrWritter.clear();
@@ -43,9 +46,7 @@ export class GoMethod extends Method {
         for (const line of this.getContent()) {
             writter.write(`//${line}`);
         }
-        writter.write(`return ${this.getReturnValue()}`);
-        writter.decDeepLevel();
-        writter.write(`}`);
+}
         return true;
     }
 }

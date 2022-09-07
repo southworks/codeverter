@@ -21,6 +21,7 @@ import { Function } from "./function";
 import { Variable } from "./variable";
 import { basename, extname } from "path";
 import { Enum } from "./enum";
+import { addVaribles } from "./helpers/variable-helper";
 
 export abstract class File extends Element<SourceFile> implements RootSourceElement<SourceFile> {
     private importsHandler: Imports;
@@ -32,7 +33,8 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
         functionFactory: Factory<Function>,
         enumsFactory: Factory<Enum>) {
 
-        super()
+        super();
+        this.setKind("file");
         this.setFactory("class", classFactory);
         this.setFactory("function", functionFactory);
         this.setFactory("constant", constantsFactory);
@@ -54,7 +56,7 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
     }
 
     private addDeclaration(node: VariableDeclarationList): void {
-        this.addElementVariables(node, false);
+        addVaribles(node, (k, n) => this.addElement(k, n));
     }
 
     private visitNode(node: Node): void {

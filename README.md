@@ -70,7 +70,7 @@ For example:
 |----------------|-------------------------------|-----------------------------|
 |`const  CONST_VALUE: string = "THIS IS A CONSTANT";`|`public const string CONST_VALUE = "THIS IS A CONSTANT";`|`const CONST_VALUE string = "THIS IS A CONSTANT"`|
 |`let  foo: number = 50;`|`public static int Foo = 50;`|`var Foo int = 50`
-|`var  foo: number = 50;`|pending|pending|
+|`var  foo: number = 50;`|`public static int Foo = 50;`|`var Foo int = 50`|
 
 - In C# those are wrapped into a static class
 

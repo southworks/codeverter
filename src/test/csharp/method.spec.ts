@@ -11,6 +11,7 @@ describe("GO: method", () => {
         code.write("export class Test {");
         code.write("    public method(): string {");
         code.write("        let asd: string = \"holi\";");
+        code.write("        let testNoType = 123;");
         code.write("        return asd;");
         code.write("    }");
         code.write("}");
@@ -30,7 +31,9 @@ describe("GO: method", () => {
         expected.write("        public string Method()");
         expected.write("        {");
         expected.write("            string Asd = \"holi\";");
+        expected.write("            var TestNoType = 123;");
         expected.write("            //        let asd: string = \"holi\";");
+        expected.write("            //        let testNoType = 123;");
         expected.write("            //        return asd;");
         expected.write("            return \"\";");
         expected.write("        }");

@@ -103,7 +103,7 @@ namespace xxx
 |-|-|-|
 |<pre><code>export enum Animals {<div>  Dog = 1,</div><div>  Cat = 2</div>}</code></pre>|<pre><code>public enum Animals<div>{</div><div>  Dog = 1,</div><div>  Cat = 2</div>}</code></pre>|<pre><code>const (<div>  Dog int = 1</div><div>  Cat = 2</div>)</code></pre>
 |<pre><code>export enum Animals {<div>  Dog = "dog",</div><div>  Cat = "cat"</div>}</code></pre>|<pre><code>public enum Animals<div>{</div><div>  Dog = "dog",</div><div>  Cat = "cat"</div>}</code></pre>|<pre><code>const (<div>  Dog string = "dog"</div><div>  Cat = "cat"</div>)</code></pre>|
-|<pre><code>export enum Animals {<div>  Dog,</div><div>  Cat</div>}</code></pre>|pending|pending|
+|<pre><code>export enum Animals {<div>  Dog,</div><div>  Cat</div>}</code></pre>|<pre><code>public enum Animals {<div>  Dog,</div><div>  Cat</div>}</code></pre>|<pre><code>const (<div>  Dog int = iota</div><div>  Cat</div>)</code></pre>|
 
 #### Support
 

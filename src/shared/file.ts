@@ -7,13 +7,12 @@ import {
     FunctionDeclaration,
     VariableDeclarationList,
     isVariableDeclarationList,
-    NodeFlags,
     isEnumDeclaration,
     EnumDeclaration,
     isInterfaceDeclaration,
     InterfaceDeclaration
 } from "typescript";
-import { Writter } from "../writter/writter";
+import { Writteable } from "../writter/writter";
 import { Class } from "./class";
 import { Factory } from "./types/factory";
 import { Imports } from "./imports";
@@ -88,12 +87,15 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
         return this.sourceFile;
     }
 
+    public abstract getExtension(): string;
     public abstract getIndentChar(): string;
     public abstract getIndentValue(): number;
 
     public parse(node: SourceFile): void {
         this.setName(basename(node.fileName).replace(extname(node.fileName), ""));
-        this.sourceFile = node;
+        if (!this.sourceFile) {
+            this.sourceFile = node;
+        }
         this.visitNode(node);
     }
 
@@ -101,5 +103,5 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
         return this.importsHandler;
     }
 
-    public abstract print(writter: Writter): boolean;
+    public abstract print(writter: Writteable): boolean;
 }

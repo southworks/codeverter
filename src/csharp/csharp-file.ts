@@ -13,6 +13,10 @@ export class CSharpFile extends File {
         super(CSharpClass, CSharpVariable, CSharpImports, CSharpFunction, CSharpEnum, CSharpInterface);
     }
 
+    public getExtension(): string {
+        return ".cs";
+    }
+
     public getIndentChar(): string {
         return " ";
     }

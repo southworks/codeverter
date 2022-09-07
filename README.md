@@ -2,9 +2,9 @@
 
 Codeverter is a tool to convert a TypeScript source file (*.ts) into differents languages (**go** or **c#** by the moment).
 
-|Build status|
-|-|
-[![Node.js CI](https://github.com/southworks/codeverter/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/southworks/codeverter/actions/workflows/node.js.yml)
+|Build status|Tests status|
+|-|-|
+|[![Codeverter Build](https://github.com/southworks/codeverter/actions/workflows/build.js.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/build.js.yml)|[![Codeverter tests](https://github.com/southworks/codeverter/actions/workflows/tests.js.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/tests.js.yml)|
 
 # Installing
 

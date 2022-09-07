@@ -15,10 +15,10 @@ export class CSharpInterface extends Interface {
         writter.write(`${visibility} interface I${this.getName()}`);
         writter.write("{");
         writter.incDeepLevel();
-        for (let prop of this.getValues("propertySignature")) {
+        for (let prop of this.getValues("property")) {
             prop.print(writter);
         }
-        for (let meth of this.getValues("methodSignature")) {
+        for (let meth of this.getValues("method")) {
             meth.print(writter);
         }
         writter.decDeepLevel();

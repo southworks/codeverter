@@ -12,7 +12,7 @@ export class GoInterface extends Interface {
     public print(writter: Writteable): boolean {
         writter.write(`type ${this.getName()} interface {`);
         writter.incDeepLevel();
-        for (let meth of this.getValues("methodSignature")) {
+        for (let meth of this.getValues("method")) {
             meth.print(writter);
         }
         writter.decDeepLevel();

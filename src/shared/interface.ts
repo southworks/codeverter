@@ -11,16 +11,16 @@ export abstract class Interface extends ClassElement<InterfaceDeclaration> {
         methodFactory: Factory<Method>) {
 
         super(sourceFile);
-        this.setFactory("propertySignature", propertyFactory);
-        this.setFactory("methodSignature", methodFactory);
+        this.setFactory("property", propertyFactory);
+        this.setFactory("method", methodFactory);
     }
 
     protected addProperty(node: PropertySignature) {
-        this.addElement("propertySignature", node);
+        this.addElement("property", node);
     }
 
     protected addMethod(node: MethodSignature) {
-        this.addElement("methodSignature", node);
+        this.addElement("method", node);
     }
 
     public parse(node: InterfaceDeclaration): void {

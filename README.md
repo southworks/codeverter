@@ -4,7 +4,7 @@
 
 Codeverter is a tool to convert a TypeScript source file (*.ts) into differents languages (**go** or **c#** by the moment).
 
-![](/.github/sample.png?raw=true)
+![](.github/sample.png?raw=true)
 
 
 [![Codeverter Build](https://github.com/southworks/codeverter/actions/workflows/build.js.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/build.js.yml)

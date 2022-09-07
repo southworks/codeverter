@@ -9,6 +9,7 @@ import {
     Statement
 } from "typescript";
 import { ValueMapper } from "./default-value-mapper";
+import { addVaribles } from "./helpers/variable-helper";
 import { Parameter } from "./parameter";
 import { TypeMapper } from "./type-mapper";
 import { Factory } from "./types/factory";
@@ -83,15 +84,14 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
         this.content = this.trimBody(node.body?.getText(this.getSourceFile()) ?? "");
         this.returnValue = this.defaultValueMapper?.get(this.getKnownType());
 
-
         if (node.body && isBlock(node.body!)) {
             (node.body! as Block).
                 statements
                 .forEach(s => {
                     if (isVariableStatement(s)) {
-                        this.addElementVariables(s.declarationList, true);
+                        addVaribles(s.declarationList, (k, n) => this.addElement(k, n));
                     }
-                    this.statements.push(s)
+                    this.statements.push(s);
                 });
         }
 

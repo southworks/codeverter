@@ -4,7 +4,6 @@ import { Imports } from "./imports";
 import { ElementKind, ElementValues } from "./types/elements";
 import { Factories, Factory } from "./types/factory";
 import { SourceElement } from "./types/source-element";
-import { Initable, isInitable } from "../shared/types/initable";
 
 export abstract class Element<K extends NamedDeclaration> implements SourceElement<K> {
     private name!: string;
@@ -12,9 +11,10 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
     private parent!: SourceElement;
     private factories: Factories = {};
     private values: ElementValues = new ElementValues();
+    private kind!: ElementKind;
 
-    private addElementAndParse(kind: ElementKind, node: Declaration, isFunc: boolean): void {
-        let element = this.createElement(kind, isFunc);
+    private addElementAndParse(kind: ElementKind, node: Declaration): void {
+        let element = this.createElement(kind);
         element.setImportHandler(this.getImportHandler());
         element.setParent(this);
         if (node) {
@@ -53,31 +53,15 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
         return this.values.get<SourceElement>(kind);
     }
 
-    protected createElement(kind: ElementKind, isFunc: boolean): SourceElement {
+    protected createElement(kind: ElementKind): SourceElement {
         const factory = this.getFactory(kind);
         const created = new factory(this.getSourceFile());
-        
-        if (isInitable(created)) {
-            (created as Initable).init(kind, isFunc);
-        }
-        
+        created.setKind(kind);
         return created;
     }
 
-    protected addElementVariables(node: VariableDeclarationList, isFunc: boolean) {
-        if (node.flags == NodeFlags.Const) {
-            node.declarations.forEach(d => {
-                this.addElementAndParse("constant", d, isFunc);
-            });
-        } else if (node.flags == NodeFlags.Let) {
-            node.declarations.forEach(d => {
-                this.addElementAndParse("variable", d, isFunc);
-            });
-        }
-    }
-
     protected addElement(kind: ElementKind, node: Declaration): void {
-        this.addElementAndParse(kind, node, false);
+        this.addElementAndParse(kind, node);
     };
 
     protected getParent(): SourceElement {
@@ -108,6 +92,14 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
 
     public getName(): string {
         return this.name;
+    }
+
+    public setKind(kind: ElementKind): void {
+        this.kind = kind;
+    }
+
+    public getKind(): ElementKind {
+        return this.kind;
     }
 
     public abstract print(writter: Writter): boolean;

@@ -1,4 +1,5 @@
 import { Declaration } from "typescript";
+import { ElementKind } from "./elements";
 import { Importer, ImporterGetter } from "./importer";
 import { Parseable } from "./parseable";
 import { Printable } from "./printable";
@@ -15,6 +16,8 @@ type SourceElementDef<T extends Declaration = Declaration> = Printable & Parseab
  */
 export interface SourceElement<T extends Declaration = Declaration> extends SourceElementDef<T> {
     setParent(element: SourceElement): void;
+    setKind(kind: ElementKind): void;
+    getKind(): ElementKind;
     getName(): string;
 };
 

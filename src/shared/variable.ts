@@ -1,20 +1,17 @@
 import { LiteralExpression, SyntaxKind, VariableDeclaration } from "typescript";
-import { ElementKind } from "./types/elements";
-import { Initable } from "./types/initable";
 import { TypedClassElement } from "./types/typed-class-element";
 
-export abstract class Variable extends TypedClassElement<VariableDeclaration> implements Initable {
+export abstract class Variable extends TypedClassElement<VariableDeclaration> {
     private value: string = "";
     private valueKind: SyntaxKind = SyntaxKind.StringLiteral;
-    private varKind: ElementKind = "constant";
     private funcVariable: boolean = false;
 
     protected isFuncVariable(): boolean {
-        return this.funcVariable; 
+        return this.funcVariable;
     }
 
     protected isConst(): boolean {
-        return this.varKind == "constant";
+        return this.getKind() == "constant";
     }
 
     protected getValue(): string {
@@ -23,12 +20,9 @@ export abstract class Variable extends TypedClassElement<VariableDeclaration> im
 
     public parse(node: VariableDeclaration): void {
         super.parse(node);
+        const parentKind = this.getParent().getKind();
+        this.funcVariable = parentKind == "function" || parentKind == "method";
         this.value = (node.initializer as LiteralExpression).text;
         this.valueKind = node.initializer!.kind;
-    }
-
-    public init(kind: ElementKind, isFunc: boolean): void {
-        this.varKind = kind;
-        this.funcVariable = isFunc;
     }
 }

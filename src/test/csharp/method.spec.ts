@@ -32,7 +32,7 @@ describe("GO: method", () => {
         expected.write("            string Asd = \"holi\";");
         expected.write("            //        let asd: string = \"holi\";");
         expected.write("            //        return asd;");
-        expected.write("            return default(string);");
+        expected.write("            return \"\";");
         expected.write("        }");
         expected.write("    }");
         expected.write("}");

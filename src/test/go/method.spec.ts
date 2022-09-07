@@ -32,7 +32,7 @@ describe("GO: method", () => {
         expected.write("\tvar asd string = \"holi\"");
         expected.write("\t//        let asd: string = \"holi\";");
         expected.write("\t//        return asd;");
-        expected.write("\treturn");
+        expected.write("\treturn \"\"");
         expected.write("}");
         expected.writeNewLine();
 

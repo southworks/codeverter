@@ -15,7 +15,9 @@ export class CSharpClass extends Class {
 
     public print(writter: Writteable): boolean {
         const visibility = AccessLevel[this.getAccessLevel()].toLowerCase();
-        writter.write(`${visibility} class ${this.getName()}`);
+        const heritageClauses = this.getHeritageClauses();
+        const heritageString = heritageClauses.length > 0 ? ` : ${heritageClauses.join(",")}` : "";
+        writter.write(`${visibility} class ${this.getName()}${heritageString}`);
         writter.write("{");
         writter.incDeepLevel();
         let blockPrinted = false;

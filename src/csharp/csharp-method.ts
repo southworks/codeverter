@@ -21,6 +21,7 @@ export class CSharpMethod extends Method {
             this.getAccessLevel(),
             false,
             this.getValues("parameter"),
+            this.isSignature(),
             this.getValues("constant").concat(this.getValues("variable")));
         return true;
     }

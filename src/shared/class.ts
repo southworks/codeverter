@@ -2,6 +2,7 @@ import { Writter } from "../writter/writter";
 import {
     ClassDeclaration,
     ConstructorDeclaration,
+    Identifier,
     isConstructorDeclaration,
     isMethodDeclaration,
     isPropertyDeclaration,
@@ -17,6 +18,8 @@ import { ClassElement } from "./class-element";
 
 export abstract class Class extends ClassElement<ClassDeclaration> {
 
+    private heritageClauses: Array<string> = [];
+
     protected constructor(sourceFile: SourceFile,
         propertyFactory: Factory<Property>,
         constructorFactory: Factory<Constructor>,
@@ -26,6 +29,18 @@ export abstract class Class extends ClassElement<ClassDeclaration> {
         this.setFactory("ctr", constructorFactory);
         this.setFactory("property", propertyFactory);
         this.setFactory("method", methodFactory);
+    }
+
+    protected setInheritance(node: ClassDeclaration): void {
+        node.heritageClauses?.forEach(hc => {
+            hc.types.forEach(t => {
+                this.heritageClauses.push(`I${(t.expression as Identifier).text}`);
+            });
+        });
+    }
+
+    protected getHeritageClauses(): Array<string> {
+        return [...this.heritageClauses];
     }
 
     protected addProperty(node: PropertyDeclaration): void {
@@ -42,6 +57,7 @@ export abstract class Class extends ClassElement<ClassDeclaration> {
 
     public parse(node: ClassDeclaration): void {
         super.parse(node);
+        this.setInheritance(node);
         node.members.forEach(m => {
             if (isPropertyDeclaration(m)) {
                 this.addProperty(m);

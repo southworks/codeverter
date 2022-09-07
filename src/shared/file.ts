@@ -9,7 +9,9 @@ import {
     isVariableDeclarationList,
     NodeFlags,
     isEnumDeclaration,
-    EnumDeclaration
+    EnumDeclaration,
+    isInterfaceDeclaration,
+    InterfaceDeclaration
 } from "typescript";
 import { Writter } from "../writter/writter";
 import { Class } from "./class";
@@ -22,6 +24,7 @@ import { Variable } from "./variable";
 import { basename, extname } from "path";
 import { Enum } from "./enum";
 import { addVaribles } from "./helpers/variable-helper";
+import { Interface } from "./interface";
 
 export abstract class File extends Element<SourceFile> implements RootSourceElement<SourceFile> {
     private importsHandler: Imports;
@@ -31,7 +34,8 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
         constantsFactory: Factory<Variable>,
         importsFactory: Factory<Imports, void>,
         functionFactory: Factory<Function>,
-        enumsFactory: Factory<Enum>) {
+        enumsFactory: Factory<Enum>,
+        interfaceFactory: Factory<Interface>) {
 
         super();
         this.setKind("file");
@@ -40,6 +44,7 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
         this.setFactory("constant", constantsFactory);
         this.setFactory("variable", constantsFactory);
         this.setFactory("enum", enumsFactory);
+        this.setFactory("interface", interfaceFactory);
         this.importsHandler = new importsFactory();
     }
 
@@ -55,6 +60,10 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
         this.addElement("enum", node);
     }
 
+    private addInterface(node: InterfaceDeclaration): void {
+        this.addElement("interface", node);
+    }
+
     private addDeclaration(node: VariableDeclarationList): void {
         addVaribles(node, (k, n) => this.addElement(k, n));
     }
@@ -68,6 +77,8 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
             this.addDeclaration(node as VariableDeclarationList);
         } else if (isEnumDeclaration(node)) {
             this.addEnumerate(node);
+        } else if (isInterfaceDeclaration(node)) {
+            this.addInterface(node);
         } else {
             node.forEachChild(child => this.visitNode(child));
         }

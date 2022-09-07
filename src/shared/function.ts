@@ -62,6 +62,10 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
         return this.returnValue;
     }
 
+    protected isSignature(): boolean {
+        return this.getParent().getKind() === "interface";
+    }
+
     /**
      * remove curly brackets and new line characters
      * @param body
@@ -73,7 +77,7 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
         if (values[0].trim() == "") {
             values = values.splice(1);
         }
-        if (values[values.length - 1].trim() == "") {
+        if (values[values.length - 1]?.trim() == "") {
             values = values.splice(0, values.length - 1);
         }
         return values;

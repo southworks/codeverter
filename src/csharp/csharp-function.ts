@@ -21,6 +21,7 @@ export class CSharpFunction extends Function {
             this.getAccessLevel(),
             true,
             this.getValues("parameter"),
+            false,
             this.getValues("constant").concat(this.getValues("variable")));
         return true;
     }

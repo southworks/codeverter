@@ -5,11 +5,12 @@ import { CSharpClass } from "./csharp-class";
 import { CSharpEnum } from "./csharp-enum";
 import { CSharpFunction } from "./csharp-function";
 import { CSharpImports } from "./csharp-imports";
+import { CSharpInterface } from "./csharp-interface";
 import { CSharpVariable } from "./csharp-variable";
 
 export class CSharpFile extends File {
     constructor() {
-        super(CSharpClass, CSharpVariable, CSharpImports, CSharpFunction, CSharpEnum);
+        super(CSharpClass, CSharpVariable, CSharpImports, CSharpFunction, CSharpEnum, CSharpInterface);
     }
 
     public getIndentChar(): string {
@@ -30,6 +31,10 @@ export class CSharpFile extends File {
         writter.write("{");
         writter.incDeepLevel();
         const printOpt = { splitted: true };
+        contentPrinted = printBlock(writter, this.getValues("interface"), printOpt);
+        if (contentPrinted) {
+            writter.writeNewLine();
+        }
         contentPrinted = printBlock(writter, this.getValues("class"), printOpt);
 
         const globalFunctions = this.getValues("function");

@@ -12,7 +12,8 @@ export type ElementKind = "file"
     | "method"
     | "constant"
     | "variable"
-    | "enum";
+    | "enum"
+    | "interface";
 
 /**
  * Dictionary to hold created elements

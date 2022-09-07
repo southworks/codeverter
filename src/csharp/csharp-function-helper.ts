@@ -15,19 +15,22 @@ export class CSharpFunctionHelper {
         const paramStr = arrWritter.getContent().join(", ");
 
         if (isSignature) {
-            writter.write(`${visibility} ${returnType} ${name}(${paramStr});`);        
+            writter.write(`${visibility} ${returnType} ${name}(${paramStr});`);
         } else {
             writter.write(`${visibility}${isStatic ? " static " : " "}${returnType} ${name}(${paramStr})`);
-        writter.write("{");
-        writter.incDeepLevel();
+            writter.write("{");
+            writter.incDeepLevel();
 
-        arrWritter.clear();
-        declarations.map(p => p.print(arrWritter));
-        arrWritter.getContent().forEach(d => writter.write(d));
+            arrWritter.clear();
+            declarations.map(p => p.print(arrWritter));
+            arrWritter.getContent().forEach(d => writter.write(d));
 
-        for (const line of content) {
-            writter.write(`//${line}`);
+            for (const line of content) {
+                writter.write(`//${line}`);
+            }
+            writter.write(`return${!!returnValue ? " " + returnValue : ""};`);
+            writter.decDeepLevel();
+            writter.write(`}`);
         }
-}
     }
 }

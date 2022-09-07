@@ -31,22 +31,25 @@ export class GoMethod extends Method {
         const firstLetter = this.getName().charAt(0).toLowerCase();
         const receiver = `${firstLetter} *${this.getParent()?.getName()}`;
 
-if (this.isSignature()) {
+        if (this.isSignature()) {
             writter.write(`${methodName}() ${returnValue}`);
-        } else {        
-writter.write(`func (${receiver}) ${methodName}(${paramStr})${returnValue} {`);
-        writter.incDeepLevel();
-        
-        arrWritter.clear();
-        this.getValues("constant").concat(this.getValues("variable")).map(p => p.print(arrWritter));
-        arrWritter.getContent().forEach(c => {
-            writter.write(c);
-        });
+        } else {
+            writter.write(`func (${receiver}) ${methodName}(${paramStr})${returnValue} {`);
+            writter.incDeepLevel();
 
-        for (const line of this.getContent()) {
-            writter.write(`//${line}`);
+            arrWritter.clear();
+            this.getValues("constant").concat(this.getValues("variable")).map(p => p.print(arrWritter));
+            arrWritter.getContent().forEach(c => {
+                writter.write(c);
+            });
+
+            for (const line of this.getContent()) {
+                writter.write(`//${line}`);
+            }
+            writter.write(`return ${this.getReturnValue()}`);
+            writter.decDeepLevel();
+            writter.write(`}`);
         }
-}
         return true;
     }
 }

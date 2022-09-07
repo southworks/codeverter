@@ -61,4 +61,32 @@ describe("GO: Enum", () => {
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
+
+    test("Enum with iota", () => {
+        const code = `
+            export enum BoxSize {
+                Small,
+                Medium,
+                Large
+            }
+        `;
+        const sourceFile = createSourceFile(
+            filename, code, ScriptTarget.Latest
+        );
+
+        const strWritter = new StringWritter();
+        printFile(sourceFile, strWritter, new GoFile());
+
+        const expected = new StringWritter("\t", 1);
+        expected.write("package test");
+        expected.writeNewLine();
+        expected.write("const (");
+        expected.write("\tSmall int = iota");
+        expected.write("\tMedium");
+        expected.write("\tLarge");
+        expected.write(")");
+        expected.writeNewLine();
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 });

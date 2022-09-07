@@ -16,11 +16,11 @@ export class GoEnum extends Enum {
             let value = values[k];
             let type = typeof value === "string" ? "string" : "int";
             value = type == "string" ? `"${value}"` : value;
-            if (i == 0) {
-                writter.write(`${k} ${type} = ${value}`);
-            } else {
-                writter.write(`${k} = ${value}`);
-            }
+            let memberStr = `${k}`;
+            memberStr += i == 0
+                ? ` ${type} = ${value || value === 0 ? value : "iota"}`
+                : value ? ` = ${value}` : "";
+            writter.write(memberStr);
         });
         writter.decDeepLevel();
         writter.write(`)`);

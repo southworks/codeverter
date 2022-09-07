@@ -9,6 +9,16 @@ export class CSharpEnum extends Enum {
         super(sourceFile, CSharpTypeMapper);
     }
 
+    private getMemberString(k: string, value: string | number): string {
+        let memberString = `${k}`;
+        if (value || value === 0) {
+            let type = typeof value === "string" ? "string" : "int";
+            value = type == "string" ? `"${value}"` : value;
+            memberString = `${k} = ${value}`;
+        }
+        return memberString;
+    }
+
     public print(writter: Writteable): boolean {
         const visibility = AccessLevel[this.getAccessLevel()].toLowerCase();
         writter.write(`${visibility} enum ${this.getName()}`);
@@ -17,12 +27,11 @@ export class CSharpEnum extends Enum {
         let values = this.getEnumValues();
         let membersCount = Object.keys(values).length;
         Object.keys(values).forEach((k, i) => {
-            let value = values[k];
-            let type = typeof value === "string" ? "string" : "int";
-            value = type == "string" ? `"${value}"` : value;
-            i !== membersCount - 1
-                ? writter.write(`${k} = ${value},`)
-                : writter.write(`${k} = ${value}`);
+            let memberStr = this.getMemberString(k, values[k]);
+            if (i !== membersCount - 1) {
+                memberStr += ",";
+            }
+            writter.write(memberStr);
         });
         writter.decDeepLevel();
         writter.write("}");

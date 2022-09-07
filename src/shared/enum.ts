@@ -16,7 +16,7 @@ export abstract class Enum extends TypedClassElement<EnumDeclaration> {
     public parse(node: EnumDeclaration): void {
         super.parse(node);
         node.members.forEach(m => {
-            let text = (m.initializer as Identifier).text;
+            let text = (m.initializer as Identifier)?.text;
             let value = m.initializer?.kind == SyntaxKind.NumericLiteral ? Number.parseInt(text) : text;
             let enumKey = this.capitalize((m.name as Identifier)?.escapedText!);
             this.enumValues[enumKey] = value;

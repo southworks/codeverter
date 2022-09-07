@@ -31,7 +31,7 @@ export abstract class Class extends ClassElement<ClassDeclaration> {
         this.setFactory("method", methodFactory);
     }
 
-    protected setHeritage(node: ClassDeclaration) {
+    protected setInheritance(node: ClassDeclaration): void {
         node.heritageClauses?.forEach(hc => {
             hc.types.forEach(t => {
                 this.heritageClauses.push(`I${(t.expression as Identifier).text}`);
@@ -57,7 +57,7 @@ export abstract class Class extends ClassElement<ClassDeclaration> {
 
     public parse(node: ClassDeclaration): void {
         super.parse(node);
-        this.setHeritage(node);
+        this.setInheritance(node);
         node.members.forEach(m => {
             if (isPropertyDeclaration(m)) {
                 this.addProperty(m);

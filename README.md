@@ -2,6 +2,10 @@
 
 Codeverter is a tool to convert a TypeScript source file (*.ts) into differents languages (**go** or **c#** by the moment).
 
+|Build status|
+|-|
+[![Node.js CI](https://github.com/southworks/codeverter/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/southworks/codeverter/actions/workflows/node.js.yml)
+
 # Installing
 
 ## NPM

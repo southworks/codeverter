@@ -47,12 +47,12 @@ To run the available test suites run the command `npm test`
 `cdv` is the command to execute the tool
 
 For example:
-`cdv --file xxx --lang zzz --dest yyy <path>`
+`cdv --src xxx --lang zzz --dest yyy <path>`
 
 ### Args
 
-`--file`: Path to the source file. 
-- Default value: _tmp/index.ts_
+`--src`: Path to the source file or directory.
+- Default value: _._
 
 `--lang`: Target language. 
 - Values: **csharp** | **go** 

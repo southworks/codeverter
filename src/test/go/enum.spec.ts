@@ -28,7 +28,7 @@ describe("GO: Enum", () => {
         expected.write("\tSmall int = 0");
         expected.write("\tMedium = 1");
         expected.write("\tLarge = 2");
-        expected.write(")}");
+        expected.write(")");
         expected.writeNewLine();
 
         expect(strWritter.getString()).toBe(expected.getString());

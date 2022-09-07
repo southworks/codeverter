@@ -117,7 +117,7 @@ _*pending_
 
 |TS|C#|GO|
 |-|-|-|
-|<pre><code>export interface Printable {<div>  content: string;</div><div>  doPrint(): void;</div>}</code></pre>|TODO|TODO|
+|<pre><code>export interface Printable {<div>  content: string;</div><div>  doPrint(): void;</div>}</code></pre>|<pre><code>public interface IPrintable<div>{</div><div>  public string Content { get; set; }</div><div>  public void ();</div>}</code></pre>|<pre><code>type Printable interface {<div>  DoPrint()</div>}</code></pre>|
 
 #### Support
 

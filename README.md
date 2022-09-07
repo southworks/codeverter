@@ -1,10 +1,17 @@
+<div align="center">
+
 # Welcome to Codeverter!
 
 Codeverter is a tool to convert a TypeScript source file (*.ts) into differents languages (**go** or **c#** by the moment).
 
-|Build status|Tests status|
-|-|-|
-|[![Codeverter Build](https://github.com/southworks/codeverter/actions/workflows/build.js.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/build.js.yml)|[![Codeverter tests](https://github.com/southworks/codeverter/actions/workflows/tests.js.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/tests.js.yml)|
+![](/.github/sample.png?raw=true)
+
+
+[![Codeverter Build](https://github.com/southworks/codeverter/actions/workflows/build.js.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/build.js.yml)
+[![Codeverter tests](https://github.com/southworks/codeverter/actions/workflows/tests.js.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/tests.js.yml)
+
+</div>
+<br />
 
 # Installing
 
@@ -153,7 +160,7 @@ _\*\*Using naming conventions_
 Consider a class named **Cat**
 |TS|C#|GO|
 |-|-|-|
-|<pre><code>constructor(arg: number) {<div>  /\*content*/</div>}</code></pre>|<pre><code>public Cat(int arg)<div>{</div><div>  // /\*content*/</div>}</code></pre>|<pre><code>func NewCat(arg int) *Cat {<div>  c := Cat{}</div><div>  // /\*content*/</div><div>  return &c</div>}</code></pre>|
+|<pre><code>constructor(arg: number) {<div>  /\*content*/</div>}</code></pre>|<pre><code>public Cat(int arg)<div>{</div><div>  // /\*content*/</div>}</code></pre>|<pre><code>func NewCat(arg int) \*Cat {<div>  c := Cat{}</div><div>  // /\*content*/</div><div>  return &c</div>}</code></pre>|
 
 #### Support
 
@@ -187,7 +194,7 @@ _*Naming convention for pubic or private, protected is considered private_
 
 |TS|C#|GO|
 |-|-|-|
-|<pre><code>public  foo(): void {<div>  /* a lot of work! */ </div>}</code></pre>|<pre><code>public void Foo()<div>{</div><div>  ///\* a lot of work! */</div><div>  return;</div>}</code></pre>|<pre><code>func (f *Cat) Foo() {<div>  ///\* a lot of work! */</div><div>  return</div>}</code></pre>|
+|<pre><code>public  foo(): void {<div>  /* a lot of work! */ </div>}</code></pre>|<pre><code>public void Foo()<div>{</div><div>  ///\* a lot of work! */</div><div>  return;</div>}</code></pre>|<pre><code>func (f \*Cat) Foo() {<div>  ///\* a lot of work! */</div><div>  return</div>}</code></pre>|
 
 #### Support
 

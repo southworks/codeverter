@@ -1,20 +1,10 @@
-import { Writter } from "./writter";
+import { Writter, WritterOpts } from "./writter";
 import { writeFileSync, rmSync, existsSync } from "fs";
 
 export class FileWritter extends Writter {
-    private dest: string;
-
-    constructor(dest: string) {
-        super();
-        this.dest = dest;
-        if (existsSync(this.dest)) {
-            rmSync(this.dest);
-        }
-    }
-
     protected writeImpl(value: string): void {
-        if (this.dest) {
-            writeFileSync(this.dest, `${value}`, { flag: "a+" });
+        if (this.getFileName()) {
+            writeFileSync(this.getFileName(), `${value}`, { flag: "a+" });
         }
     }
 
@@ -25,5 +15,12 @@ export class FileWritter extends Writter {
     public write(value: string): void {
         super.write(value);
         this.writeNewLine();
+    }
+
+    public setOpts(opts: Partial<WritterOpts>): void {
+        super.setOpts(opts);
+        if (existsSync(this.getFileName())) {
+            rmSync(this.getFileName());
+        }
     }
 }

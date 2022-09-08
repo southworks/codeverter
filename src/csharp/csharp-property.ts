@@ -11,7 +11,11 @@ export class CSharpProperty extends Property {
 
     public print(writter: Writteable): boolean {
         const visibility = AccessLevel[this.getAccessLevel()].toLowerCase();
-        writter.write(`${visibility} ${this.getType()} ${this.capitalize(this.getName())} { get; set; }`);
+        if (this.getParent().getKind() == "interface") {
+            writter.write(`${this.getType()} ${this.capitalize(this.getName())} { get; set; }`);
+        } else {
+            writter.write(`${visibility} ${this.getType()} ${this.capitalize(this.getName())} { get; set; }`);
+        }
         return true;
     }
 }

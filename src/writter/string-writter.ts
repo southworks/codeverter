@@ -8,12 +8,7 @@ export class StringWritter extends Writter {
 
     constructor(indentChar?: string, indentValue?: number) {
         super();
-        if (indentChar) {
-            this.setIndentChar(indentChar);
-        }
-        if (indentValue) {
-            this.setIndentValue(indentValue);
-        }
+        this.setOpts({ indentChar, indentValue });
     }
 
     protected writeImpl(value: string): void {

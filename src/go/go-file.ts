@@ -13,6 +13,10 @@ export class GoFile extends File {
         super(GoClass, GoVariable, GoImports, GoFunction, GoEnum, GoInterface);
     }
 
+    public getExtension(): string {
+        return ".go";
+    }
+
     public getIndentChar(): string {
         return "\t";
     }

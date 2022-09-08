@@ -6,17 +6,29 @@ export interface Writteable {
     incDeepLevel(): number;
     decDeepLevel(): number;
     restorePreviousDeepLevel(): number;
+    setOpts(opts: Partial<WritterOpts>): void;
 }
+
+export type WritterOpts = {
+    indentChar: string;
+    indentValue: number;
+    fileName: string;
+};
 
 export abstract class Writter implements Writteable {
     private newLine = process.platform === "win32" ? "\r\n" : "\n";
     private deepLevel: number = 0;
     private prevDeepLevel: number = 0;
-    private indentChar!: string;
-    private indentValue!: number;
+    private indentChar: string = " ";
+    private indentValue: number = 2;
+    private fileName!: string;
 
     private getIndent(): string {
         return this.indentChar.repeat(this.indentValue * this.deepLevel)
+    }
+
+    protected getFileName(): string {
+        return this.fileName;
     }
 
     protected abstract writeImpl(value: string): void;
@@ -55,11 +67,9 @@ export abstract class Writter implements Writteable {
         return this.setDeepLevel(this.prevDeepLevel);
     }
 
-    public setIndentChar(val: string): void {
-        this.indentChar = val;
-    }
-
-    public setIndentValue(val: number): void {
-        this.indentValue = val;
+    public setOpts(opts: Partial<WritterOpts>): void {
+        this.indentValue = opts.indentValue ?? this.indentValue;
+        this.indentChar = opts.indentChar ?? this.indentChar;
+        this.fileName = opts.fileName ?? this.fileName;
     }
 }

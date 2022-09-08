@@ -1,5 +1,5 @@
 import { Declaration, Identifier, NamedDeclaration, NodeFlags, SourceFile, VariableDeclarationList } from "typescript";
-import { Writter } from "../writter/writter";
+import { Writteable } from "../writter/writter";
 import { Imports } from "./imports";
 import { ElementKind, ElementValues } from "./types/elements";
 import { Factories, Factory } from "./types/factory";
@@ -102,5 +102,5 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
         return this.kind;
     }
 
-    public abstract print(writter: Writter): boolean;
+    public abstract print(writter: Writteable): boolean;
 }

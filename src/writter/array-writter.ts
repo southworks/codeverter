@@ -1,4 +1,4 @@
-import { Writteable } from "./writter";
+import { Writteable, WritterOpts } from "./writter";
 
 /**
  * stub implementation only for getting the values into an array
@@ -40,5 +40,8 @@ export class ArrayWritter implements Writteable {
 
     public clear(): void {
         this.content.length = 0;
+    }
+
+    public setOpts(_opts: WritterOpts): void {
     }
 }

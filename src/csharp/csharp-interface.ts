@@ -12,7 +12,11 @@ export class CSharpInterface extends Interface {
 
     public print(writter: Writteable): boolean {
         const visibility = AccessLevel[this.getAccessLevel()].toLowerCase();
-        writter.write(`${visibility} interface I${this.getName()}`);
+        let intfName = this.capitalize(this.getName());
+        if (!intfName.startsWith("I")) {
+            intfName = "I" + intfName;
+        }
+        writter.write(`${visibility} interface ${intfName}`);
         writter.write("{");
         writter.incDeepLevel();
         for (let prop of this.getValues("property")) {

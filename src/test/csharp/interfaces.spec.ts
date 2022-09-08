@@ -25,8 +25,8 @@ describe("CSharp: interfaces", () => {
         expected.write("{");
         expected.write("    public interface IMyInterface");
         expected.write("    {");
-        expected.write("        public int FirstField { get; set; }");
-        expected.write("        public string FirstMethod(int x);");
+        expected.write("        int FirstField { get; set; }");
+        expected.write("        string FirstMethod(int x);");
         expected.write("    }");
         expected.writeNewLine();
         expected.write("}");
@@ -63,8 +63,8 @@ describe("CSharp: interfaces", () => {
         expected.write("{");
         expected.write("    public interface IClockInterface");
         expected.write("    {");
-        expected.write("        public DateTime CurrentTime { get; set; }");
-        expected.write("        public void SetTime(DateTime d);");
+        expected.write("        DateTime CurrentTime { get; set; }");
+        expected.write("        void SetTime(DateTime d);");
         expected.write("    }");
         expected.writeNewLine();
         expected.write("    public class Clock : IClockInterface");

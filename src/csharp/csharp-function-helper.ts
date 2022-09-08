@@ -15,7 +15,7 @@ export class CSharpFunctionHelper {
         const paramStr = arrWritter.getContent().join(", ");
 
         if (isSignature) {
-            writter.write(`${visibility} ${returnType} ${name}(${paramStr});`);
+            writter.write(`${returnType} ${name}(${paramStr});`);
         } else {
             writter.write(`${visibility}${isStatic ? " static " : " "}${returnType} ${name}(${paramStr})`);
             writter.write("{");

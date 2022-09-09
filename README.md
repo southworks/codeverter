@@ -25,6 +25,7 @@ Codeverter is a tool to convert a TypeScript source file (*.ts) into different l
 
 ```
 cd ./path-to-codeverter
+npm run build:prod
 npm install -g
 ```
 
@@ -41,6 +42,8 @@ In order to build the project you must install the required dependencies by runn
 ### Compilation
 
 The project is written in TypeScript so you need to call the **tsc** compiler. To start the compilation process use the command `npm run build` once finished you will have all the final JavaScript files at **./out** folder.
+
+For production use the command `npm run build:prod`
 
 ### Testing
 

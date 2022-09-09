@@ -118,9 +118,7 @@ namespace xxx
 |-|-|-|
 |Numeric|Y|Y|
 |String|Y|Y|
-|Implicit|Y*|Y*|
-
-_*pending_
+|Implicit|Y|Y|
 
 ## Interfaces
 

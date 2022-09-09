@@ -25,6 +25,20 @@
     "test": "npx jest"
   },
   "author": "southworks uk ltd",
+  "contributors": [
+    {
+      "name": "Micaela Ramirez",
+      "email": "micaela.ramirez@southworks.com"
+    },
+    {
+      "name": "Jesus Caceres",
+      "email": "jesus.caceres@southworks.com"
+    },
+    {
+      "name": "Agustin Seifert",
+      "email": "agustin.seifert@southworks.com"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
     "path": "0.12.7",

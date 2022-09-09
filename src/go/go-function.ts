@@ -1,3 +1,11 @@
+/**
+ * @license
+ * Copyright 2022 SOUTHWORKS UK LTD All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
+ */
+
 import { AccessLevel } from "../shared/access-level";
 import { Function } from "../shared/function";
 import { FactoryParams } from "../shared/types/factory";
@@ -29,7 +37,7 @@ export class GoFunction extends Function {
 
         writter.write(`func ${methodName}(${paramStr})${returnType} {`);
         writter.incDeepLevel();
-        
+
         arrWritter.clear();
         this.getValues("constant").concat(this.getValues("variable")).map(p => p.print(arrWritter));
         arrWritter.getContent().forEach(c => {

@@ -352,3 +352,4 @@ MigrationBackup/
 #ignore compiled files
 out/
 tmp/
+lib/

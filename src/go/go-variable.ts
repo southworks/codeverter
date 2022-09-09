@@ -1,3 +1,11 @@
+/**
+ * @license
+ * Copyright 2022 SOUTHWORKS UK LTD All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
+ */
+
 import { AccessLevel } from "../shared/access-level";
 import { FactoryParams } from "../shared/types/factory";
 import { Variable } from "../shared/variable";
@@ -19,7 +27,7 @@ export class GoVariable extends Variable {
         if (!this.getType().trim() && !this.isConst()) {
             writter.write(`${declaration} ${name} := ${this.getValue()}`);
         } else {
-            writter.write(`${declaration} ${name} ${this.getType()} = ${this.getValue()}`);   
+            writter.write(`${declaration} ${name} ${this.getType()} = ${this.getValue()}`);
         }
 
         return true;

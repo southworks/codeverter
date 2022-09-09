@@ -1,5 +1,5 @@
-import { SourceFile } from "typescript";
 import { Function } from "../shared/function";
+import { FactoryParams } from "../shared/types/factory";
 import { Writteable } from "../writter/writter";
 import { CSharpDefaultValueMapper } from "./csharp-default-value-mapper";
 import { CSharpFunctionHelper } from "./csharp-function-helper";
@@ -8,8 +8,8 @@ import { CSharpTypeMapper } from "./csharp-type-mapper";
 import { CSharpVariable } from "./csharp-variable";
 
 export class CSharpFunction extends Function {
-    constructor(sourceFile: SourceFile) {
-        super(sourceFile, CSharpParameter, CSharpVariable, CSharpTypeMapper, CSharpDefaultValueMapper);
+    constructor(params: FactoryParams) {
+        super(params, CSharpParameter, CSharpVariable, CSharpTypeMapper, CSharpDefaultValueMapper);
     }
 
     public print(writter: Writteable): boolean {

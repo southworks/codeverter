@@ -1,22 +1,26 @@
-import { SourceFile } from "typescript";
 import { Interface } from "../shared/interface";
+import { FactoryParams } from "../shared/types/factory";
 import { Writteable } from "../writter/writter";
 import { GoMethod } from "./go-method";
 import { GoProperty } from "./go-property";
 
 export class GoInterface extends Interface {
-    constructor(sourceFile: SourceFile) {
-        super(sourceFile, GoProperty, GoMethod);
+    constructor(params: FactoryParams) {
+        super(params, GoProperty, GoMethod);
     }
 
     public print(writter: Writteable): boolean {
-        writter.write(`type ${this.getName()} interface {`);
-        writter.incDeepLevel();
-        for (let meth of this.getValues("method")) {
-            meth.print(writter);
+        const methods = this.getValues("method");
+        if (methods.length > 0) {
+            writter.write(`type ${this.getName()} interface {`);
+            writter.incDeepLevel();
+            for (let meth of this.getValues("method")) {
+                meth.print(writter);
+            }
+            writter.decDeepLevel();
+            writter.write("}");
+            return true;
         }
-        writter.decDeepLevel();
-        writter.write("}");
-        return true;
+        return false;
     }
 }

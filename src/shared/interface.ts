@@ -2,15 +2,15 @@ import { InterfaceDeclaration, isMethodSignature, isPropertySignature, MethodSig
 import { ClassElement } from "./class-element";
 import { Method } from "./method";
 import { Property } from "./property";
-import { Factory } from "./types/factory";
+import { Factory, FactoryParams } from "./types/factory";
 
 export abstract class Interface extends ClassElement<InterfaceDeclaration> {
 
-    protected constructor(sourceFile: SourceFile,
+    protected constructor(params: FactoryParams,
         propertyFactory: Factory<Property>,
         methodFactory: Factory<Method>) {
 
-        super(sourceFile);
+        super(params);
         this.setFactory("property", propertyFactory);
         this.setFactory("method", methodFactory);
     }

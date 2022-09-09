@@ -1,7 +1,7 @@
-import { createSourceFile, ScriptTarget } from "typescript";
 import { printFile } from "../../print-file";
 import { StringWritter } from "../../writter/string-writter";
 import { CSharpFile } from "../../csharp/csharp-file";
+import { compileTypeScriptCode } from "../compiler-helper";
 
 const filename = "test.ts";
 
@@ -12,12 +12,10 @@ describe("CSharp: property access level", () => {
                 foo: number;
             }
         `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile());
+        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter(" ", 4);
         expected.write(`namespace Test`);
@@ -38,12 +36,10 @@ describe("CSharp: property access level", () => {
                 public foo: number;
             }
         `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile());
+        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter(" ", 4);
         expected.write(`namespace Test`);
@@ -64,12 +60,10 @@ describe("CSharp: property access level", () => {
                 protected foo: number;
             }
         `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile());
+        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter(" ", 4);
         expected.write(`namespace Test`);
@@ -90,12 +84,10 @@ describe("CSharp: property access level", () => {
                 private foo: number;
             }
         `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile());
+        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter(" ", 4);
         expected.write(`namespace Test`);

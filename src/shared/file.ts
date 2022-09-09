@@ -10,11 +10,12 @@ import {
     isEnumDeclaration,
     EnumDeclaration,
     isInterfaceDeclaration,
-    InterfaceDeclaration
+    InterfaceDeclaration,
+    TypeChecker
 } from "typescript";
 import { Writteable } from "../writter/writter";
 import { Class } from "./class";
-import { Factory } from "./types/factory";
+import { Factory, FactoryParams } from "./types/factory";
 import { Imports } from "./imports";
 import { RootSourceElement } from "./types/source-element";
 import { Element } from "./element";
@@ -27,9 +28,11 @@ import { Interface } from "./interface";
 
 export abstract class File extends Element<SourceFile> implements RootSourceElement<SourceFile> {
     private importsHandler: Imports;
-    private sourceFile!: SourceFile;
+    private sourceFile: SourceFile;
+    private typeChecker: TypeChecker;
 
-    protected constructor(classFactory: Factory<Class>,
+    protected constructor(params: FactoryParams,
+        classFactory: Factory<Class>,
         constantsFactory: Factory<Variable>,
         importsFactory: Factory<Imports, void>,
         functionFactory: Factory<Function>,
@@ -37,6 +40,8 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
         interfaceFactory: Factory<Interface>) {
 
         super();
+        this.sourceFile = params.sourceFile;
+        this.typeChecker = params.typeChecker;
         this.setKind("file");
         this.setFactory("class", classFactory);
         this.setFactory("function", functionFactory);
@@ -87,15 +92,16 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
         return this.sourceFile;
     }
 
+    protected getTypeChecker(): TypeChecker {
+        return this.typeChecker;
+    }
+
     public abstract getExtension(): string;
     public abstract getIndentChar(): string;
     public abstract getIndentValue(): number;
 
     public parse(node: SourceFile): void {
         this.setName(basename(node.fileName).replace(extname(node.fileName), ""));
-        if (!this.sourceFile) {
-            this.sourceFile = node;
-        }
         this.visitNode(node);
     }
 

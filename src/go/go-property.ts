@@ -1,12 +1,12 @@
-import { SourceFile } from "typescript";
 import { AccessLevel } from "../shared/access-level";
 import { Property } from "../shared/property";
+import { FactoryParams } from "../shared/types/factory";
 import { Writteable } from "../writter/writter";
 import { GoTypeMapper } from "./go-type-mapper";
 
 export class GoProperty extends Property {
-    constructor(sourceFile: SourceFile) {
-        super(sourceFile, GoTypeMapper);
+    constructor(params: FactoryParams) {
+        super(params, GoTypeMapper);
     }
 
     public print(writter: Writteable): boolean {

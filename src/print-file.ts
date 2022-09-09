@@ -1,5 +1,5 @@
 import {
-    SourceFile,
+    SourceFile, TypeChecker,
 } from "typescript";
 import { Writteable } from "./writter/writter";
 import { File } from "./shared/file"
@@ -7,17 +7,17 @@ import { Factory } from "./shared/types/factory";
 import { basename, extname, resolve, dirname } from "path";
 
 export function printFiles(
-    node: SourceFile[], writter: Writteable, fileFactory: Factory<File>
+    node: SourceFile[], writter: Writteable, fileFactory: Factory<File>, typeChecker: TypeChecker
 ): void {
-    node.forEach(n => {
-        const file = new fileFactory(n);
-        const newFileName = basename(n.fileName).replace(extname(n.fileName), file.getExtension());
-        console.log(`--- Processing: ${n.fileName} ---`);
+    node.forEach(sourceFile => {
+        const file = new fileFactory({ sourceFile, typeChecker });
+        const newFileName = basename(sourceFile.fileName).replace(extname(sourceFile.fileName), file.getExtension());
+        console.log(`--- Processing: ${sourceFile.fileName} ---`);
         console.log("");
         writter.setOpts({
-            fileName: resolve(dirname(n.fileName), newFileName)
+            fileName: resolve(dirname(sourceFile.fileName), newFileName)
         });
-        printFile(n, writter, file);
+        printFile(sourceFile, writter, file);
     });
 }
 

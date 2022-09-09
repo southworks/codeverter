@@ -1,7 +1,7 @@
-import { createSourceFile, ScriptTarget } from "typescript";
 import { CSharpFile } from "../../csharp/csharp-file";
 import { printFile } from "../../print-file";
 import { StringWritter } from "../../writter/string-writter";
+import { compileTypeScriptCode } from "../compiler-helper";
 
 const filename = "test.ts";
 
@@ -10,12 +10,10 @@ describe("CSharp: variables", () => {
         const code = `
             let constant: string = "test";\n
             let numberConstant: number = 123;`;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile());
+        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter(" ", 4);
         expected.write(`namespace Test`);

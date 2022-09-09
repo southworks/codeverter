@@ -2,7 +2,7 @@
 
 # Welcome to Codeverter!
 
-Codeverter is a tool to convert a TypeScript source file (*.ts) into differents languages (**go** or **c#** by the moment).
+Codeverter is a tool to convert a TypeScript source file (*.ts) into different languages (**go** or **c#** by the moment).
 
 ![](.github/sample.png?raw=true)
 

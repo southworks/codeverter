@@ -13,7 +13,7 @@ describe("GO: interface", () => {
                 secondMethod(): string;
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
@@ -37,7 +37,7 @@ describe("GO: interface", () => {
                 firstMethod(x: number): string;
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));

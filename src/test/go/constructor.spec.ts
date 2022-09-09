@@ -13,7 +13,7 @@ describe("GO: constructor", () => {
             
                 constructor() { this.bar = new Date(); }
             }`;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
@@ -43,7 +43,7 @@ describe("GO: constructor", () => {
             
                 constructor(val: number, val2: string) { this.bar = new Date(); }
             }`;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));

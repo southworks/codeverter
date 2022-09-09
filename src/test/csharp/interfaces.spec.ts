@@ -13,7 +13,7 @@ describe("CSharp: interfaces", () => {
                 firstMethod(x: number): string;
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
@@ -49,7 +49,7 @@ describe("CSharp: interfaces", () => {
                 }
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));

@@ -12,7 +12,7 @@ describe("CSharp: class", () => {
                 foo: number;
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
@@ -40,7 +40,7 @@ describe("CSharp: class", () => {
                 foo2: Test;
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));

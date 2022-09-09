@@ -12,7 +12,7 @@ describe("GO: class", () => {
                 foo: number;
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
@@ -38,7 +38,7 @@ describe("GO: class", () => {
                 foo2: Test;
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));

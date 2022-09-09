@@ -14,7 +14,7 @@ describe("GO: Enum", () => {
                 Large = 2
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
@@ -40,7 +40,7 @@ describe("GO: Enum", () => {
                 Three = "3"
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
@@ -66,7 +66,7 @@ describe("GO: Enum", () => {
                 Large
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));

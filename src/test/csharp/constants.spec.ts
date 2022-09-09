@@ -10,7 +10,7 @@ describe("CSharp: constant", () => {
         const code = `
             const constant: string = "test";\n
             const numberConstant: number = 123;`;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));

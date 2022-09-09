@@ -12,7 +12,7 @@ describe("GO: property access level", () => {
                 foo: number;
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
@@ -34,7 +34,7 @@ describe("GO: property access level", () => {
                 public foo: number;
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
@@ -56,7 +56,7 @@ describe("GO: property access level", () => {
                 protected foo: number;
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
@@ -78,7 +78,7 @@ describe("GO: property access level", () => {
                 private foo: number;
             }
         `;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));

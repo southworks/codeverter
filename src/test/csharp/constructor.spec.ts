@@ -13,7 +13,7 @@ describe("CSharp: constructor", () => {
             
                 constructor() { this.bar = new Date(); }
             }`;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
@@ -42,7 +42,7 @@ describe("CSharp: constructor", () => {
             
                 constructor(val: number, val2: string) { this.bar = new Date(); }
             }`;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));

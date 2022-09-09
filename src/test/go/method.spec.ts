@@ -15,7 +15,7 @@ describe("GO: method", () => {
         code.write("    }");
         code.write("}");
 
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code.getString(), filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code.getString(), filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));

@@ -10,7 +10,7 @@ describe("GO: variables", () => {
         const code = `
             let constant: string = "test";\n
             let numberConstant: number = 123;`;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
@@ -28,7 +28,7 @@ describe("GO: variables", () => {
 
     test("Variable inferred type", () => {
         const code = `let constant = "test";`;
-        var { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));

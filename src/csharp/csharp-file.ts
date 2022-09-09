@@ -1,5 +1,7 @@
 import { File } from "../shared/file";
+import { sanitize } from "../shared/helpers/filename-sanitizer";
 import { printBlock } from "../shared/helpers/print-helper";
+import { FactoryParams } from "../shared/types/factory";
 import { Writteable } from "../writter/writter";
 import { CSharpClass } from "./csharp-class";
 import { CSharpEnum } from "./csharp-enum";
@@ -9,8 +11,8 @@ import { CSharpInterface } from "./csharp-interface";
 import { CSharpVariable } from "./csharp-variable";
 
 export class CSharpFile extends File {
-    constructor() {
-        super(CSharpClass, CSharpVariable, CSharpImports, CSharpFunction, CSharpEnum, CSharpInterface);
+    constructor(params: FactoryParams) {
+        super(params, CSharpClass, CSharpVariable, CSharpImports, CSharpFunction, CSharpEnum, CSharpInterface);
     }
 
     public getExtension(): string {
@@ -31,7 +33,7 @@ export class CSharpFile extends File {
         if (this.getImportHandler().print(writter)) {
             writter.writeNewLine();
         }
-        writter.write(`namespace ${this.capitalize(this.getName())}`);
+        writter.write(`namespace ${this.capitalize(sanitize(this.getName(), "_"))}`);
         writter.write("{");
         writter.incDeepLevel();
         const printOpt = { splitted: true };

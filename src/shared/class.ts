@@ -7,40 +7,48 @@ import {
     isMethodDeclaration,
     isPropertyDeclaration,
     MethodDeclaration,
-    PropertyDeclaration,
-    SourceFile
+    PropertyDeclaration
 } from "typescript";
 import { Property } from "./property";
-import { Factory } from "./types/factory";
+import { Factory, FactoryParams } from "./types/factory";
 import { Constructor } from "./constructor";
 import { Method } from "./method";
 import { ClassElement } from "./class-element";
 
 export abstract class Class extends ClassElement<ClassDeclaration> {
 
-    private heritageClauses: Array<string> = [];
+    private extendsClauses: Array<string> = [];
+    private implementsClauses: Array<string> = [];
 
-    protected constructor(sourceFile: SourceFile,
+    protected constructor(params: FactoryParams,
         propertyFactory: Factory<Property>,
         constructorFactory: Factory<Constructor>,
         methodFactory: Factory<Method>) {
 
-        super(sourceFile);
+        super(params);
         this.setFactory("ctr", constructorFactory);
         this.setFactory("property", propertyFactory);
         this.setFactory("method", methodFactory);
     }
 
-    protected setInheritance(node: ClassDeclaration): void {
+    protected setHeritages(node: ClassDeclaration): void {
         node.heritageClauses?.forEach(hc => {
             hc.types.forEach(t => {
-                this.heritageClauses.push(`I${(t.expression as Identifier).text}`);
+                if (this.getTypeChecker().getTypeFromTypeNode(t).isClass()) {
+                    this.extendsClauses.push(`${(t.expression as Identifier).text}`);
+                } else {
+                    this.implementsClauses.push(`${(t.expression as Identifier).text}`);
+                }
             });
         });
     }
 
-    protected getHeritageClauses(): Array<string> {
-        return [...this.heritageClauses];
+    protected getExtends(): Array<string> {
+        return this.extendsClauses;
+    }
+
+    protected getImplements(): Array<string> {
+        return this.implementsClauses;
     }
 
     protected addProperty(node: PropertyDeclaration): void {
@@ -57,7 +65,7 @@ export abstract class Class extends ClassElement<ClassDeclaration> {
 
     public parse(node: ClassDeclaration): void {
         super.parse(node);
-        this.setInheritance(node);
+        this.setHeritages(node);
         node.members.forEach(m => {
             if (isPropertyDeclaration(m)) {
                 this.addProperty(m);

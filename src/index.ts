@@ -36,7 +36,8 @@ if (args.indexOf("--help") > -1) {
     if (files.length == 0) {
         console.error("No files to process. Consider using --help to solve the problem.");
     } else {
-        let program = createProgram(files, { allowJs: true });
+        const program = createProgram(files, { allowJs: true });
+        const typeChecker = program.getTypeChecker();
 
         const langMapper: { [x: string]: Factory<File> } = {
             go: GoFile,
@@ -46,6 +47,6 @@ if (args.indexOf("--help") > -1) {
             console: () => new ConsoleWritter(),
             file: () => new FileWritter()
         }
-        printFiles(files.map(f => program.getSourceFile(f)!), destMapper[destName](), langMapper[langName]);
+        printFiles(files.map(f => program.getSourceFile(f)!), destMapper[destName](), langMapper[langName], typeChecker);
     }
 }

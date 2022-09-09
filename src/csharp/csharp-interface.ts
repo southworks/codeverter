@@ -1,21 +1,26 @@
-import { SourceFile } from "typescript";
 import { AccessLevel } from "../shared/access-level";
 import { Interface } from "../shared/interface";
+import { FactoryParams } from "../shared/types/factory";
 import { Writteable } from "../writter/writter";
 import { CSharpMethod } from "./csharp-method";
 import { CSharpProperty } from "./csharp-property";
 
 export class CSharpInterface extends Interface {
-    constructor(sourceFile: SourceFile) {
-        super(sourceFile, CSharpProperty, CSharpMethod);
+    constructor(params: FactoryParams) {
+        super(params, CSharpProperty, CSharpMethod);
+    }
+
+    public static getFormattedName(name: string): string {
+        let intfName = CSharpInterface.prototype.capitalize(name);
+        if (!intfName.startsWith("I")) {
+            intfName = "I" + intfName;
+        }
+        return intfName;
     }
 
     public print(writter: Writteable): boolean {
         const visibility = AccessLevel[this.getAccessLevel()].toLowerCase();
-        let intfName = this.capitalize(this.getName());
-        if (!intfName.startsWith("I")) {
-            intfName = "I" + intfName;
-        }
+        const intfName = CSharpInterface.getFormattedName(this.getName());
         writter.write(`${visibility} interface ${intfName}`);
         writter.write("{");
         writter.incDeepLevel();

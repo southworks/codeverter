@@ -1,8 +1,7 @@
-import { SourceFile } from "typescript";
 import { ClassElement } from "../class-element";
 import { Imports } from "../imports";
 import { KnownTypes, TypeMapper } from "../type-mapper";
-import { Factory } from "./factory";
+import { Factory, FactoryParams } from "./factory";
 import { Importer } from "./importer";
 import { TypedDeclaration } from "./typed-declaration";
 
@@ -11,8 +10,8 @@ export abstract class TypedClassElement<K extends TypedDeclaration> extends Clas
     private type!: string;
     private knownType!: KnownTypes;
 
-    protected constructor(sourceFile: SourceFile, typeMapperFactory: Factory<TypeMapper & Importer, void>) {
-        super(sourceFile);
+    protected constructor(params: FactoryParams, typeMapperFactory: Factory<TypeMapper & Importer, void>) {
+        super(params);
         this.typeMapper = new typeMapperFactory();
     }
 

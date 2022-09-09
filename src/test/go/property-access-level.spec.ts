@@ -1,7 +1,7 @@
-import { createSourceFile, ScriptTarget } from "typescript";
 import { printFile } from "../../print-file";
 import { GoFile } from "../../go/go-file";
 import { StringWritter } from "../../writter/string-writter";
+import { compileTypeScriptCode } from "../compiler-helper";
 
 const filename = "test.ts";
 
@@ -12,12 +12,10 @@ describe("GO: property access level", () => {
                 foo: number;
             }
         `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter("\t", 1);
         expected.write(`package test`);
@@ -36,12 +34,10 @@ describe("GO: property access level", () => {
                 public foo: number;
             }
         `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter("\t", 1);
         expected.write(`package test`);
@@ -60,12 +56,10 @@ describe("GO: property access level", () => {
                 protected foo: number;
             }
         `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter("\t", 1);
         expected.write(`package test`);
@@ -84,12 +78,10 @@ describe("GO: property access level", () => {
                 private foo: number;
             }
         `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter("\t", 1);
         expected.write(`package test`);

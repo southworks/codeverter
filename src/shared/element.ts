@@ -1,4 +1,4 @@
-import { Declaration, Identifier, NamedDeclaration, NodeFlags, SourceFile, VariableDeclarationList } from "typescript";
+import { Declaration, Identifier, NamedDeclaration, SourceFile, TypeChecker } from "typescript";
 import { Writteable } from "../writter/writter";
 import { Imports } from "./imports";
 import { ElementKind, ElementValues } from "./types/elements";
@@ -55,7 +55,7 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
 
     protected createElement(kind: ElementKind): SourceElement {
         const factory = this.getFactory(kind);
-        const created = new factory(this.getSourceFile());
+        const created = new factory({ sourceFile: this.getSourceFile(), typeChecker: this.getTypeChecker() });
         created.setKind(kind);
         return created;
     }
@@ -73,6 +73,7 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
     }
 
     protected abstract getSourceFile(): SourceFile;
+    protected abstract getTypeChecker(): TypeChecker;
 
     public parse(node: K): void {
         this.setName((node.name as Identifier)?.escapedText ?? "");

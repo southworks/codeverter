@@ -1,7 +1,7 @@
-import { createSourceFile, ScriptTarget } from "typescript";
 import { CSharpFile } from "../../csharp/csharp-file";
 import { printFile } from "../../print-file";
 import { StringWritter } from "../../writter/string-writter";
+import { compileTypeScriptCode } from "../compiler-helper";
 
 const filename = "test.ts";
 
@@ -14,12 +14,10 @@ describe("CSharp: Enum", () => {
                 Error = 2
             }
         `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile());
+        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter(" ", 4);
         expected.write("namespace Test");

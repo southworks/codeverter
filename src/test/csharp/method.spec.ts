@@ -1,11 +1,11 @@
-import { createSourceFile, ScriptTarget } from "typescript";
 import { CSharpFile } from "../../csharp/csharp-file";
 import { printFile } from "../../print-file";
 import { StringWritter } from "../../writter/string-writter";
+import { compileTypeScriptCode } from "../compiler-helper";
 
 const filename = "test.ts";
 
-describe("GO: method", () => {
+describe("CSharp: method", () => {
     test("simple method in class", () => {
         const code = new StringWritter("\t", 1);
         code.write("export class Test {");
@@ -16,12 +16,10 @@ describe("GO: method", () => {
         code.write("    }");
         code.write("}");
 
-        const sourceFile = createSourceFile(
-            filename, code.getString(), ScriptTarget.Latest
-        );
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code.getString(), filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile());
+        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter(" ", 4);
         expected.write(`namespace Test`);
@@ -30,8 +28,8 @@ describe("GO: method", () => {
         expected.write(`    {`);
         expected.write("        public string Method()");
         expected.write("        {");
-        expected.write("            string Asd = \"holi\";");
-        expected.write("            var TestNoType = 123;");
+        expected.write("            string asd = \"holi\";");
+        expected.write("            var testNoType = 123;");
         expected.write("            //        let asd: string = \"holi\";");
         expected.write("            //        let testNoType = 123;");
         expected.write("            //        return asd;");
@@ -40,8 +38,6 @@ describe("GO: method", () => {
         expected.write("    }");
         expected.write("}");
         expected.writeNewLine();
-
-        expect(strWritter.getString()).toBe(expected.getString());
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

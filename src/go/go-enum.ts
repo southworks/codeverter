@@ -1,11 +1,11 @@
-import { SourceFile } from "typescript";
 import { Enum } from "../shared/enum";
+import { FactoryParams } from "../shared/types/factory";
 import { Writteable } from "../writter/writter";
 import { GoTypeMapper } from "./go-type-mapper";
 
 export class GoEnum extends Enum {
-    constructor(sourceFile: SourceFile) {
-        super(sourceFile, GoTypeMapper);
+    constructor(params: FactoryParams) {
+        super(params, GoTypeMapper);
     }
 
     public print(writter: Writteable): boolean {

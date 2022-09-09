@@ -1,7 +1,7 @@
-import { createSourceFile, ScriptTarget } from "typescript";
 import { GoFile } from "../../go/go-file";
 import { printFile } from "../../print-file";
 import { StringWritter } from "../../writter/string-writter";
+import { compileTypeScriptCode } from "../compiler-helper";
 
 const filename = "test.ts";
 
@@ -13,12 +13,10 @@ describe("GO: interface", () => {
                 secondMethod(): string;
             }
         `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter("\t", 1);
         expected.write("package test");
@@ -39,12 +37,10 @@ describe("GO: interface", () => {
                 firstMethod(x: number): string;
             }
         `;
-        const sourceFile = createSourceFile(
-            filename, code, ScriptTarget.Latest
-        );
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile());
+        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
 
         const expected = new StringWritter("\t", 1);
         expected.write("package test");

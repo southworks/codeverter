@@ -5,14 +5,13 @@ import {
     isBlock,
     isVariableStatement,
     ParameterDeclaration,
-    SourceFile,
     Statement
 } from "typescript";
 import { ValueMapper } from "./default-value-mapper";
 import { addVaribles } from "./helpers/variable-helper";
 import { Parameter } from "./parameter";
 import { TypeMapper } from "./type-mapper";
-import { Factory } from "./types/factory";
+import { Factory, FactoryParams } from "./types/factory";
 import { Importer } from "./types/importer";
 import { TypedClassElement } from "./types/typed-class-element";
 import { Variable } from "./variable";
@@ -32,12 +31,12 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
      * @param typeMapperFactory 
      * @param defaultValueMapper is using factory just for be consistent with the other parameters.
      */
-    protected constructor(sourceFile: SourceFile,
+    protected constructor(params: FactoryParams,
         parameterFactory: Factory<Parameter>,
         variableFactory: Factory<Variable>,
         typeMapperFactory: Factory<TypeMapper & Importer, void>,
         defaultValueMapper?: Factory<ValueMapper, void>) {
-        super(sourceFile, typeMapperFactory);
+        super(params, typeMapperFactory);
         if (defaultValueMapper) {
             this.defaultValueMapper = new defaultValueMapper();
         }

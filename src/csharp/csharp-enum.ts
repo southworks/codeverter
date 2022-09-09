@@ -1,12 +1,12 @@
-import { SourceFile } from "typescript";
 import { AccessLevel } from "../shared/access-level";
 import { Enum } from "../shared/enum";
+import { FactoryParams } from "../shared/types/factory";
 import { Writteable } from "../writter/writter";
 import { CSharpTypeMapper } from "./csharp-type-mapper";
 
 export class CSharpEnum extends Enum {
-    constructor(sourceFile: SourceFile) {
-        super(sourceFile, CSharpTypeMapper);
+    constructor(params: FactoryParams) {
+        super(params, CSharpTypeMapper);
     }
 
     private getMemberString(k: string, value: string | number): string {

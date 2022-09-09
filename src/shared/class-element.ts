@@ -1,18 +1,25 @@
-import { NamedDeclaration, SourceFile } from "typescript";
+import { NamedDeclaration, SourceFile, TypeChecker } from "typescript";
 import { AccessLevel, AccessLevelHelper } from "./access-level";
 import { Element } from "./element";
+import { FactoryParams } from "./types/factory";
 
 export abstract class ClassElement<K extends NamedDeclaration> extends Element<K> {
     private sourceFile: SourceFile;
+    private typeChecker: TypeChecker;
     private accessLevel!: AccessLevel;
 
-    protected constructor(sourceFile: SourceFile) {
+    protected constructor(params: FactoryParams) {
         super();
-        this.sourceFile = sourceFile;
+        this.sourceFile = params.sourceFile;
+        this.typeChecker = params.typeChecker;
     }
 
     protected getSourceFile(): SourceFile {
         return this.sourceFile;
+    }
+
+    protected getTypeChecker(): TypeChecker {
+        return this.typeChecker;
     }
 
     protected getAccessLevel(): AccessLevel {

@@ -29,6 +29,4 @@ jobs:
     - name: Clean and install packages
       run: npm ci
     - name: Execute tests
-      run: |
-        npm run build --if-present
-        npm test
+      run: npm test

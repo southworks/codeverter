@@ -20,7 +20,7 @@ export function printBlock(writter: Writteable, values: SourceElement[], opts?: 
             writter.writeNewLine();
         }
         contentPrinted = c.print(writter) || contentPrinted;
-        if ((opts?.splitted && i != a.length - 1) || opts?.trailingNewLine) {
+        if (contentPrinted && ((opts?.splitted && i != a.length - 1) || opts?.trailingNewLine)) {
             writter.writeNewLine();
         }
     });

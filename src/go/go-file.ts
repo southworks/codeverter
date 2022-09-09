@@ -1,5 +1,7 @@
 import { File } from "../shared/file";
+import { sanitize } from "../shared/helpers/filename-sanitizer";
 import { printBlock } from "../shared/helpers/print-helper";
+import { FactoryParams } from "../shared/types/factory";
 import { Writteable } from "../writter/writter";
 import { GoClass } from "./go-class";
 import { GoEnum } from "./go-enum";
@@ -9,8 +11,8 @@ import { GoInterface } from "./go-interface";
 import { GoVariable } from "./go-variable";
 
 export class GoFile extends File {
-    constructor() {
-        super(GoClass, GoVariable, GoImports, GoFunction, GoEnum, GoInterface);
+    constructor(params: FactoryParams) {
+        super(params, GoClass, GoVariable, GoImports, GoFunction, GoEnum, GoInterface);
     }
 
     public getExtension(): string {
@@ -26,7 +28,7 @@ export class GoFile extends File {
     }
 
     public print(writter: Writteable): boolean {
-        writter.write(`package ${this.getName().toLowerCase()}`);
+        writter.write(`package ${sanitize(this.getName().toLowerCase(), "")}`);
         writter.writeNewLine();
         if (this.getImportHandler().print(writter)) {
             writter.writeNewLine();

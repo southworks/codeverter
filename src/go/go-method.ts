@@ -1,7 +1,6 @@
-import { SourceFile } from "typescript";
 import { AccessLevel } from "../shared/access-level";
 import { Method } from "../shared/method";
-import { SourceElement } from "../shared/types/source-element";
+import { FactoryParams } from "../shared/types/factory";
 import { ArrayWritter } from "../writter/array-writter";
 import { Writteable } from "../writter/writter";
 import { GoDefaultValueMapper } from "./go-default-value-mapper";
@@ -10,8 +9,8 @@ import { GoTypeMapper } from "./go-type-mapper";
 import { GoVariable } from "./go-variable";
 
 export class GoMethod extends Method {
-    constructor(sourceFile: SourceFile) {
-        super(sourceFile, GoParameter, GoVariable, GoTypeMapper, GoDefaultValueMapper);
+    constructor(params: FactoryParams) {
+        super(params, GoParameter, GoVariable, GoTypeMapper, GoDefaultValueMapper);
     }
 
     public print(writter: Writteable): boolean {

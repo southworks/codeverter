@@ -26,7 +26,6 @@ export abstract class ClassElement<K extends NamedDeclaration> extends Element<K
         return this.accessLevel;
     }
 
-
     public parse(node: K): void {
         super.parse(node);
         this.accessLevel = AccessLevelHelper.getLevel(node);

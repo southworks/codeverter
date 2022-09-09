@@ -37,7 +37,7 @@ export function compileTypeScriptCode(code: string, filename: string): Compilati
             ? code
             : realHost.readFile(filePath),
         useCaseSensitiveFileNames: () => realHost.useCaseSensitiveFileNames(),
-        writeFile: (fileName, data) => outputCode = data,
+        writeFile: (fileName, data) => outputCode = data
     };
 
     const program = createProgram([dummyFilePath], options, host);

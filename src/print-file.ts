@@ -1,6 +1,4 @@
-import {
-    SourceFile, TypeChecker,
-} from "typescript";
+import { SourceFile, TypeChecker } from "typescript";
 import { Writteable } from "./writter/writter";
 import { File } from "./shared/file"
 import { Factory } from "./shared/types/factory";

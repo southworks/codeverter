@@ -1,17 +1,45 @@
 {
-  "name": "codeverter",
+  "name": "@southworks/codeverter",
   "version": "1.0.0",
-  "description": "",
-  "main": "out/index.js",
+  "description": "Convert TypeScript code into different languages",
+  "main": "lib/index.js",
   "bin": {
-    "cdv": "out/index.js"
+    "cdv": "lib/index.js"
   },
+  "keywords": [
+    "typescript",
+    "ast",
+    "code",
+    "convert"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/southworks/codeverter.git"
+  },
+  "files": [
+    "lib/"
+  ],
   "scripts": {
     "build": "npx tsc",
+    "build:prod": "npx tsc --project tsconfig.prod.json",
     "test": "npx jest"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "southworks uk ltd",
+  "contributors": [
+    {
+      "name": "Micaela Ramirez",
+      "email": "micaela.ramirez@southworks.com"
+    },
+    {
+      "name": "Jesus Caceres",
+      "email": "jesus.caceres@southworks.com"
+    },
+    {
+      "name": "Agustin Seifert",
+      "email": "agustin.seifert@southworks.com"
+    }
+  ],
+  "license": "MIT",
   "dependencies": {
     "path": "0.12.7",
     "typescript": "4.7.4"

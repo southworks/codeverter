@@ -1,4 +1,12 @@
-import { InterfaceDeclaration, isMethodSignature, isPropertySignature, MethodSignature, PropertySignature, SourceFile } from "typescript";
+/**
+ * @license
+ * Copyright 2022 SOUTHWORKS UK LTD All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
+ */
+
+import { InterfaceDeclaration, isMethodSignature, isPropertySignature, MethodSignature, PropertySignature } from "typescript";
 import { ClassElement } from "./class-element";
 import { Method } from "./method";
 import { Property } from "./property";

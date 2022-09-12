@@ -1,5 +1,13 @@
 #!/usr/bin/env node
 
+/**
+ * @license
+ * Copyright 2022 SOUTHWORKS UK LTD All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
+ */
+
 import { createProgram } from "typescript";
 import { File } from "./shared/file";
 import { printFiles } from "./print-file";
@@ -32,7 +40,10 @@ if (args.indexOf("--help") > -1) {
     const destIndex = args.indexOf('--dest');
     const destName = destIndex > -1 ? args[destIndex + 1] : "console";
 
-    const files = lstatSync(src).isDirectory() ? readdirSync(src).map(f => join(src, f)) : [src];
+    const files = lstatSync(src).isDirectory()
+        ? readdirSync(src).filter(f => f.endsWith(".ts")).map(f => join(src, f))
+        : [src];
+
     if (files.length == 0) {
         console.error("No files to process. Consider using --help to solve the problem.");
     } else {

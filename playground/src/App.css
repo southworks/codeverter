@@ -1,0 +1,23 @@
+.app {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  height: 100vh;
+}
+
+.container {
+  text-align: center;
+  display: flex;
+  flex-flow: row;
+  height: 80vh;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
+}
+
+.toolbar button {
+  margin-left: 10px;
+}

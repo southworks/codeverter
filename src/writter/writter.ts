@@ -24,7 +24,9 @@ export type WritterOpts = {
 };
 
 export abstract class Writter implements Writteable {
-    private newLine = process.platform === "win32" ? "\r\n" : "\n";
+    private newLine = typeof process === "undefined"
+        ? "\n"
+        : process.platform === "win32" ? "\r\n" : "\n";
     private deepLevel: number = 0;
     private prevDeepLevel: number = 0;
     private indentChar: string = " ";

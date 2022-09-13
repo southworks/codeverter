@@ -8,9 +8,6 @@
 
 import { Writter } from "./writter";
 
-/**
- * For testing purpose
- */
 export class StringWritter extends Writter {
     private content: string[] = [];
 

@@ -4,7 +4,8 @@
   ],
   "exclude": [
     "node_modules",
-    "src/test/**"
+    "src/test/**",
+    "playground/**"
   ],
   "compilerOptions": {
     "target": "es2015",

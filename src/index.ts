@@ -9,16 +9,13 @@
  */
 
 import { createProgram } from "typescript";
-import { File } from "./shared/file";
 import { printFiles } from "./print-file";
 import { ConsoleWritter } from "./writter/console-writter";
-import { GoFile } from "./go/go-file";
-import { CSharpFile } from "./csharp/csharp-file";
 import { Writter } from "./writter/writter";
 import { FileWritter } from "./writter/file-writter";
 import { lstatSync, readdirSync } from "fs";
-import { join } from "path";
-import { Factory } from "./shared/types/factory";
+import { join } from "./shims/path";
+import { AvailableLanguages, languageMap } from "./language-map";
 
 const [, , ...args] = process.argv;
 
@@ -35,7 +32,7 @@ if (args.indexOf("--help") > -1) {
     const src = srcIndex > -1 ? args[srcIndex + 1] : ".";
 
     const langIndex = args.indexOf('--lang');
-    const langName = langIndex > -1 ? args[langIndex + 1] : "go";
+    const langName = langIndex > -1 ? (args[langIndex + 1] as AvailableLanguages) : "go";
 
     const destIndex = args.indexOf('--dest');
     const destName = destIndex > -1 ? args[destIndex + 1] : "console";
@@ -50,14 +47,10 @@ if (args.indexOf("--help") > -1) {
         const program = createProgram(files, { allowJs: true });
         const typeChecker = program.getTypeChecker();
 
-        const langMapper: { [x: string]: Factory<File> } = {
-            go: GoFile,
-            csharp: CSharpFile
-        }
         const destMapper: { [x: string]: () => Writter } = {
             console: () => new ConsoleWritter(),
             file: () => new FileWritter()
         }
-        printFiles(files.map(f => program.getSourceFile(f)!), destMapper[destName](), langMapper[langName], typeChecker);
+        printFiles(files.map(f => program.getSourceFile(f)!), destMapper[destName](), languageMap[langName], typeChecker);
     }
 }

@@ -1,7 +1,6 @@
-import { printFile } from "../../print-file";
-import { StringWritter } from "../../writter/string-writter";
 import { CSharpFile } from "../../csharp/csharp-file";
-import { compileTypeScriptCode } from "../compiler-helper";
+import { StringWritter } from "../../writter/string-writter";
+import { compileTypeScriptCode, printFile } from "../../lib";
 
 const filename = "test.ts";
 

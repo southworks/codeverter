@@ -29,7 +29,7 @@ import { RootSourceElement } from "./types/source-element";
 import { Element } from "./element";
 import { Function } from "./function";
 import { Variable } from "./variable";
-import { basename, extname } from "path";
+import { basename, extname } from "../shims/path";
 import { Enum } from "./enum";
 import { addVaribles } from "./helpers/variable-helper";
 import { Interface } from "./interface";

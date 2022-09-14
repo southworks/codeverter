@@ -9,6 +9,7 @@ Codeverter is a tool to convert a TypeScript source file (*.ts) into different l
 
 [![Codeverter Build](https://github.com/southworks/codeverter/actions/workflows/build.js.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/build.js.yml)
 [![Codeverter tests](https://github.com/southworks/codeverter/actions/workflows/tests.js.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/tests.js.yml)
+[![Codeverter Playground](https://github.com/southworks/codeverter/actions/workflows/pages.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/pages.yml)
 
 </div>
 <br />

@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Playground
 
 on:
   # Runs on pushes playground folder
@@ -39,6 +39,7 @@ jobs:
       - name: Install and Build - Playground
         run: |
           npm ci
+          CI=false
           npm run build
         working-directory: ./playground
       - name: Setup Pages

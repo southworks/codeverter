@@ -14,6 +14,10 @@ Codeverter is a tool to convert a TypeScript source file (*.ts) into different l
 </div>
 <br />
 
+# Playground
+
+If you want to try it, [click here!](https://southworks.github.io/codeverter)
+
 # Installing
 
 ## NPM

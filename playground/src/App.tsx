@@ -40,6 +40,9 @@ function App() {
 
     return (
         <div className="app">
+            <a href="https://www.southworks.com/" className="logo"  aria-label="home">
+                <img src="logo.png" width="212"/>
+            </a>
             <h1>Codeverter playground</h1>
             <div className="toolbar">
                 <div>
@@ -49,7 +52,7 @@ function App() {
                             <option key={i} value={k}>{langOptions[k as AvailableLanguages]}</option>
                         ))}
                     </select>
-                    <button onClick={convertContent} disabled={!isEditorReady}>Convert!</button>
+                    <button className="home-hero-v3-update-link-badge" onClick={convertContent} disabled={!isEditorReady}>Convert!</button>
                 </div>
                 <div>
                     <label htmlFor="theme">Theme</label>

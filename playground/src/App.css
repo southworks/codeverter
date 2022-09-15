@@ -35,21 +35,21 @@
 }
 
 .home-hero-v3-update-link-badge:hover {
-background-color: #13322b;
--webkit-transform: scale3d(.95,.95,1.01);
-transform: scale3d(.95,.95,1.01);
-color: #fff;
-cursor: pointer;
+  background-color: #13322b;
+  -webkit-transform: scale3d(.95, .95, 1.01);
+  transform: scale3d(.95, .95, 1.01);
+  color: #fff;
+  cursor: pointer;
 }
 
 h1 {
   margin: 0 0 24px;
-    color: #000;
-    font-size: 58px;
-    line-height: 1.276em;
-    font-weight: 700;
-    letter-spacing: -.01em;
-    text-align: center;
+  color: #000;
+  font-size: 58px;
+  line-height: 1.276em;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  text-align: center;
 }
 
 .logo {
@@ -59,4 +59,12 @@ h1 {
 
 label {
   padding: 10px;
+}
+
+select {
+  margin-right: 19px;
+  padding: 10px 20px;
+  border-radius: 10000000px;
+  font-size: 14px;
+  line-height: 1.143em;
 }

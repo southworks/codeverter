@@ -14,8 +14,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/southworks/codeverter.git"
+    "url": "git+https://github.com/southworks/codeverter.git"
   },
+  "bugs": {
+    "url": "https://github.com/southworks/codeverter/issues"
+  },
+  "homepage": "https://github.com/southworks/codeverter#readme",
   "files": [
     "lib/"
   ],

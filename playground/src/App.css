@@ -60,3 +60,11 @@ h1 {
 label {
   padding: 10px;
 }
+
+select {
+  margin-right: 19px;
+  padding: 10px 20px;
+  border-radius: 10000000px;
+  font-size: 14px;
+  line-height: 1.143em;
+}

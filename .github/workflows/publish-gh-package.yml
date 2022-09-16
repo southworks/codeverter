@@ -34,4 +34,4 @@ jobs:
       - run: npm run build:prod --if-present
       - run: npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH}}
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

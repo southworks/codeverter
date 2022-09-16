@@ -11,6 +11,7 @@ Codeverter is a tool to convert a TypeScript source file (*.ts) into different l
 [![Codeverter tests](https://github.com/southworks/codeverter/actions/workflows/tests.js.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/tests.js.yml)
 [![Codeverter Playground](https://github.com/southworks/codeverter/actions/workflows/pages.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/pages.yml)
 [![NPM](https://img.shields.io/npm/v/@southworks/codeverter.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen)](https://www.npmjs.com/package/@southworks/codeverter)
+[![GH Package](https://github.com/southworks/codeverter/actions/workflows/publish-gh-package.yml/badge.svg)](https://github.com/southworks/codeverter/actions/workflows/publish-gh-package.yml)
 </div>
 <br />
 

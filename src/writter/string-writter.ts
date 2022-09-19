@@ -21,6 +21,6 @@ export class StringWritter extends Writter {
     }
 
     public getString(): string {
-        return this.content.join("\n");
+        return this.content.map(v => v.replace("\n", "")).join("\n");
     }
 }

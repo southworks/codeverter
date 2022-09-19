@@ -39,11 +39,13 @@ function App() {
     };
 
     return (
-        <div className="app">
-            <a href="https://www.southworks.com/" className="logo"  aria-label="home">
-                <img src="logo.png" width="212"/>
-            </a>
-            <h1>Codeverter playground</h1>
+        <div className={`app ${theme === "vs-dark" ? "dark-mode" : ""}`}>
+            <div className="centered title">
+                <a className="centered" href="https://www.southworks.com/" target={"_blank"}>
+                    <img src="logo.png" width="212" />
+                </a>
+                <h1>Codeverter playground</h1>
+            </div>
             <div className="toolbar">
                 <div>
                     <label htmlFor="lang">Language</label>
@@ -65,6 +67,7 @@ function App() {
             <hr />
             <div className="container">
                 <Editor
+                    className="editor-divider"
                     width="50vw"
                     theme={theme}
                     language="typescript"

@@ -106,7 +106,7 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
                 });
         }
 
-        node.parameters.forEach(m => {
+        node.parameters.filter(p => !p.modifiers).forEach(m => {
             this.addParameter(m);
         });
     }

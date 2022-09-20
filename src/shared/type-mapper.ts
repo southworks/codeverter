@@ -7,7 +7,10 @@
  */
 
 import {
+    ArrayTypeNode,
     Identifier,
+    NodeArray,
+    NodeWithTypeArguments,
     SyntaxKind,
     TypeNode,
     TypeReferenceNode
@@ -21,7 +24,8 @@ export enum KnownTypes {
     Boolean,
     Date,
     Reference,
-    Void
+    Void,
+    Array
 }
 
 export interface TypeMapper {
@@ -31,6 +35,10 @@ export interface TypeMapper {
 
 export abstract class TypeMapperImpl implements TypeMapper, Importer {
     private importHandler!: Imports;
+
+    private isGenericArray(node: TypeNode): node is NodeWithTypeArguments {
+        return "typeArguments" in node;
+    }
 
     protected abstract getKnownType(type: KnownTypes): string;
 
@@ -50,6 +58,17 @@ export abstract class TypeMapperImpl implements TypeMapper, Importer {
             case KnownTypes.Reference: {
                 return ((node as TypeReferenceNode).typeName as Identifier).escapedText!
             }
+            case KnownTypes.Array: {
+                let typeKind, knownTypeKind;
+                let knownType = this.getKnownType(kind);
+                if (this.isGenericArray(node)) {
+                    typeKind = this.toKnownType(((node as NodeWithTypeArguments).typeArguments as NodeArray<TypeNode>)[0]);
+                } else {
+                    typeKind = this.toKnownType(((node as ArrayTypeNode).elementType as TypeNode));
+                }
+                knownTypeKind = this.getKnownType(typeKind);
+                return `${knownTypeKind}${knownType}`;
+            }
             case KnownTypes.Void: return this.getVoidType();
             default:
                 return this.getKnownType(kind);
@@ -64,11 +83,15 @@ export abstract class TypeMapperImpl implements TypeMapper, Importer {
                 return KnownTypes.String;
             case SyntaxKind.BooleanKeyword:
                 return KnownTypes.Boolean;
+            case SyntaxKind.ArrayType:
+                return KnownTypes.Array;
             default: {
                 if (node?.kind == SyntaxKind.TypeReference) {
                     const referenceType = ((node as TypeReferenceNode).typeName as Identifier).escapedText!;
                     if (referenceType == "Date") {
                         return KnownTypes.Date;
+                    } else if (referenceType == "Array") {
+                        return KnownTypes.Array;
                     }
                     return KnownTypes.Reference;
                 }

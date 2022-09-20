@@ -34,3 +34,19 @@ export function printBlock(writter: Writteable, values: SourceElement[], opts?: 
     });
     return contentPrinted;
 }
+
+/**
+ * Returns only the values from an array without brackets, parenthesis or any other characters
+ * Input: [1, 2, 3, 4]
+ * Output: 1, 2, 3, 4
+ * @param strArray 
+ * @returns Inner values of an array
+ */
+export function getArrayValues(strArray: string): string {
+    if (strArray.match("new Array")) {
+        return strArray.match(/\((.*?)\)/g)?.toString().replace("(", "").replace(")", "") ?? strArray;
+    } else if (strArray.includes("[") && strArray.includes("]")) {
+        return strArray.replace("[", "").replace("]", "");
+    }
+    return strArray;
+}

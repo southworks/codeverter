@@ -22,6 +22,7 @@ export class GoTypeMapper extends TypeMapperImpl {
                 this.getImportHandler().add("time");
                 return "time.Time";
             }
+            case KnownTypes.Array: return "[]";
             default:
                 console.error("Not supported", type);
                 return "error";

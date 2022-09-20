@@ -61,4 +61,36 @@ describe("CSharp: class", () => {
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
+
+    test("Class with default value property", () => {
+        const code = `
+            export class Test {
+                foo: number = 2;
+                bar: Array<number> = [2, 500];
+                foobar: Array<string> = ["Foo", "Bar"];
+                myArray: number[] = [];
+                otherArray: Array<number> = new Array<number>(1, 2, 3);
+            }
+        `;
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+
+        const strWritter = new StringWritter();
+        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+
+        const expected = new StringWritter(" ", 4);
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public class Test");
+        expected.write(`    {`);
+        expected.write("        public int Foo { get; set; } = 2;");
+        expected.write("        public int[] Bar { get; set; } = new int[] { 2, 500 };");
+        expected.write("        public string[] Foobar { get; set; } = new string[] { \"Foo\", \"Bar\" };");
+        expected.write("        public int[] MyArray { get; set; } = new int[] {};");
+        expected.write("        public int[] OtherArray { get; set; } = new int[] { 1, 2, 3 };");
+        expected.write("    }");
+        expected.write("}");
+        expected.writeNewLine();
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 });

@@ -20,6 +20,7 @@ export class CSharpTypeMapper extends TypeMapperImpl {
             case KnownTypes.Number: return "int"; // review
             case KnownTypes.String: return "string";
             case KnownTypes.Date: return "DateTime";
+            case KnownTypes.Array: return "[]";
             default:
                 console.error("Not supported", type);
                 return "error";

@@ -56,4 +56,28 @@ describe("GO: class", () => {
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
+
+    test("simple class with array properties", () => {
+        const code = `
+            export class Test {
+                foo: Array<number> = [1, 2, 3];
+                bar: number[] = [100, 200];
+            }
+        `;
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+
+        const strWritter = new StringWritter();
+        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+
+        const expected = new StringWritter("\t", 1);
+        expected.write(`package test`);
+        expected.writeNewLine();
+        expected.write("type Test struct {");
+        expected.write("\tFoo []int");
+        expected.write("\tBar []int");
+        expected.write("}");
+        expected.writeNewLine();
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 });

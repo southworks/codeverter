@@ -15,6 +15,7 @@ import {
     isMethodDeclaration,
     isPropertyDeclaration,
     MethodDeclaration,
+    ParameterDeclaration,
     PropertyDeclaration
 } from "typescript";
 import { Property } from "./property";
@@ -22,8 +23,9 @@ import { Factory, FactoryParams } from "./types/factory";
 import { Constructor } from "./constructor";
 import { Method } from "./method";
 import { ClassElement } from "./class-element";
+import { ParameterConverter } from "./parameter-converter";
 
-export abstract class Class extends ClassElement<ClassDeclaration> {
+export abstract class Class extends ClassElement<ClassDeclaration> implements ParameterConverter {
 
     private extendsClauses: Array<string> = [];
     private implementsClauses: Array<string> = [];
@@ -69,6 +71,13 @@ export abstract class Class extends ClassElement<ClassDeclaration> {
 
     protected addMethod(node: MethodDeclaration): void {
         this.addElement("method", node);
+    }
+
+    /**
+     * In Typescript can declare a property as a constructor parameter
+     */
+    public addParameterAsProperty(node: ParameterDeclaration): void {
+        this.addElement("property", node);
     }
 
     public parse(node: ClassDeclaration): void {

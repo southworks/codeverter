@@ -65,4 +65,31 @@ describe("GO: constructor", () => {
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
+
+    test("property declaration", () => {
+        const code = `
+            export class Test {
+                constructor(public val: number, val2: string) {
+                }
+            }`;
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+
+        const strWritter = new StringWritter();
+        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+
+        const expected = new StringWritter("\t", 1);
+        expected.write(`package test`);
+        expected.writeNewLine();
+        expected.write("type Test struct {");
+        expected.write("\tVal int");
+        expected.write("}");
+        expected.writeNewLine();
+        expected.write("func NewTest(val2 string) *Test {");
+        expected.write("\tt := Test{}");
+        expected.write("\treturn &t");
+        expected.write("}");
+        expected.writeNewLine();
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 });

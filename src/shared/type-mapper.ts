@@ -32,13 +32,6 @@ export interface TypeMapper {
 export abstract class TypeMapperImpl implements TypeMapper, Importer {
     private importHandler!: Imports;
 
-    private getReferenceType(value: string): string {
-        switch (value) {
-            case "Date": return this.getKnownType(KnownTypes.Date);
-            default: return value;
-        }
-    }
-
     protected abstract getKnownType(type: KnownTypes): string;
 
     protected abstract getVoidType(): string;

@@ -63,4 +63,32 @@ describe("CSharp: constructor", () => {
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
+
+    test("property declaration", () => {
+        const code = `
+            export class Test {
+                constructor(public val: number, val2: string) {
+                }
+            }`;
+        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+
+        const strWritter = new StringWritter();
+        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+
+        const expected = new StringWritter(" ", 4);
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public class Test");
+        expected.write(`    {`);
+        expected.write("        public int Val { get; set; }");
+        expected.writeNewLine();
+        expected.write("        public Test(string val2)");
+        expected.write(`        {`);
+        expected.write("        }");
+        expected.write("    }");
+        expected.write("}");
+        expected.writeNewLine();
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 });

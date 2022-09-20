@@ -63,11 +63,10 @@ export abstract class TypeMapperImpl implements TypeMapper, Importer {
                 let knownType = this.getKnownType(kind);
                 if (this.isGenericArray(node)) {
                     typeKind = this.toKnownType(((node as NodeWithTypeArguments).typeArguments as NodeArray<TypeNode>)[0]);
-                    knownTypeKind = this.getKnownType(typeKind);
                 } else {
                     typeKind = this.toKnownType(((node as ArrayTypeNode).elementType as TypeNode));
-                    knownTypeKind = this.getKnownType(typeKind);
                 }
+                knownTypeKind = this.getKnownType(typeKind);
                 return `${knownTypeKind}${knownType}`;
             }
             case KnownTypes.Void: return this.getVoidType();

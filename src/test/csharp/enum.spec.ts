@@ -2,8 +2,6 @@ import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
 import { CSharpGenerator } from "../../templating/csharp/csharp-template";
 
-const filename = "test.ts";
-
 describe("CSharp: Enum", () => {
     test("Simple enum", () => {
         const code = `
@@ -13,10 +11,10 @@ describe("CSharp: Enum", () => {
                 Error = 2
             }
         `;
-        let compilationResult = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(compilationResult, strWritter, new CSharpGenerator());
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
 
         const expected = new StringWritter();
         expected.write("namespace Test");

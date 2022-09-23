@@ -1,20 +1,16 @@
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
 import { CSharpGenerator } from "../../templating/csharp/csharp-template";
-import { File } from "../../shared/file";
-import { elementRegistry } from "../../element-registry";
-
-const filename = "test.ts";
 
 describe("CSharp: constant", () => {
     test("Constants different types", () => {
         const code = `
             const constant: string = "test";\n
             const numberConstant: number = 123;`;
-        let compilationResult = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(compilationResult, strWritter, new CSharpGenerator());
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
 
         const expected = new StringWritter();
         expected.write(`namespace Test`);

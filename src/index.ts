@@ -14,7 +14,7 @@ import { ConsoleWritter } from "./writter/console-writter";
 import { Writter } from "./writter/writter";
 import { FileWritter } from "./writter/file-writter";
 import { lstatSync, readdirSync } from "fs";
-import { join } from "./shims/path";
+import { join } from "path";
 import { AvailableLanguages, languageMap } from "./language-map";
 
 const [, , ...args] = process.argv;
@@ -29,7 +29,7 @@ if (args.indexOf("--help") > -1) {
 } else {
     const srcIndex = args.indexOf('--src');
     // Change here for your dev file path;
-    const src = srcIndex > -1 ? args[srcIndex + 1] : ".";
+    const src = srcIndex > -1 ? args[srcIndex + 1] : "./tmp/index.ts";
 
     const langIndex = args.indexOf('--lang');
     const langName = langIndex > -1 ? (args[langIndex + 1] as AvailableLanguages) : "go";

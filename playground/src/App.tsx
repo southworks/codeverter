@@ -1,6 +1,6 @@
 import Editor from "@monaco-editor/react";
 import { BaseSyntheticEvent, useRef, useState } from "react";
-import { printFile, compileTypeScriptCode, StringWritter, languageMap, AvailableLanguages } from "@southworks/codeverter";
+import { printFile, compileTypeScriptCode, StringWritter, AvailableLanguages, languageMap } from "@southworks/codeverter";
 import "./App.css";
 
 function App() {
@@ -28,8 +28,8 @@ function App() {
         if (!!code) {
             const a = compileTypeScriptCode(code, "codeverter.ts");
             const writter = new StringWritter();
-            const file = new languageMap[language as AvailableLanguages](a);
-            printFile(a.sourceFile, writter, file);
+            const template = new languageMap[language as AvailableLanguages]();
+            printFile(a, template, writter);
             setTranspiled(writter.getString());
         }
     }

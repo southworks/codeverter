@@ -2,8 +2,6 @@ import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
 import { CSharpGenerator } from "../../templating/csharp/csharp-template";
 
-const filename = "test.ts";
-
 describe("CSharp: method", () => {
     test("simple method in class", () => {
         const code = new StringWritter();
@@ -15,10 +13,10 @@ describe("CSharp: method", () => {
         code.write("    }");
         code.write("}");
 
-        let compilationResult = compileTypeScriptCode(code.getString(), filename);
+        let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(compilationResult, strWritter, new CSharpGenerator());
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
 
         const expected = new StringWritter();
         expected.write(`namespace Test`);

@@ -9,7 +9,7 @@
 import { SourceFile, TypeChecker } from "typescript";
 import { Writteable } from "./writter/writter";
 import { Factory } from "./shared/types/factory";
-import { basename, extname, resolve, dirname } from "./shims/path";
+import { basename, extname, resolve, dirname } from "path";
 import { printFile } from "./lib";
 import { TemplateGenerator } from "./templating/template-generator";
 
@@ -24,7 +24,6 @@ export function printFiles(
         writter.setOpts({
             fileName: resolve(dirname(sourceFile.fileName), newFileName)
         });
-
-        printFile({ sourceFile, typeChecker }, writter, template);
+        printFile({ sourceFile, typeChecker }, template, writter);
     });
 }

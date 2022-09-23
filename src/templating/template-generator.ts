@@ -1,53 +1,16 @@
-import { File } from "../shared/file";
-import { KnownTypes } from "../shared/type-mapper";
+/**
+ * @license
+ * Copyright 2022 SOUTHWORKS UK LTD All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
+ */
 
-interface TemplateHelper {
-    capitalize(str: string): string;
-    camelize(str: string): string;
-    toUpperCase(str: string): string;
-    toLowerCase(str: string): string;
-    sanitize(str: string, replaceChar: string): string;
-    orderBy(values: [] | string, field: string, order: [] | string): [] | string;
-    mapType(kt: KnownTypes | string, t: string): string;
-    mapDefaultValue(t: KnownTypes | string): string;
-    splitBlock(...values: any[]): string;
-    ifAny(...values: any[]): boolean | string;
-}
+import { KnownTypes } from "../shared/type-mapper";
+import { TemplateHelper } from "./template-helpers";
 
 export abstract class TemplateGenerator implements TemplateHelper {
     private content: string[] = [];
-
-    private static getHelpers(generator: TemplateGenerator): TemplateHelper {
-        return {
-            capitalize: (str: string) => { return str.replace(/\w/, c => c.toUpperCase()); },
-            camelize: (str: string) => { return str[0].toLowerCase() + str.substring(1) },
-            toUpperCase: (str: string) => { return str.toUpperCase(); },
-            toLowerCase: (str: string) => { return str.toLowerCase(); },
-            sanitize: (str: string, replaceChar: string) => str.replace(/[^a-zA-Z0-9_ ]/g, replaceChar),
-            orderBy: (e: [], f: string, s: []) => {
-                return e.sort((a, b) => {
-                    let indexA = s.indexOf(a[f]);
-                    let indexB = s.indexOf(b[f]);
-                    return indexA - indexB;
-                });
-            },
-            mapType: generator.getTypeMap,
-            mapDefaultValue: generator.getDefaultValueMap,
-            splitBlock: (...values: any[]) => {
-                if (values.every(v => v && v.length)) {
-                    return `\n`;
-                }
-                return "";
-            },
-            ifAny: (...values: any[]) => {
-                if (values.find(v => v && v.length)) {
-                    return true;
-                }
-                return false;
-            },
-            ...generator.getCustomHelpers()
-        }
-    };
 
     protected addLine(val: string): void {
         this.content.push(val);
@@ -74,7 +37,7 @@ export abstract class TemplateGenerator implements TemplateHelper {
     /**
      * implement custom helpers
      */
-    protected getCustomHelpers(): object {
+    public getCustomHelpers(helpers: TemplateHelper): object {
         return {};
     }
 
@@ -84,16 +47,6 @@ export abstract class TemplateGenerator implements TemplateHelper {
 
     public getTemplate(): string {
         return this.content.join("\n");
-    }
-
-    public static get(generator: TemplateGenerator, file: File): { template: string, data: object } {
-        return {
-            template: generator.getTemplate(),
-            data: {
-                sourceFile: file,
-                helpers: TemplateGenerator.getHelpers(generator)
-            }
-        }
     }
 
     /**
@@ -131,7 +84,7 @@ export abstract class TemplateGenerator implements TemplateHelper {
         return `helpers.orderBy(${values}, "${field}", ${order})`;
     }
 
-    public mapType(kt: string, t: string, includeTags: boolean = true): string {
+    public mapType(kt: string | KnownTypes, t: string, includeTags: boolean = true): string {
         let map = `helpers.mapType(${kt}, ${t})`;
         if (includeTags) {
             map = `<%=${map}%>`

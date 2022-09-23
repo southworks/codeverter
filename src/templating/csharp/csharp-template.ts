@@ -1,5 +1,14 @@
+/**
+ * @license
+ * Copyright 2022 SOUTHWORKS UK LTD All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
+ */
+
 import { KnownTypes } from "../../shared/type-mapper";
 import { TemplateGenerator } from "../template-generator";
+import { TemplateHelper } from "../template-helpers";
 
 export class CSharpGenerator extends TemplateGenerator {
     private getDefaultValue(varName: string, semicolon: boolean): string {
@@ -53,11 +62,11 @@ export class CSharpGenerator extends TemplateGenerator {
         return `public ${modifier}${typeModifier} ${name}${this.getDefaultValue(varName, true)}`;
     }
 
-    public getCustomHelpers(): object {
+    public getCustomHelpers(helpers: TemplateHelper): object {
         return {
             generateInitializeValue: (kt: KnownTypes, t: string, value: string, semicolon: boolean) => {
                 if (!!value) {
-                    if (kt == KnownTypes.Array) {
+                    if (kt == 6) { //KnownTypes.Array
                         let defaultValue = value;
                         if (value.match("new Array")) {
                             defaultValue = value.match(/\((.*?)\)/g)?.toString().replace("(", "").replace(")", "") ?? value;
@@ -65,10 +74,10 @@ export class CSharpGenerator extends TemplateGenerator {
                             defaultValue = value.replace("[", "").replace("]", "");
                         }
                         defaultValue = defaultValue === "" ? defaultValue : ` ${defaultValue} `;
-                        return ` = new ${this.getTypeMap(kt, t)} {${defaultValue}};`;
-                    } else if (kt == KnownTypes.Date) {
+                        return ` = new ${helpers.mapType(kt, t)} {${defaultValue}};`;
+                    } else if (kt == 3) { //KnownTypes.Date
                         return ` = new DateTime();`;
-                    } else if (kt == KnownTypes.String) {
+                    } else if (kt == 1) { //KnownTypes.String
                         return ` = "${value}";`;
                     }
                     return ` = ${value};`;
@@ -85,13 +94,18 @@ export class CSharpGenerator extends TemplateGenerator {
         }
     }
 
+    /**
+     * Use integers instead the enum to easily convert into string.
+     * @param type 
+     * @returns 
+     */
     public getDefaultValueMap(type: KnownTypes): string {
         switch (type) {
-            case KnownTypes.Number: return " 0";
-            case KnownTypes.String: return " \"\"";
-            case KnownTypes.Boolean: return " false";
-            case KnownTypes.Date: return " DateTime.Now";
-            case KnownTypes.Void: return "";
+            case 0: return " 0"; //KnownTypes.Number
+            case 1: return " \"\""; //KnownTypes.String
+            case 2: return " false"; //KnownTypes.Boolean
+            case 3: return " DateTime.Now"; //KnownTypes.Date
+            case 5: return ""; //KnownTypes.Void
             default:
                 return " null";
         }
@@ -99,6 +113,7 @@ export class CSharpGenerator extends TemplateGenerator {
 
     /**
      * Use anonymous function to be able to call it again inside
+     * Use integers instead the enum to easily convert into string.
      * @param knowType 
      * @param type 
      * @returns 
@@ -106,13 +121,13 @@ export class CSharpGenerator extends TemplateGenerator {
     public getTypeMap(knowType: KnownTypes, type: string): string {
         const fn: Function = (kt: KnownTypes, t: string) => {
             switch (kt) {
-                case KnownTypes.Number: return "int"; // review
-                case KnownTypes.String: return "string";
-                case KnownTypes.Boolean: return "bool";
-                case KnownTypes.Date: return "DateTime";
-                case KnownTypes.Array: return `${fn(+t, "")}[]`;
-                case KnownTypes.Void: return "void";
-                case KnownTypes.Reference: return t;
+                case 0: return "int"; // KnownTypes.Number
+                case 1: return "string"; //KnownTypes.String
+                case 2: return "bool"; //KnownTypes.Boolean
+                case 3: return "DateTime"; //KnownTypes.Date
+                case 4: return t; //KnownTypes.Reference
+                case 5: return "void"; //KnownTypes.Void
+                case 6: return `${fn(+t, "")}[]`; //KnownTypes.Array
                 default:
                     return "error";
             }

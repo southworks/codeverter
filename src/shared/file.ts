@@ -25,7 +25,7 @@ import { FactoryParams } from "./types/factory";
 import { Imports } from "./imports";
 import { ClassSourceElement, EnumSourceElement, InterfaceSourceElement, RootSourceElement, SourceElement, SourceElementNamed, TypedSourceElement, ValuedSourceElement } from "./types/source-element";
 import { Element } from "./element";
-import { basename, extname } from "../shims/path";
+import { basename, extname } from "path";
 import { addVaribles } from "./helpers/variable-helper";
 
 

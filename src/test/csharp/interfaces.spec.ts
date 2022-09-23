@@ -1,6 +1,6 @@
-import { CSharpFile } from "../../csharp/csharp-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
+import { CSharpGenerator } from "../../templating/csharp/csharp-template";
 
 const filename = "test.ts";
 
@@ -12,22 +12,22 @@ describe("CSharp: interfaces", () => {
                 firstMethod(x: number): string;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, strWritter, new CSharpGenerator());
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write("namespace Test");
         expected.write("{");
         expected.write("    public interface IMyInterface");
         expected.write("    {");
         expected.write("        int FirstField { get; set; }");
+        expected.write("");
         expected.write("        string FirstMethod(int x);");
         expected.write("    }");
-        expected.writeNewLine();
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
@@ -48,36 +48,37 @@ describe("CSharp: interfaces", () => {
                 }
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, strWritter, new CSharpGenerator());
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write("namespace Test");
         expected.write("{");
         expected.write("    public interface IClockInterface");
         expected.write("    {");
         expected.write("        DateTime CurrentTime { get; set; }");
+        expected.write("");
         expected.write("        void SetTime(DateTime d);");
         expected.write("    }");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("    public class Clock : IClockInterface");
         expected.write("    {");
-        expected.write("        public DateTime CurrentTime { get; set; } = new Date();");
-        expected.writeNewLine();
+        expected.write("        public DateTime CurrentTime { get; set; } = new DateTime();");
+        expected.write("");
         expected.write("        public Clock(int h, int m)");
         expected.write("        {");
         expected.write("        }");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("        public void SetTime(DateTime d)");
         expected.write("        {");
-        expected.write("            //                    this.currentTime = d;");
+        expected.write("            //                     this.currentTime = d;");
         expected.write("            return;");
         expected.write("        }");
         expected.write("    }");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

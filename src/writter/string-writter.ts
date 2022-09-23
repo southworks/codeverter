@@ -11,16 +11,11 @@ import { Writter } from "./writter";
 export class StringWritter extends Writter {
     private content: string[] = [];
 
-    constructor(indentChar?: string, indentValue?: number) {
-        super();
-        this.setOpts({ indentChar, indentValue });
-    }
-
     protected writeImpl(value: string): void {
         this.content.push(value);
     }
 
     public getString(): string {
-        return this.content.map(v => v.replace("\n", "")).join("\n");
+        return this.content.join("\n");
     }
 }

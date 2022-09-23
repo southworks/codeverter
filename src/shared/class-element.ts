@@ -10,14 +10,15 @@ import { NamedDeclaration, SourceFile, TypeChecker } from "typescript";
 import { AccessLevel, AccessLevelHelper } from "./access-level";
 import { Element } from "./element";
 import { FactoryParams } from "./types/factory";
+import { Visibility, VisibilitySourceElement } from "./types/source-element";
 
-export abstract class ClassElement<K extends NamedDeclaration> extends Element<K> {
+export class ClassElement<K extends NamedDeclaration> extends Element<K> implements VisibilitySourceElement {
     private sourceFile: SourceFile;
     private typeChecker: TypeChecker;
     private accessLevel!: AccessLevel;
 
-    protected constructor(params: FactoryParams) {
-        super();
+    constructor(params: FactoryParams) {
+        super(params);
         this.sourceFile = params.sourceFile;
         this.typeChecker = params.typeChecker;
     }
@@ -30,12 +31,16 @@ export abstract class ClassElement<K extends NamedDeclaration> extends Element<K
         return this.typeChecker;
     }
 
-    protected getAccessLevel(): AccessLevel {
-        return this.accessLevel;
-    }
-
     public parse(node: K): void {
         super.parse(node);
         this.accessLevel = AccessLevelHelper.getLevel(node);
+    }
+
+    get visibility(): Visibility {
+        switch (this.accessLevel) {
+            case AccessLevel.Private: return "private";
+            case AccessLevel.Protected: return "protected";
+            default: return "public";
+        };
     }
 }

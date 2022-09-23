@@ -15,43 +15,16 @@ import {
     ParameterDeclaration,
     Statement
 } from "typescript";
-import { ValueMapper } from "./default-value-mapper";
 import { addVaribles } from "./helpers/variable-helper";
-import { Parameter } from "./parameter";
-import { TypeMapper } from "./type-mapper";
-import { Factory, FactoryParams } from "./types/factory";
-import { Importer } from "./types/importer";
+import { ParametrizedSourceElement, TypedSourceElement, ValuedSourceElement } from "./types/source-element";
 import { TypedClassElement } from "./types/typed-class-element";
-import { Variable } from "./variable";
 
-export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionDeclaration>
-    extends TypedClassElement<K> {
-
+export class Function<K extends FunctionLikeDeclarationBase = FunctionDeclaration>
+    extends TypedClassElement<K> implements ParametrizedSourceElement<K> {
     private statements: Statement[] = [];
-    private content: string[] = [];
-    private defaultValueMapper?: ValueMapper;
-    private returnValue?: string;
 
-    /**
-     * Protected constructor to be accessed only by the concrete implementations
-     * @param sourceFile 
-     * @param parameterFactory 
-     * @param typeMapperFactory 
-     * @param defaultValueMapper is using factory just for be consistent with the other parameters.
-     */
-    protected constructor(params: FactoryParams,
-        parameterFactory: Factory<Parameter>,
-        variableFactory: Factory<Variable>,
-        typeMapperFactory: Factory<TypeMapper & Importer, void>,
-        defaultValueMapper?: Factory<ValueMapper, void>) {
-        super(params, typeMapperFactory);
-        if (defaultValueMapper) {
-            this.defaultValueMapper = new defaultValueMapper();
-        }
-        this.setFactory("parameter", parameterFactory);
-        this.setFactory("constant", variableFactory);
-        this.setFactory("variable", variableFactory);
-    }
+    public content: string[] = [];
+    public static: boolean = true;
 
     private addParameter(node: ParameterDeclaration): void {
         this.addElement("parameter", node);
@@ -63,14 +36,6 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
 
     protected getStatements(): Statement[] {
         return this.statements;
-    }
-
-    protected getReturnValue(): string | undefined {
-        return this.returnValue;
-    }
-
-    protected isSignature(): boolean {
-        return this.getParent().getKind() === "interface";
     }
 
     /**
@@ -93,7 +58,6 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
     public parse(node: K): void {
         super.parse(node);
         this.content = this.trimBody(node.body?.getText(this.getSourceFile()) ?? "");
-        this.returnValue = this.defaultValueMapper?.get(this.getKnownType());
 
         if (node.body && isBlock(node.body!)) {
             (node.body! as Block).
@@ -109,5 +73,17 @@ export abstract class Function<K extends FunctionLikeDeclarationBase = FunctionD
         node.parameters.filter(p => !p.modifiers).forEach(m => {
             this.addParameter(m);
         });
+    }
+
+    get parameters(): TypedSourceElement[] {
+        return this.getValues("parameter") as TypedSourceElement[];
+    }
+
+    get variables(): ValuedSourceElement[] {
+        return this.getValues("variable") as ValuedSourceElement[];
+    }
+
+    get constants(): ValuedSourceElement[] {
+        return this.getValues("constant") as ValuedSourceElement[];
     }
 }

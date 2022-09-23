@@ -8,33 +8,26 @@
 
 import { ClassElement } from "../class-element";
 import { Imports } from "../imports";
-import { KnownTypes, TypeMapper } from "../type-mapper";
-import { Factory, FactoryParams } from "./factory";
+import { KnownTypes, TypeMapper, TypeMapperImpl } from "../type-mapper";
+import { FactoryParams } from "./factory";
 import { Importer } from "./importer";
+import { TypedSourceElement } from "./source-element";
 import { TypedDeclaration } from "./typed-declaration";
 
-export abstract class TypedClassElement<K extends TypedDeclaration> extends ClassElement<K> {
+export class TypedClassElement<K extends TypedDeclaration> extends ClassElement<K> implements TypedSourceElement<K> {
     private typeMapper: TypeMapper & Importer;
-    private type!: string;
-    private knownType!: KnownTypes;
+    public type!: string | KnownTypes;
+    public knownType!: KnownTypes;
 
-    protected constructor(params: FactoryParams, typeMapperFactory: Factory<TypeMapper & Importer, void>) {
+    constructor(params: FactoryParams) {
         super(params);
-        this.typeMapper = new typeMapperFactory();
-    }
-
-    protected getType(): string {
-        return this.type;
-    }
-
-    protected getKnownType(): KnownTypes {
-        return this.knownType;
+        this.typeMapper = new TypeMapperImpl();
     }
 
     public parse(node: K): void {
         super.parse(node);
         this.knownType = this.typeMapper.toKnownType(node.type!);
-        this.type = this.typeMapper.get(node.type!) || "";
+        this.type = this.typeMapper.get(node.type!);
     }
 
     public setImportHandler(handler: Imports): void {

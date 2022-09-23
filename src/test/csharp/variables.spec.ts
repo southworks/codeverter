@@ -1,6 +1,6 @@
-import { CSharpFile } from "../../csharp/csharp-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
+import { CSharpGenerator } from "../../templating/csharp/csharp-template";
 
 const filename = "test.ts";
 
@@ -9,22 +9,21 @@ describe("CSharp: variables", () => {
         const code = `
             let constant: string = "test";\n
             let numberConstant: number = 123;`;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, strWritter, new CSharpGenerator());
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write(`namespace Test`);
         expected.write("{");
         expected.write("    public static class Helper");
         expected.write("    {");
         expected.write(`        public static string Constant = "test";`);
-        expected.writeNewLine();
         expected.write(`        public static int NumberConstant = 123;`);
         expected.write("    }");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

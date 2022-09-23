@@ -8,22 +8,23 @@
 
 import { SourceFile, TypeChecker } from "typescript";
 import { Writteable } from "./writter/writter";
-import { File } from "./shared/file";
 import { Factory } from "./shared/types/factory";
 import { basename, extname, resolve, dirname } from "./shims/path";
 import { printFile } from "./lib";
+import { TemplateGenerator } from "./templating/template-generator";
 
 export function printFiles(
-    node: SourceFile[], writter: Writteable, fileFactory: Factory<File>, typeChecker: TypeChecker
+    node: SourceFile[], writter: Writteable, templateFactory: Factory<TemplateGenerator, void>, typeChecker: TypeChecker
 ): void {
     node.forEach(sourceFile => {
-        const file = new fileFactory({ sourceFile, typeChecker });
-        const newFileName = basename(sourceFile.fileName).replace(extname(sourceFile.fileName), file.getExtension());
+        const template = new templateFactory();
+        const newFileName = basename(sourceFile.fileName).replace(extname(sourceFile.fileName), template.getExtension());
         console.log(`--- Processing: ${sourceFile.fileName} ---`);
         console.log("");
         writter.setOpts({
             fileName: resolve(dirname(sourceFile.fileName), newFileName)
         });
-        printFile(sourceFile, writter, file);
+
+        printFile({ sourceFile, typeChecker }, writter, template);
     });
 }

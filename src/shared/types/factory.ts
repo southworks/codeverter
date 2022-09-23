@@ -9,10 +9,12 @@
 import { SourceFile, TypeChecker } from "typescript";
 import { ElementKind } from "./elements";
 import { SourceElement } from "./source-element";
+import { Function } from "../function";
 
 export type FactoryParams = {
     sourceFile: SourceFile,
-    typeChecker: TypeChecker
+    typeChecker: TypeChecker,
+    elementFactory: ElementFactory
 }
 
 /**
@@ -23,6 +25,6 @@ export type Factory<T, P = FactoryParams> = { new(params: P): T };
 /**
  * Dictionary type to handle available factories
  */
-export type Factories = {
+export type ElementFactory = {
     [p in ElementKind]?: Factory<SourceElement>
 }

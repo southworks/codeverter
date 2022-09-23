@@ -1,6 +1,6 @@
-import { CSharpFile } from "../../csharp/csharp-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
+import { CSharpGenerator } from "../../templating/csharp/csharp-template";
 
 const filename = "test.ts";
 
@@ -13,12 +13,12 @@ describe("CSharp: Enum", () => {
                 Error = 2
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, strWritter, new CSharpGenerator());
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write("namespace Test");
         expected.write("{");
         expected.write("    public static class Helper");
@@ -31,7 +31,7 @@ describe("CSharp: Enum", () => {
         expected.write("        }");
         expected.write("    }");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

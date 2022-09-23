@@ -25,11 +25,11 @@ export function printBlock(writter: Writteable, values: SourceElement[], opts?: 
     let contentPrinted = false;
     values.forEach((c, i, a) => {
         if (opts?.startingNewLine && i == 0) {
-            writter.writeNewLine();
+            //writter.writeNewLine();
         }
-        contentPrinted = c.print(writter) || contentPrinted;
+        //contentPrinted = c.print(writter) || contentPrinted;
         if (contentPrinted && ((opts?.splitted && i != a.length - 1) || opts?.trailingNewLine)) {
-            writter.writeNewLine();
+            //writter.writeNewLine();
         }
     });
     return contentPrinted;

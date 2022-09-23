@@ -6,8 +6,12 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { MethodDeclaration } from "typescript";
+import { MethodDeclaration, SyntaxKind } from "typescript";
 import { Function } from "./function";
 
-export abstract class Method extends Function<MethodDeclaration> {
+export class Method extends Function<MethodDeclaration> {
+    public parse(node: MethodDeclaration): void {
+        super.parse(node);
+        this.static = node.modifiers?.find(m => m.kind == SyntaxKind.StaticKeyword) != null;
+    }
 }

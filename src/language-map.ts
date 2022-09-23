@@ -6,14 +6,13 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { CSharpFile } from "./csharp/csharp-file";
-import { GoFile } from "./go/go-file";
 import { Factory } from "./shared/types/factory";
-import { File } from "./shared/file";
+import { TemplateGenerator } from "./templating/template-generator";
+import { CSharpGenerator } from "./templating/csharp/csharp-template";
 
 export type AvailableLanguages = "go" | "csharp";
 
-export const languageMap: { [x in AvailableLanguages]: Factory<File> } = {
-    go: GoFile,
-    csharp: CSharpFile
+export const languageMap: { [x in AvailableLanguages]: Factory<TemplateGenerator, void> } = {
+    go: CSharpGenerator,
+    csharp: CSharpGenerator
 }

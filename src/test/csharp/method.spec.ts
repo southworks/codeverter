@@ -1,12 +1,12 @@
-import { CSharpFile } from "../../csharp/csharp-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
+import { CSharpGenerator } from "../../templating/csharp/csharp-template";
 
 const filename = "test.ts";
 
 describe("CSharp: method", () => {
     test("simple method in class", () => {
-        const code = new StringWritter("\t", 1);
+        const code = new StringWritter();
         code.write("export class Test {");
         code.write("    public method(): string {");
         code.write("        let asd: string = \"holi\";");
@@ -15,12 +15,12 @@ describe("CSharp: method", () => {
         code.write("    }");
         code.write("}");
 
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code.getString(), filename);
+        let compilationResult = compileTypeScriptCode(code.getString(), filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, strWritter, new CSharpGenerator());
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write(`namespace Test`);
         expected.write(`{`);
         expected.write("    public class Test");
@@ -29,14 +29,14 @@ describe("CSharp: method", () => {
         expected.write("        {");
         expected.write("            string asd = \"holi\";");
         expected.write("            var testNoType = 123;");
-        expected.write("            //        let asd: string = \"holi\";");
-        expected.write("            //        let testNoType = 123;");
-        expected.write("            //        return asd;");
+        expected.write("            //         let asd: string = \"holi\";");
+        expected.write("            //         let testNoType = 123;");
+        expected.write("            //         return asd;");
         expected.write("            return \"\";");
         expected.write("        }");
         expected.write("    }");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

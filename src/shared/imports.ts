@@ -6,10 +6,7 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { Writteable } from "../writter/writter";
-import { Printable } from "./types/printable";
-
-export abstract class Imports implements Printable {
+export class Imports {
     private imports: string[] = [];
 
     protected get(): string[] {
@@ -21,6 +18,4 @@ export abstract class Imports implements Printable {
             this.imports.push(value);
         }
     }
-
-    public abstract print(writter: Writteable): boolean;
 }

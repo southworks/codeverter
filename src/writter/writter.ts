@@ -8,18 +8,10 @@
 
 export interface Writteable {
     write(value: string): void;
-    writeNewLine(): void;
-    getCurrentDeepLevel(): number;
-    setDeepLevel(value: number): number;
-    incDeepLevel(): number;
-    decDeepLevel(): number;
-    restorePreviousDeepLevel(): number;
     setOpts(opts: Partial<WritterOpts>): void;
 }
 
 export type WritterOpts = {
-    indentChar: string;
-    indentValue: number;
     fileName: string;
 };
 
@@ -78,8 +70,6 @@ export abstract class Writter implements Writteable {
     }
 
     public setOpts(opts: Partial<WritterOpts>): void {
-        this.indentValue = opts.indentValue ?? this.indentValue;
-        this.indentChar = opts.indentChar ?? this.indentChar;
         this.fileName = opts.fileName ?? this.fileName;
     }
 }

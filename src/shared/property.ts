@@ -7,25 +7,18 @@
  */
 
 import { PropertyDeclaration } from "typescript";
+import { ValuedSourceElement } from "./types/source-element";
 import { TypedClassElement } from "./types/typed-class-element";
 
-export abstract class Property extends TypedClassElement<PropertyDeclaration> {
-    private defaultValue: string | number | undefined = undefined;
+export class Property extends TypedClassElement<PropertyDeclaration> implements ValuedSourceElement {
+    public value: string | number | undefined = undefined;
 
     protected isSignature(): boolean {
-        return this.getParent().getKind() == "interface";
-    }
-
-    protected hasDefaultValue(): boolean {
-        return this.defaultValue !== undefined;
-    }
-
-    protected getDefaultValue(): string | number | undefined {
-        return this.defaultValue;
+        return this.getParent().kind == "interface";
     }
 
     public parse(node: PropertyDeclaration): void {
         super.parse(node);
-        this.defaultValue = node.initializer?.getText();
+        this.value = node.initializer?.getText();
     }
 }

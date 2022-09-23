@@ -29,20 +29,20 @@ export enum KnownTypes {
 }
 
 export interface TypeMapper {
-    get(node: TypeNode | SyntaxKind): string | undefined;
+    get(node: TypeNode | SyntaxKind): string | KnownTypes;
     toKnownType(node: TypeNode): KnownTypes;
 }
 
-export abstract class TypeMapperImpl implements TypeMapper, Importer {
+export class TypeMapperImpl implements TypeMapper, Importer {
     private importHandler!: Imports;
 
     private isGenericArray(node: TypeNode): node is NodeWithTypeArguments {
         return "typeArguments" in node;
     }
 
-    protected abstract getKnownType(type: KnownTypes): string;
-
-    protected abstract getVoidType(): string;
+    protected getVoidType(): string {
+        return ""
+    }
 
     public setImportHandler(handler: Imports): void {
         this.importHandler = handler;
@@ -52,26 +52,22 @@ export abstract class TypeMapperImpl implements TypeMapper, Importer {
         return this.importHandler;
     }
 
-    public get(node: TypeNode): string | undefined {
+    public get(node: TypeNode): string | KnownTypes {
         const kind = this.toKnownType(node);
         switch (kind) {
             case KnownTypes.Reference: {
                 return ((node as TypeReferenceNode).typeName as Identifier).escapedText!
             }
             case KnownTypes.Array: {
-                let typeKind, knownTypeKind;
-                let knownType = this.getKnownType(kind);
+                let typeKind;
                 if (this.isGenericArray(node)) {
                     typeKind = this.toKnownType(((node as NodeWithTypeArguments).typeArguments as NodeArray<TypeNode>)[0]);
                 } else {
                     typeKind = this.toKnownType(((node as ArrayTypeNode).elementType as TypeNode));
                 }
-                knownTypeKind = this.getKnownType(typeKind);
-                return `${knownTypeKind}${knownType}`;
+                return typeKind;
             }
-            case KnownTypes.Void: return this.getVoidType();
-            default:
-                return this.getKnownType(kind);
+            default: return kind;
         }
     }
 

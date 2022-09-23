@@ -6,28 +6,45 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { SourceFile } from "typescript";
 import { Writteable } from "./writter/writter";
 import { File } from "./shared/file";
+import { render } from "ejs";
+import { TemplateGenerator } from "./templating/template-generator";
+import { CompilationResult } from "./shared/helpers/compiler-helper";
+import { elementRegistry } from "./element-registry";
 
-export { AvailableLanguages, languageMap } from "./language-map";
+export { AvailableLanguages } from "./language-map";
 export { CompilationResult, compileTypeScriptCode } from "./shared/helpers/compiler-helper";
 export { StringWritter } from "./writter/string-writter";
-export { SourceFile };
 
 /**
  * transform a sourcefile to a target language
- * @param node 
+ * @param compilationResult sourcefile + typeChecker
  * @param writter 
- * @param file 
+ * @param generator
  */
 export function printFile(
-    node: SourceFile, writter: Writteable, file: File
+    compilationResult: CompilationResult, writter: Writteable, generator: TemplateGenerator
 ): void {
-    writter.setOpts({
-        indentChar: file.getIndentChar(),
-        indentValue: file.getIndentValue()
+    const file = new File({
+        sourceFile: compilationResult.sourceFile,
+        typeChecker: compilationResult.typeChecker,
+        elementFactory: elementRegistry
     });
-    file.parse(node);
-    file.print(writter);
+
+    file.parse(compilationResult.sourceFile);
+
+    const data = TemplateGenerator.get(generator, file);
+    //console.log(data.template);
+    // const helpers = (data.data as any).helpers;
+    // Object.keys(helpers).forEach(k => {
+    //     console.log(k, helpers[k].toString());
+    // });
+
+    // console.log(JSON.stringify((data.data as RootSourceElement).classes));
+    // console.log(JSON.stringify((data.data as RootSourceElement).interfaces));
+    // console.log(JSON.stringify((data.data as RootSourceElement).constants));
+
+    //console.log(render(data.template, data.data));
+    writter.write(render(data.template, data.data));
 }

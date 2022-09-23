@@ -1,6 +1,6 @@
-import { CSharpFile } from "../../csharp/csharp-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
+import { CSharpGenerator } from "../../templating/csharp/csharp-template";
 
 const filename = "test.ts";
 
@@ -11,12 +11,12 @@ describe("CSharp: class", () => {
                 foo: number;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, strWritter, new CSharpGenerator());
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write(`namespace Test`);
         expected.write(`{`);
         expected.write("    public class Test");
@@ -24,7 +24,7 @@ describe("CSharp: class", () => {
         expected.write("        public int Foo { get; set; }");
         expected.write("    }");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
@@ -39,25 +39,25 @@ describe("CSharp: class", () => {
                 foo2: Test;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, strWritter, new CSharpGenerator());
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write(`namespace Test`);
         expected.write(`{`);
         expected.write("    public class Test");
         expected.write(`    {`);
         expected.write("        public int Foo { get; set; }");
         expected.write("    }");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("    public class Test2");
         expected.write(`    {`);
         expected.write("        public Test Foo2 { get; set; }");
         expected.write("    }");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
@@ -72,12 +72,12 @@ describe("CSharp: class", () => {
                 otherArray: Array<number> = new Array<number>(1, 2, 3);
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, filename);
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, strWritter, new CSharpGenerator());
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write(`namespace Test`);
         expected.write(`{`);
         expected.write("    public class Test");
@@ -89,7 +89,7 @@ describe("CSharp: class", () => {
         expected.write("        public int[] OtherArray { get; set; } = new int[] { 1, 2, 3 };");
         expected.write("    }");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

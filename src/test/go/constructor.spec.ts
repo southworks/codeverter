@@ -1,95 +1,93 @@
-// import { GoFile } from "../../go/go-file";
-// import { StringWritter } from "../../writter/string-writter";
-// import { compileTypeScriptCode, printFile } from "../../lib";
+import { StringWritter } from "../../writter/string-writter";
+import { compileTypeScriptCode, printFile } from "../../lib";
+import { GoGenerator } from "../../templating/go/go-template";
 
-// const filename = "test.ts";
-
-// describe("GO: constructor", () => {
-//     test("paramless", () => {
-//         const code = `
-//             export class Test {
-//                 public bar: Date;
+describe("GO: constructor", () => {
+    test("paramless", () => {
+        const code = `
+            export class Test {
+                public bar: Date;
             
-//                 constructor() { this.bar = new Date(); }
-//             }`;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+                constructor() { this.bar = new Date(); }
+            }`;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-//         const expected = new StringWritter("\t", 1);
-//         expected.write(`package test`);
-//         expected.writeNewLine();
-//         expected.write(`import "time"`);
-//         expected.writeNewLine();
-//         expected.write("type Test struct {");
-//         expected.write("\tBar time.Time");
-//         expected.write("}");
-//         expected.writeNewLine();
-//         expected.write("func NewTest() *Test {");
-//         expected.write("\tt := Test{}");
-//         expected.write("\t// this.bar = new Date(); ");
-//         expected.write("\treturn &t");
-//         expected.write("}");
-//         expected.writeNewLine();
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write(`import "time"`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("\tBar time.Time");
+        expected.write("}");
+        expected.write("");
+        expected.write("func NewTest() *Test {");
+        expected.write("\tt := Test{}");
+        expected.write("\t// this.bar = new Date(); ");
+        expected.write("\treturn &t");
+        expected.write("}");
+        expected.write("");
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 
-//     test("parameters", () => {
-//         const code = `
-//             export class Test {
-//                 public bar: Date;
+    test("parameters", () => {
+        const code = `
+            export class Test {
+                public bar: Date;
             
-//                 constructor(val: number, val2: string) { this.bar = new Date(); }
-//             }`;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+                constructor(val: number, val2: string) { this.bar = new Date(); }
+            }`;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-//         const expected = new StringWritter("\t", 1);
-//         expected.write(`package test`);
-//         expected.writeNewLine();
-//         expected.write(`import "time"`);
-//         expected.writeNewLine();
-//         expected.write("type Test struct {");
-//         expected.write("\tBar time.Time");
-//         expected.write("}");
-//         expected.writeNewLine();
-//         expected.write("func NewTest(val int, val2 string) *Test {");
-//         expected.write("\tt := Test{}");
-//         expected.write("\t// this.bar = new Date(); ");
-//         expected.write("\treturn &t");
-//         expected.write("}");
-//         expected.writeNewLine();
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write(`import "time"`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("\tBar time.Time");
+        expected.write("}");
+        expected.write("");
+        expected.write("func NewTest(val int, val2 string) *Test {");
+        expected.write("\tt := Test{}");
+        expected.write("\t// this.bar = new Date(); ");
+        expected.write("\treturn &t");
+        expected.write("}");
+        expected.write("");
 
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 
-//     test("property declaration", () => {
-//         const code = `
-//             export class Test {
-//                 constructor(public val: number, val2: string) {
-//                 }
-//             }`;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+    test("property declaration", () => {
+        const code = `
+            export class Test {
+                constructor(public val: number, val2: string) {
+                }
+            }`;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-//         const expected = new StringWritter("\t", 1);
-//         expected.write(`package test`);
-//         expected.writeNewLine();
-//         expected.write("type Test struct {");
-//         expected.write("\tVal int");
-//         expected.write("}");
-//         expected.writeNewLine();
-//         expected.write("func NewTest(val2 string) *Test {");
-//         expected.write("\tt := Test{}");
-//         expected.write("\treturn &t");
-//         expected.write("}");
-//         expected.writeNewLine();
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("\tVal int");
+        expected.write("}");
+        expected.write("");
+        expected.write("func NewTest(val2 string) *Test {");
+        expected.write("\tt := Test{}");
+        expected.write("\treturn &t");
+        expected.write("}");
+        expected.write("");
 
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
-// });
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+});

@@ -76,8 +76,12 @@ export abstract class TemplateGenerator implements TemplateHelper {
         return `<%=helpers.toUpperCase(${str})%>`;
     }
 
-    public toLowerCase(str: string): string {
-        return `<%=helpers.toLowerCase(${str})%>`;
+    public toLowerCase(str: string, includeTags: boolean = true): string {
+        let lower = `helpers.toLowerCase(${str})`;
+        if (includeTags) {
+            lower = `<%=${lower}%>`
+        }
+        return lower;
     }
 
     public orderBy(values: [] | string, field: string, order: [] | string): string {

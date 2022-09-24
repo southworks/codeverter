@@ -23,7 +23,7 @@ import {
 } from "typescript";
 import { FactoryParams } from "./types/factory";
 import { Imports } from "./imports";
-import { ClassSourceElement, EnumSourceElement, InterfaceSourceElement, RootSourceElement, SourceElement, SourceElementNamed, TypedSourceElement, ValuedSourceElement } from "./types/source-element";
+import { ClassSourceElement, EnumSourceElement, InterfaceSourceElement, ParametrizedSourceElement, RootSourceElement, SourceElement, SourceElementNamed, TypedSourceElement, ValuedSourceElement } from "./types/source-element";
 import { Element } from "./element";
 import { basename, extname } from "path";
 import { addVaribles } from "./helpers/variable-helper";
@@ -116,8 +116,8 @@ export class File extends Element<SourceFile> implements RootSourceElement<Sourc
         return this.getValues("constant") as ValuedSourceElement[];
     }
 
-    get functions(): ValuedSourceElement[] {
-        return this.getValues("function") as ValuedSourceElement[];
+    get functions(): ParametrizedSourceElement[] {
+        return this.getValues("function") as ParametrizedSourceElement[];
     }
 
     get enumerates(): EnumSourceElement[] {

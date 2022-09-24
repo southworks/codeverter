@@ -1,27 +1,24 @@
-// import { GoFile } from "../../go/go-file";
-// import { StringWritter } from "../../writter/string-writter";
-// import { compileTypeScriptCode, printFile } from "../../lib";
+import { StringWritter } from "../../writter/string-writter";
+import { compileTypeScriptCode, printFile } from "../../lib";
+import { GoGenerator } from "../../templating/go/go-template";
 
-// const filename = "test.ts";
+describe("GO: constant", () => {
+    test("Constants different types", () => {
+        const code = `
+            const constant: string = "test";\n
+            const numberConstant: number = 123;`;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-// describe("GO: constant", () => {
-//     test("Constants different types", () => {
-//         const code = `
-//             const constant: string = "test";\n
-//             const numberConstant: number = 123;`;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write(`const Constant string = "test"`);
+        expected.write("const NumberConstant int = 123");
+        expected.write("");
 
-//         const expected = new StringWritter("\t", 1);
-//         expected.write(`package test`);
-//         expected.writeNewLine();
-//         expected.write(`const Constant string = "test"`);
-//         expected.writeNewLine();
-//         expected.write("const NumberConstant int = 123");
-//         expected.writeNewLine();
-
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
-// });
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+});

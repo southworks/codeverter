@@ -1,54 +1,52 @@
-// import { GoFile } from "../../go/go-file";
-// import { StringWritter } from "../../writter/string-writter";
-// import { compileTypeScriptCode, printFile } from "../../lib";
+import { StringWritter } from "../../writter/string-writter";
+import { compileTypeScriptCode, printFile } from "../../lib";
+import { GoGenerator } from "../../templating/go/go-template";
 
-// const filename = "test.ts";
+describe("GO: interface", () => {
+    test("Simple interface", () => {
+        const code = `
+            export interface MyInterface {
+                firstMethod(a: number): void;
+                secondMethod(): string;
+            }
+        `;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-// describe("GO: interface", () => {
-//     test("Simple interface", () => {
-//         const code = `
-//             export interface MyInterface {
-//                 firstMethod(a: number): void;
-//                 secondMethod(): string;
-//             }
-//         `;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        const expected = new StringWritter();
+        expected.write("package test");
+        expected.write("");
+        expected.write("type MyInterface interface {");
+        expected.write("\tFirstMethod(a int)");
+        expected.write("\tSecondMethod() string");
+        expected.write("}");
+        expected.write("");
 
-//         const expected = new StringWritter("\t", 1);
-//         expected.write("package test");
-//         expected.writeNewLine();
-//         expected.write("type MyInterface interface {");
-//         expected.write("\tFirstMethod() ");
-//         expected.write("\tSecondMethod()  string");
-//         expected.write("}");
-//         expected.writeNewLine();
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
+    test("Other interface", () => {
+        const code = `
+            export interface MyInterface {
+                firstField: number;
+                firstMethod(x: number): string;
+            }
+        `;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-//     test("Other interface", () => {
-//         const code = `
-//             export interface MyInterface {
-//                 firstField: number;
-//                 firstMethod(x: number): string;
-//             }
-//         `;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        const expected = new StringWritter();
+        expected.write("package test");
+        expected.write("");
+        expected.write("type MyInterface interface {");
+        expected.write("\tFirstMethod(x int) string");
+        expected.write("}");
+        expected.write("");
 
-//         const expected = new StringWritter("\t", 1);
-//         expected.write("package test");
-//         expected.writeNewLine();
-//         expected.write("type MyInterface interface {");
-//         expected.write("\tFirstMethod()  string");
-//         expected.write("}");
-//         expected.writeNewLine();
-
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
-// });
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+});

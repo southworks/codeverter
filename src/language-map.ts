@@ -9,10 +9,11 @@
 import { Factory } from "./shared/types/factory";
 import { TemplateGenerator } from "./templating/template-generator";
 import { CSharpGenerator } from "./templating/csharp/csharp-template";
+import { GoGenerator } from "./templating/go/go-template";
 
 export type AvailableLanguages = "go" | "csharp";
 
 export const languageMap: { [x in AvailableLanguages]: Factory<TemplateGenerator, void> } = {
-    go: CSharpGenerator,
+    go: GoGenerator,
     csharp: CSharpGenerator
 }

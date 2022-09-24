@@ -13,10 +13,6 @@ import { TypedClassElement } from "./types/typed-class-element";
 export class Variable extends TypedClassElement<VariableDeclaration> implements ValuedSourceElement {
     public value: string | number | undefined;
 
-    protected isConst(): boolean {
-        return this.kind == "constant";
-    }
-
     public parse(node: VariableDeclaration): void {
         super.parse(node);
         this.value = (node.initializer as LiteralExpression)?.text ?? "";

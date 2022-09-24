@@ -15,7 +15,7 @@ import {
     PropertySignature
 } from "typescript";
 import { ClassElement } from "./class-element";
-import { InterfaceSourceElement, NamedElement, TypedSourceElement, ValuedSourceElement } from "./types/source-element";
+import { InterfaceSourceElement, NamedElement, ParametrizedSourceElement, TypedSourceElement, ValuedSourceElement } from "./types/source-element";
 
 export class Interface extends ClassElement<InterfaceDeclaration> implements InterfaceSourceElement {
     private extendsClauses: Array<string> = [];
@@ -52,8 +52,8 @@ export class Interface extends ClassElement<InterfaceDeclaration> implements Int
         return this.getValues("property") as ValuedSourceElement[];
     }
 
-    get methods(): TypedSourceElement[] {
-        return this.getValues("method") as TypedSourceElement[];
+    get methods(): ParametrizedSourceElement[] {
+        return this.getValues("method") as ParametrizedSourceElement[];
     }
 
     get extends(): NamedElement[] {

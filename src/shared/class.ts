@@ -88,8 +88,8 @@ export class Class extends ClassElement<ClassDeclaration> implements ClassSource
         return this.getValues("property") as ValuedSourceElement[];
     }
 
-    get methods(): TypedSourceElement[] {
-        return this.getValues("method") as TypedSourceElement[];
+    get methods(): ParametrizedSourceElement[] {
+        return this.getValues("method") as ParametrizedSourceElement[];
     }
 
     get constructors(): ParametrizedSourceElement[] {

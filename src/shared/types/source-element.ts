@@ -63,9 +63,9 @@ export interface ValuedSourceElement<T extends Declaration = Declaration> extend
     value: string | number | undefined;
 };
 
-export interface InterfaceSourceElement<T extends ClassDeclaration | InterfaceDeclaration = InterfaceDeclaration> extends SourceElement<T> {
+export interface InterfaceSourceElement<T extends ClassDeclaration | InterfaceDeclaration = InterfaceDeclaration> extends VisibilitySourceElement<T> {
     properties: ValuedSourceElement[],
-    methods: TypedSourceElement[],
+    methods: ParametrizedSourceElement[],
     extends: NamedElement[]
 }
 
@@ -94,7 +94,7 @@ export interface RootSourceElement<T extends Declaration = Declaration> extends 
     interfaces: InterfaceSourceElement[],
     variables: ValuedSourceElement[],
     constants: ValuedSourceElement[],
-    functions: TypedSourceElement[],
+    functions: ParametrizedSourceElement[],
     enumerates: EnumSourceElement[]
 };
 

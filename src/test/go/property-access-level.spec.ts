@@ -1,95 +1,93 @@
-// import { GoFile } from "../../go/go-file";
-// import { StringWritter } from "../../writter/string-writter";
-// import { compileTypeScriptCode, printFile } from "../../lib";
+import { StringWritter } from "../../writter/string-writter";
+import { compileTypeScriptCode, printFile } from "../../lib";
+import { GoGenerator } from "../../templating/go/go-template";
 
-// const filename = "test.ts";
+describe("GO: property access level", () => {
+    test("no access modifier", () => {
+        const code = `
+            export class Test {
+                foo: number;
+            }
+        `;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-// describe("GO: property access level", () => {
-//     test("no access modifier", () => {
-//         const code = `
-//             export class Test {
-//                 foo: number;
-//             }
-//         `;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("\tFoo int");
+        expected.write("}");
+        expected.write("");
 
-//         const expected = new StringWritter("\t", 1);
-//         expected.write(`package test`);
-//         expected.writeNewLine();
-//         expected.write("type Test struct {");
-//         expected.write("\tFoo int");
-//         expected.write("}");
-//         expected.writeNewLine();
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
+    test("public access modifier", () => {
+        const code = `
+            export class Test {
+                public foo: number;
+            }
+        `;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-//     test("public access modifier", () => {
-//         const code = `
-//             export class Test {
-//                 public foo: number;
-//             }
-//         `;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("\tFoo int");
+        expected.write("}");
+        expected.write("");
 
-//         const expected = new StringWritter("\t", 1);
-//         expected.write(`package test`);
-//         expected.writeNewLine();
-//         expected.write("type Test struct {");
-//         expected.write("\tFoo int");
-//         expected.write("}");
-//         expected.writeNewLine();
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
+    test("protected access modifier", () => {
+        const code = `
+            export class Test {
+                protected foo: number;
+            }
+        `;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-//     test("protected access modifier", () => {
-//         const code = `
-//             export class Test {
-//                 protected foo: number;
-//             }
-//         `;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("\tfoo int");
+        expected.write("}");
+        expected.write("");
 
-//         const expected = new StringWritter("\t", 1);
-//         expected.write(`package test`);
-//         expected.writeNewLine();
-//         expected.write("type Test struct {");
-//         expected.write("\tfoo int");
-//         expected.write("}");
-//         expected.writeNewLine();
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
+    test("private access modifier", () => {
+        const code = `
+            export class Test {
+                private foo: number;
+            }
+        `;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-//     test("private access modifier", () => {
-//         const code = `
-//             export class Test {
-//                 private foo: number;
-//             }
-//         `;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("\tfoo int");
+        expected.write("}");
+        expected.write("");
 
-//         const expected = new StringWritter("\t", 1);
-//         expected.write(`package test`);
-//         expected.writeNewLine();
-//         expected.write("type Test struct {");
-//         expected.write("\tfoo int");
-//         expected.write("}");
-//         expected.writeNewLine();
-
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
-// });
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+});

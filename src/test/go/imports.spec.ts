@@ -1,54 +1,54 @@
-// import { GoFile } from "../../go/go-file";
-// import { StringWritter } from "../../writter/string-writter";
-// import { compileTypeScriptCode, printFile } from "../../lib";
+import { StringWritter } from "../../writter/string-writter";
+import { compileTypeScriptCode, printFile } from "../../lib";
+import { GoGenerator } from "../../templating/go/go-template";
 
-// const filename = "test.ts";
+describe("GO: imports", () => {
+    test("simple date property", () => {
+        const code = `
+            export class Test {
+                foo: Date;
+            }
+        `;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-// describe("GO: imports", () => {
-//     test("simple date property", () => {
-//         const code = `
-//             export class Test {
-//                 foo: Date;
-//             }
-//         `;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
-//         const expected = new StringWritter("\t", 1);
-//         expected.write(`package test`);
-//         expected.writeNewLine();
-//         expected.write(`import "time"`);
-//         expected.writeNewLine();
-//         expected.write("type Test struct {");
-//         expected.write("\tFoo time.Time");
-//         expected.write("}");
-//         expected.writeNewLine();
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write(`import "time"`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("\tFoo time.Time");
+        expected.write("}");
+        expected.write("");
 
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 
-//     test("multiple date property", () => {
-//         const code = `
-//             export class Test {
-//                 foo: Date;
-//                 bar: Date;
-//             }
-//         `;
-//         let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+    test("multiple date property", () => {
+        const code = `
+            export class Test {
+                foo: Date;
+                bar: Date;
+            }
+        `;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
-//         const strWritter = new StringWritter();
-//         printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
-//         const expected = new StringWritter("\t", 1);
-//         expected.write(`package test`);
-//         expected.writeNewLine();
-//         expected.write(`import "time"`);
-//         expected.writeNewLine();
-//         expected.write("type Test struct {");
-//         expected.write("\tFoo time.Time");
-//         expected.write("\tBar time.Time");
-//         expected.write("}");
-//         expected.writeNewLine();
-//         expect(strWritter.getString()).toBe(expected.getString());
-//     });
-// });
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write(`import "time"`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("\tFoo time.Time");
+        expected.write("\tBar time.Time");
+        expected.write("}");
+        expected.write("");
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+});

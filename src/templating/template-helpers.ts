@@ -15,8 +15,8 @@ export interface TemplateHelper {
     toUpperCase(str: string): string;
     toLowerCase(str: string): string;
     sanitize(str: string, replaceChar: string): string;
-    orderBy(values: [] | string, field: string, order: [] | string): [] | string;
-    mapType(kt: KnownTypes | string, t: string): string;
+    orderBy(values: [], field: string, order: string[] | string): [] | string;
+    mapType(kt: KnownTypes | string, t: KnownTypes | string): string;
     mapDefaultValue(t: KnownTypes | string): string;
     splitBlock(...values: any[]): string;
     ifAny(...values: any[]): boolean | string;

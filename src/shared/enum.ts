@@ -15,7 +15,7 @@ type EnumerableValues = {
     [key: string]: string | number;
 }
 
-export class Enum extends TypedClassElement<EnumDeclaration> implements EnumSourceElement<EnumDeclaration> {
+export class Enum extends TypedClassElement<EnumDeclaration> implements EnumSourceElement {
     private enumValues: EnumerableValues = {};
 
     public parse(node: EnumDeclaration): void {

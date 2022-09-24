@@ -33,4 +33,35 @@ describe("GO: method", () => {
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
+
+    test("return integer", () => {
+        const code = new StringWritter();
+        code.write("export class Test {");
+        code.write("    public method(): number {");
+        code.write("        let asd: number = 1;");
+        code.write("        return asd;");
+        code.write("    }");
+        code.write("}");
+
+        let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+        debugger
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("}");
+        expected.write("");
+        expected.write("func (t *Test) Method() int {");
+        expected.write("\tvar asd int = 1");
+        expected.write("\t//        let asd: number = 1;");
+        expected.write("\t//        return asd;");
+        expected.write("\treturn 0");
+        expected.write("}");
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 });

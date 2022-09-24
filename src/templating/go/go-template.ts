@@ -27,33 +27,6 @@ interface GoHelpers {
 export class GoGenerator extends TemplateGenerator {
     public getCustomHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
         return {
-            // generateInitializeValue: (kt: KnownTypes, t: string, value: string, semicolon: boolean) => {
-            //     if (!!value) {
-            //         if (kt == 6) { //KnownTypes.Array
-            //             let defaultValue = value;
-            //             if (value.match("new Array")) {
-            //                 defaultValue = value.match(/\((.*?)\)/g)?.toString().replace("(", "").replace(")", "") ?? value;
-            //             } else if (value.includes("[") && value.includes("]")) {
-            //                 defaultValue = value.replace("[", "").replace("]", "");
-            //             }
-            //             defaultValue = defaultValue === "" ? defaultValue : ` ${defaultValue} `;
-            //             return ` = new ${helpers.mapType(kt, t)} {${defaultValue}};`;
-            //         } else if (kt == 3) { //KnownTypes.Date
-            //             return ` = new DateTime();`;
-            //         } else if (kt == 1) { //KnownTypes.String
-            //             return ` = "${value}";`;
-            //         }
-            //         return ` = ${value};`;
-            //     }
-            //     return semicolon ? ";" : "";
-            // },
-            // interfaceName: (val: string) => {
-            //     let intfName = val.replace(/\w/, c => c.toUpperCase());
-            //     if (intfName[0] != "I") {
-            //         intfName = "I" + intfName;
-            //     }
-            //     return intfName;
-            // },
             printVariable: (v: ValuedSourceElement, global: boolean) => {
                 const name = v.visibility == "public" && global
                     ? helpers.capitalize(v.name)

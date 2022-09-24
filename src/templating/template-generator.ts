@@ -9,7 +9,7 @@
 import { KnownTypes } from "../shared/type-mapper";
 import { TemplateHelper } from "./template-helpers";
 
-export abstract class TemplateGenerator implements TemplateHelper {
+export abstract class TemplateGenerator<H extends object = {}> implements TemplateHelper {
     private content: string[] = [];
 
     protected addLine(val: string): void {
@@ -37,9 +37,7 @@ export abstract class TemplateGenerator implements TemplateHelper {
     /**
      * implement custom helpers
      */
-    public getCustomHelpers(helpers: TemplateHelper): object {
-        return {};
-    }
+    public abstract getCustomHelpers(helpers: TemplateHelper & H): H;
 
     public abstract getDefaultValueMap(type: KnownTypes): string;
     public abstract getTypeMap(knowType: KnownTypes, type: string): string;

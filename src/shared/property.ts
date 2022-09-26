@@ -11,7 +11,7 @@ import { ValuedSourceElement } from "./types/source-element";
 import { TypedClassElement } from "./types/typed-class-element";
 
 export class Property extends TypedClassElement<PropertyDeclaration> implements ValuedSourceElement {
-    public value: string | number | undefined = undefined;
+    public value!: string;
 
     protected isSignature(): boolean {
         return this.getParent().kind == "interface";
@@ -19,6 +19,6 @@ export class Property extends TypedClassElement<PropertyDeclaration> implements 
 
     public parse(node: PropertyDeclaration): void {
         super.parse(node);
-        this.value = node.initializer?.getText();
+        this.value = node.initializer?.getText() ?? "";
     }
 }

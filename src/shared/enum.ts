@@ -7,7 +7,6 @@
  */
 
 import { EnumDeclaration, Identifier, SyntaxKind } from "typescript";
-import { KnownTypes } from "./type-mapper";
 import { EnumSourceElement, ValuedSourceElement } from "./types/source-element";
 import { TypedClassElement } from "./types/typed-class-element";
 
@@ -31,7 +30,7 @@ export class Enum extends TypedClassElement<EnumDeclaration> implements EnumSour
     get value(): ValuedSourceElement[] {
         return Object.keys(this.enumValues).map(k => {
             let val = this.enumValues[k];
-            let type = typeof val === "string" ? KnownTypes.String : KnownTypes.Number;
+            let type = typeof val === "string" ? "string" : "number";
             return {
                 name: k,
                 kind: "enum",

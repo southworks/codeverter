@@ -18,15 +18,7 @@ import {
 import { Importer } from "./types/importer";
 import { Imports } from "./imports";
 
-export enum KnownTypes {
-    Number,
-    String,
-    Boolean,
-    Date,
-    Reference,
-    Void,
-    Array
-}
+export type KnownTypes = "number" | "string" | "boolean" | "date" | "reference" | "void" | "array";
 
 export interface TypeMapper {
     get(node: TypeNode | SyntaxKind): string | KnownTypes;
@@ -55,10 +47,10 @@ export class TypeMapperImpl implements TypeMapper, Importer {
     public get(node: TypeNode): string | KnownTypes {
         const kind = this.toKnownType(node);
         switch (kind) {
-            case KnownTypes.Reference: {
+            case "reference": {
                 return ((node as TypeReferenceNode).typeName as Identifier).escapedText!
             }
-            case KnownTypes.Array: {
+            case "array": {
                 let typeKind;
                 if (this.isGenericArray(node)) {
                     typeKind = this.toKnownType(((node as NodeWithTypeArguments).typeArguments as NodeArray<TypeNode>)[0]);
@@ -74,24 +66,24 @@ export class TypeMapperImpl implements TypeMapper, Importer {
     public toKnownType(node: TypeNode): KnownTypes {
         switch (node?.kind) {
             case SyntaxKind.NumberKeyword:
-                return KnownTypes.Number;
+                return "number";
             case SyntaxKind.StringKeyword:
-                return KnownTypes.String;
+                return "string";
             case SyntaxKind.BooleanKeyword:
-                return KnownTypes.Boolean;
+                return "boolean";
             case SyntaxKind.ArrayType:
-                return KnownTypes.Array;
+                return "array";
             default: {
                 if (node?.kind == SyntaxKind.TypeReference) {
                     const referenceType = ((node as TypeReferenceNode).typeName as Identifier).escapedText!;
                     if (referenceType == "Date") {
-                        return KnownTypes.Date;
+                        return "date";
                     } else if (referenceType == "Array") {
-                        return KnownTypes.Array;
+                        return "array";
                     }
-                    return KnownTypes.Reference;
+                    return "reference";
                 }
-                return KnownTypes.Void;
+                return "void";
             }
         }
     }

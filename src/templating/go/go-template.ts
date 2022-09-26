@@ -7,6 +7,7 @@
  */
 
 import { KnownTypes } from "../../shared/type-mapper";
+import { TypedSourceElement } from "../../shared/types/source-element";
 import { TemplateGenerator } from "../template-generator";
 import { TemplateHelper } from "../template-helpers";
 import { getGoHelpers, GoHelpers } from "./go-helpers";
@@ -32,49 +33,50 @@ export class GoGenerator extends TemplateGenerator<GoHelpers> {
         return `<%-helpers.printImports(${varName})%>`;
     }
 
+    private printMethod(varName: string): string {
+        return `<%-helpers.printMethod(null, ${varName})%>`;
+    }
+
     public getCustomHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
         return getGoHelpers(helpers);
     }
 
-    /**
-     * Use integers instead the enum to easily convert into string.
-     * @param type 
-     * @returns 
-     */
-    public getDefaultValueMap(type: KnownTypes): string {
-        switch (type) {
-            case 0: return " 0";
-            case 1: return " \"\"";
-            case 2: return " false";
-            case 3: return " new Date()";
-            case 5: return "";
+    public getDefaultValueMap(e: TypedSourceElement): string {
+        switch (e.knownType) {
+            case "number": return " 0";
+            case "string": return " \"\"";
+            case "boolean": return " false";
+            case "date": return " new Date()";
+            case "void": return "";
             default:
                 return " null";
         }
     }
 
+    public getDefaultVisibilityOrder(): string[] {
+        return ["private", "protected", "public"];
+    }
     /**
      * Use anonymous function to be able to call it again inside
-     * Use integers instead the enum to easily convert into string.
      * @param knowType 
      * @param type 
      * @returns 
      */
-    public getTypeMap(knowType: KnownTypes, type: string): string {
-        const fn: Function = (kt: KnownTypes, t: string) => {
+    public getTypeMap(e: TypedSourceElement): string {
+        const fn: Function = (kt: KnownTypes, t: string | KnownTypes) => {
             switch (kt) {
-                case 0: return "int";
-                case 1: return "string";
-                case 2: return "bool";
-                case 3: return "time.Time";
-                case 4: return t; //KnownTypes.Reference
-                case 5: return ""; //KnownTypes.Void
-                case 6: return `[]${fn(+t, "")}`;
+                case "number": return "int";
+                case "string": return "string";
+                case "boolean": return "bool";
+                case "date": return "time.Time";
+                case "reference": return t;
+                case "void": return "";
+                case "array": return `[]${fn(t, "")}`;
                 default:
                     return "error";
             }
         };
-        return fn(knowType, type);
+        return fn(e.knownType, e.type);
     }
 
     public getExtension(): string {
@@ -82,7 +84,7 @@ export class GoGenerator extends TemplateGenerator<GoHelpers> {
     }
 
     public getTemplate(): string {
-        this.addLine(`<% let visibilityOrder = ["public", "protected", "private"];`);
+        this.addLine(`<% let visibilityOrder = ${this.getVisibilityOrder()};`);
         this.addLine(`let classes = ${this.orderBy("sourceFile.classes", "visibility", "visibilityOrder")};`);
         this.addLine(`let interfaces = ${this.orderBy("sourceFile.interfaces", "visibility", "visibilityOrder")};`);
         this.addLine(`let variables = sourceFile.variables;`);
@@ -90,7 +92,7 @@ export class GoGenerator extends TemplateGenerator<GoHelpers> {
         this.addLine(`let functions = sourceFile.functions;`);
         this.addLine(`let enumerates = sourceFile.enumerates;`);
         this.addLine(`_%>`);
-        this.addLine(`package ${this.sanitize(this.toLowerCase("sourceFile.name", false), "_")}`);
+        this.addLine(`package ${this.sanitize(this.toLowerCase("sourceFile.name"), "_")}`);
         this.addLine(this.printImports("sourceFile"));
         this.startFor("e", this.orderBy("enumerates", "visibility", "visibilityOrder"));
         this.addNewLineIf("i != 0");
@@ -113,6 +115,11 @@ export class GoGenerator extends TemplateGenerator<GoHelpers> {
         this.startFor("c", "classes");
         this.addNewLineIf("i != 0");
         this.addLine(this.printClass("c"));
+        this.endFor();
+        this.addLine(this.splitBlock("functions", "variables.concat(constants).concat(enumerates).concat(interfaces).concat(classes)"));
+        this.startFor("f", "functions");
+        this.addNewLineIf("i != 0");
+        this.addLine(this.printMethod("f"));
         this.endFor();
         return super.getTemplate();
     }

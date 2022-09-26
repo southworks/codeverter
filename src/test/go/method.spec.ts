@@ -13,7 +13,7 @@ describe("GO: method", () => {
         code.write("}");
 
         let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
-        debugger
+
         const strWritter = new StringWritter();
         printFile(compilationResult, new GoGenerator(), strWritter);
 
@@ -44,7 +44,7 @@ describe("GO: method", () => {
         code.write("}");
 
         let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
-        debugger
+
         const strWritter = new StringWritter();
         printFile(compilationResult, new GoGenerator(), strWritter);
 
@@ -59,6 +59,29 @@ describe("GO: method", () => {
         expected.write("\t//        let asd: number = 1;");
         expected.write("\t//        return asd;");
         expected.write("\treturn 0");
+        expected.write("}");
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+
+    test("global function", () => {
+        const code = new StringWritter();
+        code.write("export function foo(): string {");
+        code.write("    return \"\";");
+        code.write("}");
+
+        let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write("func Foo() string {");
+        expected.write("\t//    return \"\";");
+        expected.write("\treturn \"\"");
         expected.write("}");
         expected.write("");
 

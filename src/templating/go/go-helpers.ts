@@ -18,12 +18,12 @@ import {
 import { TemplateHelper } from "../template-helpers";
 
 export interface GoHelpers {
+    fixName(e: VisibilitySourceElement): string;
     printVariable(v: ValuedSourceElement, global: boolean): string;
     printEnum(v: EnumSourceElement): string;
     printClass(v: ClassSourceElement): string;
     printInterface(v: InterfaceSourceElement): string;
     printProperty(v: ValuedSourceElement): string;
-    fixName(e: VisibilitySourceElement): string;
     printConstructor(v: ParametrizedSourceElement): string;
     printMethodBody(v: ParametrizedSourceElement): string;
     printMethod(p: ClassSourceElement | InterfaceSourceElement, v: ParametrizedSourceElement): string;
@@ -37,22 +37,23 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
                 ? helpers.capitalize(v.name)
                 : helpers.toLowerCase(v.name);
             const declarationPrefix = v.kind == "constant" ? "const" : "var";
-            const asignChar = (v.kind == "constant" || v.knownType != 5) ? "=" : ":=";
+            const asignChar = (v.kind == "constant" || v.knownType != "void") ? "=" : ":=";
 
             let value = v.value;
-            if (v.knownType == 1 || (v.knownType == 5 && isNaN(+v.value!))) {
+            if (v.knownType == "string" || (v.knownType == "void" && isNaN(+v.value!))) {
                 value = `"${v.value}"`;
             }
             if (value == "") {
                 return ""; // cannot define empty const/var in go
             }
-            let type = helpers.mapType(v.knownType, v.type);
+            let type = helpers.mapType(v);
             if (type != "") {
                 type = ` ${type}`;
             }
             return `${declarationPrefix} ${name}${type} ${asignChar} ${value}`;
         },
         printEnum: (v: EnumSourceElement) => {
+            debugger;
             let result = `const (`;
             v.value.forEach((k, i) => {
                 let value = k.value;
@@ -60,7 +61,7 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
                 value = type == "string" ? `"${value}"` : value;
                 let memberStr = `${k.name}`;
                 memberStr += i == 0
-                    ? ` ${type} = ${value || value === 0 ? value : "iota"}`
+                    ? ` ${type} = ${value == undefined ? "iota" : value}`
                     : value ? ` = ${value}` : "";
                 result = `${result}\n\t${memberStr}`;
             });
@@ -68,7 +69,7 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
         },
         printProperty: (v: ValuedSourceElement) => {
             const name = helpers.fixName(v);
-            let type = helpers.mapType(v.knownType, v.type);
+            let type = helpers.mapType(v);
             return `${name} ${type}`;
         },
         fixName: (e: VisibilitySourceElement) => {
@@ -76,21 +77,20 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
         },
         printMethod: (p: ClassSourceElement | InterfaceSourceElement, v: ParametrizedSourceElement) => {
             const params = v.parameters.map(p => {
-                let type = helpers.mapType(p.knownType, p.type);
+                let type = helpers.mapType(p);
                 return `${p.name} ${type}`;
             }).join(", ");
-            let resultType = helpers.mapType(v.knownType, v.type);
+            let resultType = helpers.mapType(v);
             if (!!resultType) {
                 resultType = ` ${resultType}`;
             }
-            if (p.kind == "class") {
+            if (!p || p.kind == "class") {
                 const receiver = p
                     ? `(${helpers.toLowerCase(p.name[0])} *${helpers.fixName(p)}) `
                     : "";
                 let result = `func ${receiver}${helpers.fixName(v)}(${params})${resultType} {`;
-                debugger;
                 result = `${result}${helpers.printMethodBody(v)}`;
-                result = `${result}\n\treturn${helpers.mapDefaultValue(v.knownType)}`;
+                result = `${result}\n\treturn${helpers.mapDefaultValue(v)}`;
                 return `${result}\n}`;
             }
             return `${helpers.fixName(v)}(${params})${resultType}`;
@@ -112,14 +112,14 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
         },
         printConstructor: (v: ParametrizedSourceElement) => {
             const params = v.parameters.map(p => {
-                let type = helpers.mapType(p.knownType, p.type);
+                let type = helpers.mapType(p);
                 return `${p.name} ${type}`;
             }).join(", ");
 
             let result = `func New${helpers.capitalize(v.name)}(${params}) *${helpers.fixName(v)} {`;
 
             const firstLetter = v.name.charAt(0).toLowerCase();
-            const init = `${firstLetter} := ${helpers.fixName(v)}{}`
+            const init = `${firstLetter} := ${helpers.fixName(v)}{}`;
             result = `${result}\n\t${init}`;
             result = `${result}${helpers.printMethodBody(v)}`;
             result = `${result}\n\treturn &${firstLetter}`;
@@ -146,7 +146,7 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
             }
 
             v.methods.forEach(m => {
-                result = `${result}\n\n${helpers.printMethod(v, m)}`
+                result = `${result}\n\n${helpers.printMethod(v, m)}`;
             });
             return result;
         },
@@ -158,7 +158,7 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
             });
 
             v.methods.forEach(m => {
-                result = `${result}\n\t${helpers.printMethod(v, m)}`
+                result = `${result}\n\t${helpers.printMethod(v, m)}`;
             });
             return result + "\n}";
         },
@@ -175,8 +175,8 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
                 .concat(s.classes.flatMap(c => c.properties.map(m => m.knownType)))
                 .concat(s.classes.flatMap(c => c.constants.map(m => m.knownType)))
                 .concat(s.classes.flatMap(c => c.constructors.flatMap(p => p.parameters.map(pa => pa.knownType))));
-            if (types.includes(3)) {
-                return `\nimport "time"\n`
+            if (types.includes("date")) {
+                return `\nimport "time"\n`;
             }
             return "";
         }

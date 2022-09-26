@@ -38,4 +38,32 @@ describe("CSharp: method", () => {
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
+
+    test("global function", () => {
+        const code = new StringWritter();
+        code.write("export function foo: string {");
+        code.write("    return \"\";");
+        code.write("}");
+
+        let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public static class Helper");
+        expected.write(`    {`);
+        expected.write("        public static string Foo()");
+        expected.write("        {");
+        expected.write("            //     return \"\";");
+        expected.write("            return \"\";");
+        expected.write("        }");
+        expected.write("    }");
+        expected.write("}");
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 });

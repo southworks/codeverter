@@ -11,7 +11,7 @@ import { ValuedSourceElement } from "./types/source-element";
 import { TypedClassElement } from "./types/typed-class-element";
 
 export class Variable extends TypedClassElement<VariableDeclaration> implements ValuedSourceElement {
-    public value: string | number | undefined;
+    public value!: string;
 
     public parse(node: VariableDeclaration): void {
         super.parse(node);

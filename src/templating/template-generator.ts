@@ -6,10 +6,10 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { KnownTypes } from "../shared/type-mapper";
+import { TypedSourceElement } from "../shared/types/source-element";
 import { TemplateHelper } from "./template-helpers";
 
-export abstract class TemplateGenerator<H extends object = {}> implements TemplateHelper {
+export abstract class TemplateGenerator<H extends object = {}> {
     private content: string[] = [];
 
     protected addLine(val: string): void {
@@ -34,75 +34,44 @@ export abstract class TemplateGenerator<H extends object = {}> implements Templa
         this.addLine(`<% }); _%>`);
     }
 
+    protected orderBy(values: [] | string, field: string, order: [] | string): string {
+        return `helpers.orderBy(${values}, "${field}", ${order})`;
+    }
+
+    protected sanitize(str: string, replaceChar: string): string {
+        return `<%=helpers.sanitize(${str}, "${replaceChar}")%>`;
+    }
+
+    protected toLowerCase(str: string): string {
+        return `helpers.toLowerCase(${str})`;
+    }
+
+    protected splitBlock(...values: any[]): string {
+        return `<%- helpers.splitBlock(${values.join(", ")}) _%>`;
+    }
+
+    protected capitalize(str: string): string {
+        return `helpers.capitalize(${str})`;
+    }
+
+    protected getVisibilityOrder(): string {
+        return "helpers.defaultVisibilityOrder()";
+    }
+
+    protected ifAny(...values: any[]): string {
+        return `helpers.ifAny(${values.join(", ")})`;
+    }
+
     /**
      * implement custom helpers
      */
     public abstract getCustomHelpers(helpers: TemplateHelper & H): H;
-
-    public abstract getDefaultValueMap(type: KnownTypes): string;
-    public abstract getTypeMap(knowType: KnownTypes, type: string): string;
+    public abstract getDefaultVisibilityOrder(): string[];
+    public abstract getDefaultValueMap(e: TypedSourceElement): string;
+    public abstract getTypeMap(e: TypedSourceElement): string;
     public abstract getExtension(): string;
 
     public getTemplate(): string {
         return this.content.join("\n");
-    }
-
-    /**
-     * mocks for templating
-     */
-    public camelize(str: string, includeTags: boolean = true): string {
-        let camelize = `helpers.camelize(${str})`;
-        if (includeTags) {
-            camelize = `<%=${camelize}%>`;
-        }
-        return camelize;
-    }
-
-    public capitalize(str: string, includeTags: boolean = true): string {
-        let capitalize = `helpers.capitalize(${str})`;
-        if (includeTags) {
-            capitalize = `<%=${capitalize}%>`;
-        }
-        return capitalize;
-    }
-
-    public sanitize(str: string, replaceChar: string): string {
-        return `<%=helpers.sanitize(${str}, "${replaceChar}")%>`;
-    }
-
-    public toUpperCase(str: string): string {
-        return `<%=helpers.toUpperCase(${str})%>`;
-    }
-
-    public toLowerCase(str: string, includeTags: boolean = true): string {
-        let lower = `helpers.toLowerCase(${str})`;
-        if (includeTags) {
-            lower = `<%=${lower}%>`
-        }
-        return lower;
-    }
-
-    public orderBy(values: [] | string, field: string, order: [] | string): string {
-        return `helpers.orderBy(${values}, "${field}", ${order})`;
-    }
-
-    public mapType(kt: string | KnownTypes, t: string, includeTags: boolean = true): string {
-        let map = `helpers.mapType(${kt}, ${t})`;
-        if (includeTags) {
-            map = `<%=${map}%>`
-        }
-        return map;
-    }
-
-    public mapDefaultValue(t: KnownTypes | string): string {
-        return `<%- helpers.mapDefaultValue(${t}) _%>`;
-    }
-
-    public splitBlock(...values: any[]): string {
-        return `<%- helpers.splitBlock(${values.join(", ")}) _%>`;
-    }
-
-    public ifAny(...values: any[]): string | boolean {
-        return `helpers.ifAny(${values.join(", ")})`;
     }
 }

@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { KnownTypes } from "../shared/type-mapper";
+import { TypedSourceElement } from "../shared/types/source-element";
 import { TemplateGenerator } from "./template-generator";
 
 export interface TemplateHelper {
@@ -15,11 +15,12 @@ export interface TemplateHelper {
     toUpperCase(str: string): string;
     toLowerCase(str: string): string;
     sanitize(str: string, replaceChar: string): string;
-    orderBy(values: [], field: string, order: string[] | string): [] | string;
-    mapType(kt: KnownTypes | string, t: KnownTypes | string): string;
-    mapDefaultValue(t: KnownTypes | string): string;
+    orderBy(values: any[], field: string, order: string[]): [];
+    mapType(e: TypedSourceElement): string;
+    mapDefaultValue(e: TypedSourceElement): string;
     splitBlock(...values: any[]): string;
-    ifAny(...values: any[]): boolean | string;
+    ifAny(...values: any[]): boolean;
+    defaultVisibilityOrder(): string[];
 }
 
 export class TemplateHelpers {
@@ -81,6 +82,7 @@ export class TemplateHelpers {
             },
             mapType: generator.getTypeMap,
             mapDefaultValue: generator.getDefaultValueMap,
+            defaultVisibilityOrder: generator.getDefaultVisibilityOrder,
             splitBlock: (...values: any[]) => {
                 if (values.every(v => v && v.length)) {
                     return `\n`;

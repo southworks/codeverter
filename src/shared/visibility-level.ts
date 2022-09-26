@@ -8,22 +8,18 @@
 
 import { Node, SyntaxKind } from "typescript";
 
-export enum AccessLevel {
-    Private,
-    Protected,
-    Public
-}
+export type VisibilityLevel = "private" | "protected" | "public";
 
-export class AccessLevelHelper {
-    public static getLevel(node: Node): AccessLevel {
+export class VisibilityLevelHelper {
+    public static getLevel(node: Node): VisibilityLevel {
         const accessModifierIndex = 0;
         const mods = node.modifiers;
         if (mods) {
             switch (mods![accessModifierIndex].kind) {
-                case SyntaxKind.PrivateKeyword: return AccessLevel.Private;
-                case SyntaxKind.ProtectedKeyword: return AccessLevel.Protected;
+                case SyntaxKind.PrivateKeyword: return "private";
+                case SyntaxKind.ProtectedKeyword: return "protected";
             }
         }
-        return AccessLevel.Public
+        return "public";
     }
 }

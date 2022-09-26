@@ -6,8 +6,13 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { ClassDeclaration, Declaration, EnumDeclaration, FunctionLikeDeclarationBase, InterfaceDeclaration } from "typescript";
-import { AccessLevel } from "../access-level";
+import {
+    ClassDeclaration,
+    Declaration,
+    EnumDeclaration,
+    FunctionLikeDeclarationBase,
+    InterfaceDeclaration
+} from "typescript";
 import { KnownTypes } from "../type-mapper";
 import { ElementKind } from "./elements";
 import { Importer, ImporterGetter } from "./importer";

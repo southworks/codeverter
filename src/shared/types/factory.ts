@@ -9,7 +9,6 @@
 import { SourceFile, TypeChecker } from "typescript";
 import { ElementKind } from "./elements";
 import { SourceElement } from "./source-element";
-import { Function } from "../function";
 
 export type FactoryParams = {
     sourceFile: SourceFile,

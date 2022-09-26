@@ -89,11 +89,6 @@ export class CSharpGenerator extends TemplateGenerator<CSharpHelpers> {
         this.addLine(`let functions = sourceFile.functions;`);
         this.addLine(`let enumerates = sourceFile.enumerates;`);
         this.addLine(`_%>`);
-        this.addComment("======= imports section =======");
-        this.startFor("im", "sourceFile.imports");
-        this.addLine(`using <%=im%>;`);
-        this.addNewLineIf("i == sourceFile.imports.length-1");
-        this.endFor();
         this.addLine(`namespace ${this.sanitize(this.capitalize("sourceFile.name"), "_")}`);
         this.addComment("======= interfaces section =======");
         this.addLine(`{`);

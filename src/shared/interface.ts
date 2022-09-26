@@ -15,7 +15,7 @@ import {
     PropertySignature
 } from "typescript";
 import { ClassElement } from "./class-element";
-import { InterfaceSourceElement, NamedElement, ParametrizedSourceElement, TypedSourceElement, ValuedSourceElement } from "./types/source-element";
+import { InterfaceSourceElement, NamedElement, ParametrizedSourceElement, ValuedSourceElement } from "./types/source-element";
 
 export class Interface extends ClassElement<InterfaceDeclaration> implements InterfaceSourceElement {
     private extendsClauses: Array<string> = [];

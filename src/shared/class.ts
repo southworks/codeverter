@@ -23,7 +23,6 @@ import {
     ClassSourceElement,
     NamedElement,
     ParametrizedSourceElement,
-    TypedSourceElement,
     ValuedSourceElement
 } from "./types/source-element";
 

@@ -15,36 +15,15 @@ import {
     TypeNode,
     TypeReferenceNode
 } from "typescript";
-import { Importer } from "./types/importer";
-import { Imports } from "./imports";
 
 export type KnownTypes = "number" | "string" | "boolean" | "date" | "reference" | "void" | "array";
 
-export interface TypeMapper {
-    get(node: TypeNode | SyntaxKind): string | KnownTypes;
-    toKnownType(node: TypeNode): KnownTypes;
-}
-
-export class TypeMapperImpl implements TypeMapper, Importer {
-    private importHandler!: Imports;
-
-    private isGenericArray(node: TypeNode): node is NodeWithTypeArguments {
+export class TypeMapper {
+    private static isGenericArray(node: TypeNode): node is NodeWithTypeArguments {
         return "typeArguments" in node;
     }
 
-    protected getVoidType(): string {
-        return ""
-    }
-
-    public setImportHandler(handler: Imports): void {
-        this.importHandler = handler;
-    }
-
-    public getImportHandler(): Imports {
-        return this.importHandler;
-    }
-
-    public get(node: TypeNode): string | KnownTypes {
+    public static get(node: TypeNode): string | KnownTypes {
         const kind = this.toKnownType(node);
         switch (kind) {
             case "reference": {
@@ -63,7 +42,7 @@ export class TypeMapperImpl implements TypeMapper, Importer {
         }
     }
 
-    public toKnownType(node: TypeNode): KnownTypes {
+    public static toKnownType(node: TypeNode): KnownTypes {
         switch (node?.kind) {
             case SyntaxKind.NumberKeyword:
                 return "number";

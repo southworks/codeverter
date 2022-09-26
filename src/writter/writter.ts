@@ -16,14 +16,6 @@ export type WritterOpts = {
 };
 
 export abstract class Writter implements Writteable {
-    private newLine = typeof process === "undefined"
-        ? "\n"
-        : process.platform === "win32" ? "\r\n" : "\n";
-    private fileName!: string;
-
-    protected getFileName(): string {
-        return this.fileName;
-    }
 
     protected abstract writeImpl(value: string): void;
 
@@ -31,11 +23,6 @@ export abstract class Writter implements Writteable {
         this.writeImpl(value);
     }
 
-    public writeNewLine(): void {
-        this.writeImpl(this.newLine);
-    }
-
-    public setOpts(opts: Partial<WritterOpts>): void {
-        this.fileName = opts.fileName ?? this.fileName;
+    public setOpts(_: Partial<WritterOpts>): void {
     }
 }

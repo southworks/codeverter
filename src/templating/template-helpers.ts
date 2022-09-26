@@ -85,7 +85,7 @@ export class TemplateHelpers {
             defaultVisibilityOrder: generator.getDefaultVisibilityOrder,
             splitBlock: (...values: any[]) => {
                 if (values.every(v => v && v.length)) {
-                    return `\n`;
+                    return "\n";
                 }
                 return "";
             },

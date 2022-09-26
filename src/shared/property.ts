@@ -13,10 +13,6 @@ import { TypedClassElement } from "./types/typed-class-element";
 export class Property extends TypedClassElement<PropertyDeclaration> implements ValuedSourceElement {
     public value!: string;
 
-    protected isSignature(): boolean {
-        return this.getParent().kind == "interface";
-    }
-
     public parse(node: PropertyDeclaration): void {
         super.parse(node);
         this.value = node.initializer?.getText() ?? "";

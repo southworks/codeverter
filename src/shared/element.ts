@@ -7,13 +7,11 @@
  */
 
 import { Declaration, Identifier, NamedDeclaration, SourceFile, TypeChecker } from "typescript";
-import { Imports } from "./imports";
 import { ElementKind, ElementValues } from "./types/elements";
 import { ElementFactory, Factory, FactoryParams } from "./types/factory";
 import { SourceElement } from "./types/source-element";
 
 export abstract class Element<K extends NamedDeclaration> implements SourceElement<K> {
-    private importHandler!: Imports;
     private parent!: SourceElement;
     private elementFactory: ElementFactory;
     private values: ElementValues = new ElementValues();
@@ -27,7 +25,6 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
 
     private addElementAndParse(kind: ElementKind, node: Declaration): void {
         let element = this.createElement(kind);
-        element.setImportHandler(this.getImportHandler());
         element.setParent(this);
         if (node) {
             element.parse(node);
@@ -67,14 +64,6 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
 
     public parse(node: K): void {
         this.name = (node.name as Identifier)?.escapedText ?? "";
-    }
-
-    public setImportHandler(handler: Imports): void {
-        this.importHandler = handler;
-    }
-
-    public getImportHandler(): Imports {
-        return this.importHandler;
     }
 
     public setParent(element: SourceElement): void {

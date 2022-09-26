@@ -22,15 +22,19 @@ import {
     TypeChecker
 } from "typescript";
 import { FactoryParams } from "./types/factory";
-import { Imports } from "./imports";
-import { ClassSourceElement, EnumSourceElement, InterfaceSourceElement, ParametrizedSourceElement, RootSourceElement, SourceElement, SourceElementNamed, TypedSourceElement, ValuedSourceElement } from "./types/source-element";
+import {
+    ClassSourceElement,
+    EnumSourceElement,
+    InterfaceSourceElement,
+    ParametrizedSourceElement,
+    RootSourceElement,
+    ValuedSourceElement
+} from "./types/source-element";
 import { Element } from "./element";
 import { basename, extname } from "path";
 import { addVaribles } from "./helpers/variable-helper";
 
-
 export class File extends Element<SourceFile> implements RootSourceElement<SourceFile> {
-    private importsHandler!: Imports;
     private sourceFile: SourceFile;
     private typeChecker: TypeChecker;
 
@@ -39,8 +43,6 @@ export class File extends Element<SourceFile> implements RootSourceElement<Sourc
         this.sourceFile = params.sourceFile;
         this.typeChecker = params.typeChecker;
         this.kind = "file";
-        //const importFactory = this.getFactory("imports");
-        //this.importsHandler = new importFactory({});
     }
 
     private addClass(node: ClassDeclaration): void {
@@ -90,14 +92,6 @@ export class File extends Element<SourceFile> implements RootSourceElement<Sourc
     public parse(node: SourceFile): void {
         this.name = basename(node.fileName).replace(extname(node.fileName), "");
         this.visitNode(node);
-    }
-
-    public getImportHandler(): Imports {
-        return this.importsHandler;
-    }
-
-    get imports(): SourceElementNamed[] {
-        return [];
     }
 
     get classes(): ClassSourceElement[] {

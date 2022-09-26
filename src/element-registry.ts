@@ -11,7 +11,6 @@ import { Constructor } from "./shared/constructor";
 import { Enum } from "./shared/enum";
 import { File } from "./shared/file";
 import { Function } from "./shared/function";
-import { Imports } from "./shared/imports";
 import { Interface } from "./shared/interface";
 import { Method } from "./shared/method";
 import { Parameter } from "./shared/parameter";
@@ -27,7 +26,6 @@ export const elementRegistry: ElementFactory = {
     enum: Enum,
     file: File,
     function: Function,
-    //imports: Imports,
     interface: Interface,
     method: Method,
     parameter: Parameter,

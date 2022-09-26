@@ -14,31 +14,23 @@ import {
     InterfaceDeclaration
 } from "typescript";
 import { KnownTypes } from "../type-mapper";
+import { VisibilityLevel } from "../visibility-level";
 import { ElementKind } from "./elements";
-import { Importer, ImporterGetter } from "./importer";
 import { Parseable } from "./parseable";
 
 export type NamedElement = {
     name: string;
 }
 
-/**
- * name: string;
- * parse(node: T): void;
- * getImportHandler(): Imports;
- * setImportHandler(handler: Imports): void;
- */
-export type SourceElementNamed<T extends Declaration = Declaration> = Parseable<T> & Importer & NamedElement;
+export type SourceElementNamed<T extends Declaration = Declaration> = Parseable<T> & NamedElement;
 
 export interface SourceElement<T extends Declaration = Declaration> extends SourceElementNamed<T> {
     kind: ElementKind;
     setParent(element: SourceElement): void;
 };
 
-export type Visibility = "public" | "private" | "protected";
-
 export interface VisibilitySourceElement<T extends Declaration = Declaration> extends SourceElement<T> {
-    visibility: Visibility;
+    visibility: VisibilityLevel;
 };
 
 /**
@@ -81,20 +73,9 @@ export interface ClassSourceElement<T extends ClassDeclaration = ClassDeclaratio
     implements: NamedElement[]
 }
 
-/**
- * print(writter: Writter): boolean;
- * parse(node: T): void;
- * getImportHandler(): Imports;
- */
-type RootSourceElementDef<T extends Declaration = Declaration> = Parseable<T> & ImporterGetter;
+type RootSourceElementDef<T extends Declaration = Declaration> = Parseable<T>;
 
-/**
- * A root source element, aka file, cannot expose an importer setter. It needs to be created inside so this way
- * we have protected the access.
- */
 export interface RootSourceElement<T extends Declaration = Declaration> extends RootSourceElementDef<T> {
-    // name: string,
-    imports: SourceElementNamed[],
     classes: ClassSourceElement[],
     interfaces: InterfaceSourceElement[],
     variables: ValuedSourceElement[],
@@ -102,19 +83,3 @@ export interface RootSourceElement<T extends Declaration = Declaration> extends 
     functions: ParametrizedSourceElement[],
     enumerates: EnumSourceElement[]
 };
-
-// type Visibility = "public" | "private" | "protected";
-
-// interface SourceElement2 {
-//     name: string;
-//     type: string;
-//     visibility: Visibility;
-//     kind: ElementKind;
-// }
-
-// interface RootSourceElement2 extends SourceElement2 {
-//     references: [],
-//     classes: SourceElement2[],
-//     interfaces: SourceElement2[],
-//     globals: SourceElement2[]
-// }

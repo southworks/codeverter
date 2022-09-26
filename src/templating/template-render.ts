@@ -10,7 +10,6 @@
 import { render } from "ejs";
 import { File } from "../shared/file";
 
-export function templateRender(helpers: string, template: string, sourceFile: File): string {
-    let fullTemplate = `<% ${helpers} _%>\r\n${template}`;
-    return render(fullTemplate, { sourceFile });
+export function templateRender(template: string, sourceFile: File): string {
+    return render(template, { sourceFile });
 }

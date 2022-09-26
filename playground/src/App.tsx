@@ -1,18 +1,29 @@
 import Editor from "@monaco-editor/react";
 import { BaseSyntheticEvent, useRef, useState } from "react";
-import { printFile, compileTypeScriptCode, StringWritter, AvailableLanguages, languageMap } from "@southworks/codeverter";
+import { compileTypeScriptCode, StringWritter, AvailableLanguages, languageMap, printFileEx, TemplateHelpers } from "@southworks/codeverter";
 import "./App.css";
 
 function App() {
-    const editorRef = useRef(null);
+    const sourceEditorRef = useRef(null);
+    const templateEditorRef = useRef(null);
     const [theme, setTheme] = useState("vs-light");
-    const [language, setLanguage] = useState("csharp");
+    const [template, setTemplate] = useState("");
+    const [language, setLanguage] = useState("");
     const [isEditorReady, setIsEditorReady] = useState(false);
     const [transpiled, setTranspiled] = useState("// output code");
+    const langOptions = useRef<{ [x in AvailableLanguages]: string }>({
+        "csharp": "C#",
+        "go": "GO"
+    });
 
-    function handleEditorDidMount(editor: any): void {
-        editorRef.current = editor;
+
+    function didMountSource(editor: any): void {
+        sourceEditorRef.current = editor;
         setIsEditorReady(true);
+    }
+
+    function didMountTemplate(editor: any): void {
+        templateEditorRef.current = editor;
     }
 
     function changeTheme(e: BaseSyntheticEvent): void {
@@ -20,23 +31,26 @@ function App() {
     }
 
     function changeLanguage(e: BaseSyntheticEvent): void {
-        setLanguage(e.target.value);
+        const lang = e.target.value;
+        const template = new languageMap[lang as AvailableLanguages]();
+        setLanguage(lang);
+
+        const helpers = TemplateHelpers.build(template);
+        const templateStr = `<% ${TemplateHelpers.toString(helpers)} _%>\r\n${template.getTemplate()}`;
+
+        setTemplate(templateStr);
     }
 
     function convertContent(): void {
-        const code = (editorRef.current as any).getValue();
+        const code = (sourceEditorRef.current as any).getValue();
+        const tmpl = (templateEditorRef.current as any).getValue();
         if (!!code) {
             const a = compileTypeScriptCode(code, "codeverter.ts");
             const writter = new StringWritter();
-            const template = new languageMap[language as AvailableLanguages]();
-            printFile(a, template, writter);
+            printFileEx(a, tmpl, writter);
             setTranspiled(writter.getString());
         }
     }
-    const langOptions: { [x in AvailableLanguages]: string } = {
-        "csharp": "C#",
-        "go": "GO"
-    };
 
     return (
         <div className={`app ${theme === "vs-dark" ? "dark-mode" : ""}`}>
@@ -50,8 +64,8 @@ function App() {
                 <div>
                     <label htmlFor="lang">Language</label>
                     <select id="lang" onChange={changeLanguage}>
-                        {Object.keys(langOptions).map((k, i) => (
-                            <option key={i} value={k}>{langOptions[k as AvailableLanguages]}</option>
+                        {Object.keys(langOptions.current).map((k, i) => (
+                            <option key={i} value={k}>{langOptions.current[k as AvailableLanguages]}</option>
                         ))}
                     </select>
                     <button className="home-hero-v3-update-link-badge" onClick={convertContent} disabled={!isEditorReady}>Convert!</button>
@@ -73,7 +87,7 @@ function App() {
                     language="typescript"
                     value="// code to be converted here..."
                     loading={"Loading..."}
-                    onMount={handleEditorDidMount}
+                    onMount={didMountSource}
                 />
                 <Editor
                     width="50vw"
@@ -81,6 +95,15 @@ function App() {
                     language={language}
                     value={transpiled}
                     loading={"Loading..."}
+                />
+
+                <Editor
+                    width="50vw"
+                    theme={theme}
+                    language="javascript"
+                    value={template}
+                    loading={"Loading..."}
+                    onMount={didMountTemplate}
                 />
             </div>
         </div>

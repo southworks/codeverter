@@ -15,8 +15,9 @@ import { TemplateGenerator } from "./templating/template-generator";
 import { TemplateHelpers } from "./templating/template-helpers";
 
 export { AvailableLanguages, languageMap } from "./language-map";
-export { CompilationResult, compileTypeScriptCode } from "./shared/helpers/compiler-helper";
+export { compileTypeScriptCode } from "./shared/helpers/compiler-helper";
 export { StringWritter } from "./writter/string-writter";
+export { TemplateHelpers, CompilationResult, TemplateGenerator };
 
 /**
  * transform a sourcefile to a target language by using a string template and helpers
@@ -26,7 +27,7 @@ export { StringWritter } from "./writter/string-writter";
  * @param writter 
  */
 export function printFileEx(
-    compilationResult: CompilationResult, helpers: string, template: string, writter: Writteable
+    compilationResult: CompilationResult, template: string, writter: Writteable
 ): void {
     const file = new File({
         sourceFile: compilationResult.sourceFile,
@@ -34,7 +35,7 @@ export function printFileEx(
         elementFactory: elementRegistry
     });
     file.parse(compilationResult.sourceFile);
-    const render = templateRender(helpers, template, file);
+    const render = templateRender(template, file);
     writter.write(render);
 }
 
@@ -48,5 +49,6 @@ export function printFile(
     compilationResult: CompilationResult, template: TemplateGenerator, writter: Writteable
 ): void {
     const helpers = TemplateHelpers.build(template);
-    printFileEx(compilationResult, TemplateHelpers.toString(helpers), template.getTemplate(), writter);
+    const templateStr = `<% ${TemplateHelpers.toString(helpers)} _%>\r\n${template.getTemplate()}`;
+    printFileEx(compilationResult, templateStr, writter);
 }

@@ -53,7 +53,6 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
             return `${declarationPrefix} ${name}${type} ${asignChar} ${value}`;
         },
         printEnum: (v: EnumSourceElement) => {
-            debugger;
             let result = `const (`;
             v.value.forEach((k, i) => {
                 let value = k.value;

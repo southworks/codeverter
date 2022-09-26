@@ -29,7 +29,6 @@ export interface CSharpHelpers {
 export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CSharpHelpers {
     return {
         generateInitializeValue: (e: ValuedSourceElement, semicolon: boolean) => {
-            debugger
             if (!!e.value) {
                 if (e.knownType == "array") {
                     let defaultValue = e.value;

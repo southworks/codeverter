@@ -10,14 +10,7 @@ import { Writter, WritterOpts } from "./writter";
 import { writeFileSync, rmSync, existsSync } from "fs";
 
 export class FileWritter extends Writter {
-    private newLine = typeof process === "undefined"
-        ? "\n"
-        : process.platform === "win32" ? "\r\n" : "\n";
     private fileName!: string;
-
-    private writeNewLine(): void {
-        this.writeImpl(this.newLine);
-    }
 
     protected getFileName(): string {
         return this.fileName;
@@ -27,15 +20,6 @@ export class FileWritter extends Writter {
         if (this.getFileName()) {
             writeFileSync(this.getFileName(), `${value}`, { flag: "a+" });
         }
-    }
-
-    /**
-     * Implicit add new line at the end
-     * @param value The value to be written
-     */
-    public write(value: string): void {
-        super.write(value);
-        this.writeNewLine();
     }
 
     public setOpts(opts: Partial<WritterOpts>): void {

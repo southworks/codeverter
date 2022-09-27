@@ -1,5 +1,5 @@
 import Editor from "@monaco-editor/react";
-import { BaseSyntheticEvent, useRef, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useRef, useState } from "react";
 import { compileTypeScriptCode, StringWritter, AvailableLanguages, languageMap, printFileEx, TemplateHelpers } from "@southworks/codeverter";
 import "./App.css";
 
@@ -16,13 +16,26 @@ function App() {
         "go": "GO"
     });
 
+    useEffect(() => {
+        configLanguage("csharp");
+    }, []);
 
     function didMountSource(editor: any): void {
         sourceEditorRef.current = editor;
         setIsEditorReady(true);
     }
 
-    function didMountTemplate(editor: any): void {
+    /**
+     * Disable editor errors to "handle" ejs syntax
+     * @param monaco 
+     */
+    function handleEditorWillMount(monaco: any): void {
+        monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+            diagnosticCodesToIgnore: [1109, 1005, 1127, 1435]
+        });
+    }
+
+    function didMountTemplate(editor: any, monaco: any) {
         templateEditorRef.current = editor;
     }
 
@@ -30,8 +43,7 @@ function App() {
         setTheme(e.target.value);
     }
 
-    function changeLanguage(e: BaseSyntheticEvent): void {
-        const lang = e.target.value;
+    function configLanguage(lang: AvailableLanguages): void {
         const template = new languageMap[lang as AvailableLanguages]();
         setLanguage(lang);
 
@@ -39,6 +51,11 @@ function App() {
         const templateStr = `<% ${TemplateHelpers.toString(helpers)} _%>\r\n${template.getTemplate()}`;
 
         setTemplate(templateStr);
+    }
+
+    function changeLanguage(e: BaseSyntheticEvent): void {
+        const lang = e.target.value;
+        configLanguage(lang as AvailableLanguages);
     }
 
     function convertContent(): void {
@@ -81,6 +98,15 @@ function App() {
             <hr />
             <div className="container">
                 <Editor
+                    width="50vw"
+                    theme={theme}
+                    language="javascript"
+                    value={template}
+                    loading={"Loading..."}
+                    onMount={didMountTemplate}
+                    beforeMount={handleEditorWillMount}
+                />
+                <Editor
                     className="editor-divider"
                     width="50vw"
                     theme={theme}
@@ -95,15 +121,6 @@ function App() {
                     language={language}
                     value={transpiled}
                     loading={"Loading..."}
-                />
-
-                <Editor
-                    width="50vw"
-                    theme={theme}
-                    language="javascript"
-                    value={template}
-                    loading={"Loading..."}
-                    onMount={didMountTemplate}
                 />
             </div>
         </div>

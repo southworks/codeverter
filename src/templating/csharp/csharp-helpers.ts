@@ -132,7 +132,7 @@ export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CShar
             return propertyTag;
         },
         printInterface: (v: InterfaceSourceElement) => {
-            const name = (helpers as any).interfaceName(v.name);
+            const name = helpers.interfaceName(v.name);
             const ext = v.extends.length
                 ? ` : ${v.extends.map(e => helpers.interfaceName(e.name)).join(", ")}`
                 : "";

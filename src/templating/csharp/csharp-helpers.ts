@@ -61,7 +61,9 @@ export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CShar
             result += "        {\n";
             result += v.value.map(i => {
                 const hasValue = i.value != undefined;
-                const value = i.type == "number" ? i.value : `"${i.value}"`;
+                const value = hasValue
+                    ? i.type == "number" ? i.value : `"${i.value}"`
+                    : "";
                 return `            ${helpers.capitalize(i.name)}${hasValue ? " = " : ""}${value}`;
             }).join(",\n");
             result += "\n        }";

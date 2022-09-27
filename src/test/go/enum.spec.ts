@@ -3,7 +3,7 @@ import { compileTypeScriptCode, printFile } from "../../lib";
 import { GoGenerator } from "../../templating/go/go-template";
 
 describe("GO: Enum", () => {
-    test("Simple enum", () => {
+    test("int", () => {
         const code = `
             export enum BoxSize {
                 Small = 0,
@@ -29,7 +29,7 @@ describe("GO: Enum", () => {
         expect(strWritter.getString()).toBe(expected.getString());
     });
 
-    test("String enum", () => {
+    test("string", () => {
         const code = `
             export enum StringEnum {
                 One = "1",
@@ -55,7 +55,7 @@ describe("GO: Enum", () => {
         expect(strWritter.getString()).toBe(expected.getString());
     });
 
-    test("Enum with iota", () => {
+    test("implicit", () => {
         const code = `
             export enum BoxSize {
                 Small,

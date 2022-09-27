@@ -11,6 +11,7 @@ function App() {
     const [language, setLanguage] = useState("");
     const [isEditorReady, setIsEditorReady] = useState(false);
     const [transpiled, setTranspiled] = useState("// output code");
+    const [showAdvancedTemplate, setShowAdvancedTemplate] = useState(false);
     const langOptions = useRef<{ [x in AvailableLanguages]: string }>({
         "csharp": "C#",
         "go": "GO"
@@ -31,7 +32,7 @@ function App() {
      */
     function handleEditorWillMount(monaco: any): void {
         monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-            diagnosticCodesToIgnore: [1109, 1005, 1127, 1435]
+            diagnosticCodesToIgnore: [1109, 1005, 1127, 1435, 1068, 1136]
         });
     }
 
@@ -54,8 +55,15 @@ function App() {
     }
 
     function changeLanguage(e: BaseSyntheticEvent): void {
-        const lang = e.target.value;
-        configLanguage(lang as AvailableLanguages);
+        let change = true;
+        if (showAdvancedTemplate) {
+            change = window.confirm("The template will be restore as default. Do you want to continue?");
+        }
+        if (change) {
+            const lang = e.target.value;
+            configLanguage(lang as AvailableLanguages);
+            setTranspiled("//  output code");
+        }
     }
 
     function convertContent(): void {
@@ -69,6 +77,10 @@ function App() {
         }
     }
 
+    function toggleAdvanced(): void {
+        setShowAdvancedTemplate(current => !current);
+    }
+
     return (
         <div className={`app ${theme === "vs-dark" ? "dark-mode" : ""}`}>
             <div className="centered title">
@@ -79,12 +91,15 @@ function App() {
             </div>
             <div className="toolbar">
                 <div>
-                    <label htmlFor="lang">Language</label>
-                    <select id="lang" onChange={changeLanguage}>
+                    <label htmlFor="lang">Target language</label>
+                    <select id="lang" onChange={changeLanguage} value={language}>
                         {Object.keys(langOptions.current).map((k, i) => (
                             <option key={i} value={k}>{langOptions.current[k as AvailableLanguages]}</option>
                         ))}
                     </select>
+                    <button className="home-hero-v3-update-link-badge" onClick={toggleAdvanced} disabled={!isEditorReady}>
+                        {showAdvancedTemplate ? "Hide" : "Show"} template
+                    </button>
                     <button className="home-hero-v3-update-link-badge" onClick={convertContent} disabled={!isEditorReady}>Convert!</button>
                 </div>
                 <div>
@@ -96,32 +111,49 @@ function App() {
                 </div>
             </div>
             <hr />
-            <div className="container">
-                <Editor
-                    width="50vw"
-                    theme={theme}
-                    language="javascript"
-                    value={template}
-                    loading={"Loading..."}
-                    onMount={didMountTemplate}
-                    beforeMount={handleEditorWillMount}
-                />
-                <Editor
-                    className="editor-divider"
-                    width="50vw"
-                    theme={theme}
-                    language="typescript"
-                    value="// code to be converted here..."
-                    loading={"Loading..."}
-                    onMount={didMountSource}
-                />
-                <Editor
-                    width="50vw"
-                    theme={theme}
-                    language={language}
-                    value={transpiled}
-                    loading={"Loading..."}
-                />
+            <div className="main-container">
+                <div className="page-container">
+                    {
+                        <>
+                            <div className={`editor-container ${showAdvancedTemplate ? "" : "d-none"}`}>
+                                <div className="editor-title">Template</div>
+                                <Editor
+                                    width="33vw"
+                                    theme={theme}
+                                    language="javascript"
+                                    value={template}
+                                    loading={"Loading..."}
+                                    onMount={didMountTemplate}
+                                    beforeMount={handleEditorWillMount}
+                                />
+                            </div>
+                        </>
+                    }
+                </div>
+                <div className="page-container">
+                    <div className="editor-container">
+                        <div className="editor-title">Source code (*.ts)</div>
+                        <Editor
+                            className="editor-divider"
+                            width={showAdvancedTemplate ? "33vw" : "50vw"}
+                            theme={theme}
+                            language="typescript"
+                            value="// input code"
+                            loading={"Loading..."}
+                            onMount={didMountSource}
+                        />
+                    </div>
+                    <div className="editor-container">
+                        <div className="editor-title">Target code</div>
+                        <Editor
+                            width={showAdvancedTemplate ? "33vw" : "50vw"}
+                            theme={theme}
+                            language={language}
+                            value={transpiled}
+                            loading={"Loading..."}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -33,7 +33,7 @@ if (args.indexOf("--help") > -1) {
 } else {
     const srcIndex = args.indexOf('--src');
     // Change here for your dev file path;
-    const src = srcIndex > -1 ? args[srcIndex + 1] : "./tmp/index.ts";
+    const src = srcIndex > -1 ? args[srcIndex + 1] : ".";
 
     const templateIndex = args.indexOf('--template');
     const langIndex = args.indexOf('--lang');

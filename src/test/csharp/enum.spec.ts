@@ -1,11 +1,9 @@
-import { CSharpFile } from "../../csharp/csharp-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-
-const filename = "test.ts";
+import { CSharpGenerator } from "../../templating/csharp/csharp-generator";
 
 describe("CSharp: Enum", () => {
-    test("Simple enum", () => {
+    test("int", () => {
         const code = `
             export enum LogLevel {
                 Info = 0,
@@ -13,12 +11,12 @@ describe("CSharp: Enum", () => {
                 Error = 2
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write("namespace Test");
         expected.write("{");
         expected.write("    public static class Helper");
@@ -31,7 +29,69 @@ describe("CSharp: Enum", () => {
         expected.write("        }");
         expected.write("    }");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+
+    test("string", () => {
+        const code = `
+            export enum LogLevel {
+                Info = "info",
+                Warning = "warning",
+                Error = "error"
+            }
+        `;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write("namespace Test");
+        expected.write("{");
+        expected.write("    public static class Helper");
+        expected.write("    {");
+        expected.write("        public enum LogLevel");
+        expected.write("        {");
+        expected.write("            Info = \"info\",");
+        expected.write("            Warning = \"warning\",");
+        expected.write("            Error = \"error\"");
+        expected.write("        }");
+        expected.write("    }");
+        expected.write("}");
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+
+    test("implicit", () => {
+        const code = `
+            export enum LogLevel {
+                Info,
+                Warning,
+                Error
+            }
+        `;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write("namespace Test");
+        expected.write("{");
+        expected.write("    public static class Helper");
+        expected.write("    {");
+        expected.write("        public enum LogLevel");
+        expected.write("        {");
+        expected.write("            Info,");
+        expected.write("            Warning,");
+        expected.write("            Error");
+        expected.write("        }");
+        expected.write("    }");
+        expected.write("}");
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

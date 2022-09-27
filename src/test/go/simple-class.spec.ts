@@ -1,8 +1,6 @@
-import { GoFile } from "../../go/go-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-
-const filename = "test.ts";
+import { GoGenerator } from "../../templating/go/go-generator";
 
 describe("GO: class", () => {
     test("simple class", () => {
@@ -11,18 +9,18 @@ describe("GO: class", () => {
                 foo: number;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write(`package test`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type Test struct {");
         expected.write("\tFoo int");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
@@ -37,22 +35,22 @@ describe("GO: class", () => {
                 foo2: Test;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write(`package test`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type Test struct {");
         expected.write("\tFoo int");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type Test2 struct {");
         expected.write("\tFoo2 Test");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
@@ -64,19 +62,19 @@ describe("GO: class", () => {
                 bar: number[] = [100, 200];
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write(`package test`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type Test struct {");
         expected.write("\tFoo []int");
         expected.write("\tBar []int");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

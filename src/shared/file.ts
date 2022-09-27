@@ -21,43 +21,28 @@ import {
     InterfaceDeclaration,
     TypeChecker
 } from "typescript";
-import { Writteable } from "../writter/writter";
-import { Class } from "./class";
-import { Factory, FactoryParams } from "./types/factory";
-import { Imports } from "./imports";
-import { RootSourceElement } from "./types/source-element";
+import { FactoryParams } from "./types/factory";
+import {
+    ClassSourceElement,
+    EnumSourceElement,
+    InterfaceSourceElement,
+    ParametrizedSourceElement,
+    RootSourceElement,
+    ValuedSourceElement
+} from "./types/source-element";
 import { Element } from "./element";
-import { Function } from "./function";
-import { Variable } from "./variable";
-import { basename, extname } from "../shims/path";
-import { Enum } from "./enum";
+import { basename, extname } from "path";
 import { addVaribles } from "./helpers/variable-helper";
-import { Interface } from "./interface";
 
-export abstract class File extends Element<SourceFile> implements RootSourceElement<SourceFile> {
-    private importsHandler: Imports;
+export class File extends Element<SourceFile> implements RootSourceElement<SourceFile> {
     private sourceFile: SourceFile;
     private typeChecker: TypeChecker;
 
-    protected constructor(params: FactoryParams,
-        classFactory: Factory<Class>,
-        constantsFactory: Factory<Variable>,
-        importsFactory: Factory<Imports, void>,
-        functionFactory: Factory<Function>,
-        enumsFactory: Factory<Enum>,
-        interfaceFactory: Factory<Interface>) {
-
-        super();
+    public constructor(params: FactoryParams) {
+        super(params);
         this.sourceFile = params.sourceFile;
         this.typeChecker = params.typeChecker;
-        this.setKind("file");
-        this.setFactory("class", classFactory);
-        this.setFactory("function", functionFactory);
-        this.setFactory("constant", constantsFactory);
-        this.setFactory("variable", constantsFactory);
-        this.setFactory("enum", enumsFactory);
-        this.setFactory("interface", interfaceFactory);
-        this.importsHandler = new importsFactory();
+        this.kind = "file";
     }
 
     private addClass(node: ClassDeclaration): void {
@@ -104,18 +89,32 @@ export abstract class File extends Element<SourceFile> implements RootSourceElem
         return this.typeChecker;
     }
 
-    public abstract getExtension(): string;
-    public abstract getIndentChar(): string;
-    public abstract getIndentValue(): number;
-
     public parse(node: SourceFile): void {
-        this.setName(basename(node.fileName).replace(extname(node.fileName), ""));
+        this.name = basename(node.fileName).replace(extname(node.fileName), "");
         this.visitNode(node);
     }
 
-    public getImportHandler(): Imports {
-        return this.importsHandler;
+    get classes(): ClassSourceElement[] {
+        return this.getValues("class") as ClassSourceElement[];
     }
 
-    public abstract print(writter: Writteable): boolean;
+    get interfaces(): InterfaceSourceElement[] {
+        return this.getValues("interface") as InterfaceSourceElement[];
+    }
+
+    get variables(): ValuedSourceElement[] {
+        return this.getValues("variable") as ValuedSourceElement[];
+    }
+
+    get constants(): ValuedSourceElement[] {
+        return this.getValues("constant") as ValuedSourceElement[];
+    }
+
+    get functions(): ParametrizedSourceElement[] {
+        return this.getValues("function") as ParametrizedSourceElement[];
+    }
+
+    get enumerates(): EnumSourceElement[] {
+        return this.getValues("enum") as EnumSourceElement[];
+    }
 }

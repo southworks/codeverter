@@ -12,7 +12,7 @@
     height: 100vh;
 }
 
-.container {
+.page-container {
     text-align: center;
     display: flex;
     flex-flow: row;
@@ -22,10 +22,34 @@
     align-items: center;
 }
 
+.main-container {
+    display: flex;
+    text-align: center;
+    flex-flow: row;
+    height: 80vh;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    padding-top: 15px;
+}
+
+.editor-container {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
 .centered {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.d-none {
+    display: none;
 }
 
 .title {

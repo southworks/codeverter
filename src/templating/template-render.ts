@@ -6,8 +6,10 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { Writteable } from "../../writter/writter";
 
-export interface Printable {
-    print(writter: Writteable): boolean;
+import { render } from "ejs";
+import { File } from "../shared/file";
+
+export function templateRender(template: string, sourceFile: File): string {
+    return render(template, { sourceFile });
 }

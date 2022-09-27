@@ -6,14 +6,17 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { CSharpFile } from "./csharp/csharp-file";
-import { GoFile } from "./go/go-file";
-import { Factory } from "./shared/types/factory";
-import { File } from "./shared/file";
+import { TemplateGenerator } from "./templating/template-generator";
+import { CSharpGenerator } from "./templating/csharp/csharp-generator";
+import { GoGenerator } from "./templating/go/go-generator";
+import { CustomGenerator } from "./templating/custom/custom-generator";
 
-export type AvailableLanguages = "go" | "csharp";
+export type AvailableLanguages = "go" | "csharp" | "custom";
 
-export const languageMap: { [x in AvailableLanguages]: Factory<File> } = {
-    go: GoFile,
-    csharp: CSharpFile
+export function getLanguageGenerator(lang: AvailableLanguages, ...params: string[]): TemplateGenerator {
+    switch (lang) {
+        case "go": return new GoGenerator();
+        case "csharp": return new CSharpGenerator();
+        case "custom": return new CustomGenerator(params[0]);
+    }
 }

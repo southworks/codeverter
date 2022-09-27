@@ -6,21 +6,26 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { InterfaceDeclaration, isMethodSignature, isPropertySignature, MethodSignature, PropertySignature } from "typescript";
+import {
+    Identifier,
+    InterfaceDeclaration,
+    isMethodSignature,
+    isPropertySignature,
+    MethodSignature,
+    PropertySignature
+} from "typescript";
 import { ClassElement } from "./class-element";
-import { Method } from "./method";
-import { Property } from "./property";
-import { Factory, FactoryParams } from "./types/factory";
+import { InterfaceSourceElement, NamedElement, ParametrizedSourceElement, ValuedSourceElement } from "./types/source-element";
 
-export abstract class Interface extends ClassElement<InterfaceDeclaration> {
+export class Interface extends ClassElement<InterfaceDeclaration> implements InterfaceSourceElement {
+    private extendsClauses: Array<string> = [];
 
-    protected constructor(params: FactoryParams,
-        propertyFactory: Factory<Property>,
-        methodFactory: Factory<Method>) {
-
-        super(params);
-        this.setFactory("property", propertyFactory);
-        this.setFactory("method", methodFactory);
+    protected setHeritages(node: InterfaceDeclaration): void {
+        node.heritageClauses?.forEach(hc => {
+            hc.types.forEach(t => {
+                this.extendsClauses.push(`${(t.expression as Identifier).text}`);
+            });
+        });
     }
 
     protected addProperty(node: PropertySignature): void {
@@ -33,6 +38,7 @@ export abstract class Interface extends ClassElement<InterfaceDeclaration> {
 
     public parse(node: InterfaceDeclaration): void {
         super.parse(node);
+        this.setHeritages(node);
         node.members.forEach(m => {
             if (isPropertySignature(m)) {
                 this.addProperty(m);
@@ -40,5 +46,17 @@ export abstract class Interface extends ClassElement<InterfaceDeclaration> {
                 this.addMethod(m);
             }
         });
+    }
+
+    get properties(): ValuedSourceElement[] {
+        return this.getValues("property") as ValuedSourceElement[];
+    }
+
+    get methods(): ParametrizedSourceElement[] {
+        return this.getValues("method") as ParametrizedSourceElement[];
+    }
+
+    get extends(): NamedElement[] {
+        return this.extendsClauses.map(e => ({ name: e }));
     }
 }

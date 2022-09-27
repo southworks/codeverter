@@ -1,8 +1,6 @@
-import { GoFile } from "../../go/go-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-
-const filename = "test.ts";
+import { GoGenerator } from "../../templating/go/go-generator";
 
 describe("GO: interface", () => {
     test("Simple interface", () => {
@@ -12,19 +10,19 @@ describe("GO: interface", () => {
                 secondMethod(): string;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write("package test");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type MyInterface interface {");
-        expected.write("\tFirstMethod() ");
-        expected.write("\tSecondMethod()  string");
+        expected.write("\tFirstMethod(a int)");
+        expected.write("\tSecondMethod() string");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
@@ -36,18 +34,18 @@ describe("GO: interface", () => {
                 firstMethod(x: number): string;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write("package test");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type MyInterface interface {");
-        expected.write("\tFirstMethod()  string");
+        expected.write("\tFirstMethod(x int) string");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

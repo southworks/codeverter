@@ -6,37 +6,80 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { Declaration } from "typescript";
+import {
+    ClassDeclaration,
+    Declaration,
+    EnumDeclaration,
+    FunctionLikeDeclarationBase,
+    InterfaceDeclaration
+} from "typescript";
+import { KnownTypes } from "../type-mapper";
+import { VisibilityLevel } from "../visibility-level";
 import { ElementKind } from "./elements";
-import { Importer, ImporterGetter } from "./importer";
 import { Parseable } from "./parseable";
-import { Printable } from "./printable";
 
-/**
- * print(writter: Writter): boolean;
- * parse(node: T): void;
- * getImportHandler(): Imports;
- * setImportHandler(handler: Imports): void;
- */
-type SourceElementDef<T extends Declaration = Declaration> = Printable & Parseable<T> & Importer;
-/**
- * A source element needs to set the importer so implements Importer interface
- */
-export interface SourceElement<T extends Declaration = Declaration> extends SourceElementDef<T> {
+export type NamedElement = {
+    name: string;
+}
+
+export type SourceElementNamed<T extends Declaration = Declaration> = Parseable<T> & NamedElement;
+
+export interface SourceElement<T extends Declaration = Declaration> extends SourceElementNamed<T> {
+    kind: ElementKind;
     setParent(element: SourceElement): void;
-    setKind(kind: ElementKind): void;
-    getKind(): ElementKind;
-    getName(): string;
+};
+
+export interface VisibilitySourceElement<T extends Declaration = Declaration> extends SourceElement<T> {
+    visibility: VisibilityLevel;
 };
 
 /**
- * print(writter: Writter): boolean;
- * parse(node: T): void;
- * getImportHandler(): Imports;
+ * If KnownType is:
+ * - Reference => type = the reference type name
+ * - Array => type = KnownType of array, if KnowType is reference goto - Reference
+ * - Else: same as knownType
  */
-type RootSourceElementDef<T extends Declaration = Declaration> = Printable & Parseable<T> & ImporterGetter;
-/**
- * A root source element, aka file, cannot expose an importer setter. It needs to be created inside so this way
- * we have protected the access.
- */
-export interface RootSourceElement<T extends Declaration = Declaration> extends RootSourceElementDef<T> { };
+export interface TypedSourceElement<T extends Declaration = Declaration> extends VisibilitySourceElement<T> {
+    knownType: KnownTypes;
+    type: string | KnownTypes;
+};
+
+export interface EnumSourceElement<T extends EnumDeclaration = EnumDeclaration> extends TypedSourceElement<T> {
+    value: ValuedSourceElement[];
+};
+
+export interface ParametrizedSourceElement<T extends FunctionLikeDeclarationBase = FunctionLikeDeclarationBase> extends TypedSourceElement<T> {
+    parameters: TypedSourceElement[]
+    variables: ValuedSourceElement[]
+    constants: ValuedSourceElement[]
+    content: string[];
+    static: boolean;
+};
+
+export interface ValuedSourceElement<T extends Declaration = Declaration> extends TypedSourceElement<T> {
+    value: string | undefined;
+};
+
+export interface InterfaceSourceElement<T extends ClassDeclaration | InterfaceDeclaration = InterfaceDeclaration> extends VisibilitySourceElement<T> {
+    properties: ValuedSourceElement[],
+    methods: ParametrizedSourceElement[],
+    extends: NamedElement[]
+}
+
+export interface ClassSourceElement<T extends ClassDeclaration = ClassDeclaration> extends InterfaceSourceElement<T> {
+    variables: ValuedSourceElement[],
+    constants: ValuedSourceElement[],
+    constructors: ParametrizedSourceElement[],
+    implements: NamedElement[]
+}
+
+type RootSourceElementDef<T extends Declaration = Declaration> = Parseable<T>;
+
+export interface RootSourceElement<T extends Declaration = Declaration> extends RootSourceElementDef<T> {
+    classes: ClassSourceElement[],
+    interfaces: InterfaceSourceElement[],
+    variables: ValuedSourceElement[],
+    constants: ValuedSourceElement[],
+    functions: ParametrizedSourceElement[],
+    enumerates: EnumSourceElement[]
+};

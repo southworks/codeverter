@@ -12,7 +12,8 @@ import { SourceElement } from "./source-element";
 
 export type FactoryParams = {
     sourceFile: SourceFile,
-    typeChecker: TypeChecker
+    typeChecker: TypeChecker,
+    elementFactory: ElementFactory
 }
 
 /**
@@ -23,6 +24,6 @@ export type Factory<T, P = FactoryParams> = { new(params: P): T };
 /**
  * Dictionary type to handle available factories
  */
-export type Factories = {
+export type ElementFactory = {
     [p in ElementKind]?: Factory<SourceElement>
 }

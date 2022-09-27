@@ -1,12 +1,10 @@
-import { CSharpFile } from "../../csharp/csharp-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-
-const filename = "test.ts";
+import { CSharpGenerator } from "../../templating/csharp/csharp-generator";
 
 describe("CSharp: method", () => {
     test("simple method in class", () => {
-        const code = new StringWritter("\t", 1);
+        const code = new StringWritter();
         code.write("export class Test {");
         code.write("    public method(): string {");
         code.write("        let asd: string = \"holi\";");
@@ -15,12 +13,12 @@ describe("CSharp: method", () => {
         code.write("    }");
         code.write("}");
 
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code.getString(), filename);
+        let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write(`namespace Test`);
         expected.write(`{`);
         expected.write("    public class Test");
@@ -28,15 +26,43 @@ describe("CSharp: method", () => {
         expected.write("        public string Method()");
         expected.write("        {");
         expected.write("            string asd = \"holi\";");
-        expected.write("            var testNoType = 123;");
-        expected.write("            //        let asd: string = \"holi\";");
-        expected.write("            //        let testNoType = 123;");
-        expected.write("            //        return asd;");
+        expected.write("            int testNoType = 123;");
+        expected.write("            //         let asd: string = \"holi\";");
+        expected.write("            //         let testNoType = 123;");
+        expected.write("            //         return asd;");
         expected.write("            return \"\";");
         expected.write("        }");
         expected.write("    }");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+
+    test("global function", () => {
+        const code = new StringWritter();
+        code.write("export function foo: string {");
+        code.write("    return \"\";");
+        code.write("}");
+
+        let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write(`namespace Test`);
+        expected.write(`{`);
+        expected.write("    public static class Helper");
+        expected.write(`    {`);
+        expected.write("        public static string Foo()");
+        expected.write("        {");
+        expected.write("            //     return \"\";");
+        expected.write("            return \"\";");
+        expected.write("        }");
+        expected.write("    }");
+        expected.write("}");
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

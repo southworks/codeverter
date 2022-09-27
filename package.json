@@ -1,6 +1,6 @@
 {
   "name": "@southworks/codeverter",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Convert TypeScript code into different languages",
   "main": "lib/lib.js",
   "bin": {
@@ -49,11 +49,12 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "path": "0.12.7",
-    "typescript": "4.7.4"
+    "typescript": "4.7.4",
+    "ejs": "3.1.8"
   },
   "devDependencies": {
     "@types/jest": "28.1.8",
+    "@types/ejs": "3.1.1",
     "jest": "28.0.0",
     "ts-jest": "28.0.8"
   },

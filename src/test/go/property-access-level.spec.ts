@@ -1,8 +1,6 @@
-import { GoFile } from "../../go/go-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-
-const filename = "test.ts";
+import { GoGenerator } from "../../templating/go/go-generator";
 
 describe("GO: property access level", () => {
     test("no access modifier", () => {
@@ -11,18 +9,18 @@ describe("GO: property access level", () => {
                 foo: number;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write(`package test`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type Test struct {");
         expected.write("\tFoo int");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
@@ -33,18 +31,18 @@ describe("GO: property access level", () => {
                 public foo: number;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write(`package test`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type Test struct {");
         expected.write("\tFoo int");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
@@ -55,18 +53,18 @@ describe("GO: property access level", () => {
                 protected foo: number;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write(`package test`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type Test struct {");
         expected.write("\tfoo int");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
@@ -77,18 +75,18 @@ describe("GO: property access level", () => {
                 private foo: number;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write(`package test`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type Test struct {");
         expected.write("\tfoo int");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

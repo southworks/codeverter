@@ -1,11 +1,9 @@
-import { GoFile } from "../../go/go-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-
-const filename = "test.ts";
+import { GoGenerator } from "../../templating/go/go-generator";
 
 describe("GO: Enum", () => {
-    test("Simple enum", () => {
+    test("int", () => {
         const code = `
             export enum BoxSize {
                 Small = 0,
@@ -13,25 +11,25 @@ describe("GO: Enum", () => {
                 Large = 2
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write("package test");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("const (");
         expected.write("\tSmall int = 0");
         expected.write("\tMedium = 1");
         expected.write("\tLarge = 2");
         expected.write(")");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
 
-    test("String enum", () => {
+    test("string", () => {
         const code = `
             export enum StringEnum {
                 One = "1",
@@ -39,25 +37,25 @@ describe("GO: Enum", () => {
                 Three = "3"
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write("package test");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("const (");
         expected.write(`\tOne string = "1"`);
         expected.write(`\tTwo = "2"`);
         expected.write(`\tThree = "3"`);
         expected.write(")");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
 
-    test("Enum with iota", () => {
+    test("implicit", () => {
         const code = `
             export enum BoxSize {
                 Small,
@@ -65,20 +63,20 @@ describe("GO: Enum", () => {
                 Large
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write("package test");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("const (");
         expected.write("\tSmall int = iota");
         expected.write("\tMedium");
         expected.write("\tLarge");
         expected.write(")");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

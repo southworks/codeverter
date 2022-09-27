@@ -1,8 +1,6 @@
-import { CSharpFile } from "../../csharp/csharp-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-
-const filename = "test.ts";
+import { CSharpGenerator } from "../../templating/csharp/csharp-generator";
 
 describe("CSharp: constructor", () => {
     test("paramless", () => {
@@ -12,25 +10,24 @@ describe("CSharp: constructor", () => {
             
                 constructor() { this.bar = new Date(); }
             }`;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write(`namespace Test`);
         expected.write(`{`);
         expected.write("    public class Test");
         expected.write(`    {`);
         expected.write("        public DateTime Bar { get; set; }");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("        public Test()");
         expected.write(`        {`);
-        expected.write(`            // this.bar = new Date(); `);
+        expected.write(`            //  this.bar = new Date(); `);
         expected.write("        }");
         expected.write("    }");
-        expected.write("}");
-        expected.writeNewLine();
+        expected.write("}\n");
         expect(strWritter.getString()).toBe(expected.getString());
     });
 
@@ -41,25 +38,24 @@ describe("CSharp: constructor", () => {
             
                 constructor(val: number, val2: string) { this.bar = new Date(); }
             }`;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write(`namespace Test`);
         expected.write(`{`);
         expected.write("    public class Test");
         expected.write(`    {`);
         expected.write("        public DateTime Bar { get; set; }");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("        public Test(int val, string val2)");
         expected.write(`        {`);
-        expected.write(`            // this.bar = new Date(); `);
+        expected.write(`            //  this.bar = new Date(); `);
         expected.write("        }");
         expected.write("    }");
-        expected.write("}");
-        expected.writeNewLine();
+        expected.write("}\n");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
@@ -70,24 +66,23 @@ describe("CSharp: constructor", () => {
                 constructor(public val: number, val2: string) {
                 }
             }`;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.s");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write(`namespace Test`);
         expected.write(`{`);
         expected.write("    public class Test");
         expected.write(`    {`);
         expected.write("        public int Val { get; set; }");
-        expected.writeNewLine();
+        expected.write("");
         expected.write("        public Test(string val2)");
         expected.write(`        {`);
         expected.write("        }");
         expected.write("    }");
-        expected.write("}");
-        expected.writeNewLine();
+        expected.write("}\n");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

@@ -12,90 +12,71 @@ import {
     NodeArray,
     NodeWithTypeArguments,
     SyntaxKind,
+    Type,
+    TypeChecker,
     TypeNode,
     TypeReferenceNode
 } from "typescript";
-import { Importer } from "./types/importer";
-import { Imports } from "./imports";
+import { TypedDeclaration } from "./types/typed-declaration";
 
-export enum KnownTypes {
-    Number,
-    String,
-    Boolean,
-    Date,
-    Reference,
-    Void,
-    Array
+interface IntrinsicNamed extends Type {
+    intrinsicName: string;
 }
 
-export interface TypeMapper {
-    get(node: TypeNode | SyntaxKind): string | undefined;
-    toKnownType(node: TypeNode): KnownTypes;
-}
+export type KnownTypes = "number" | "string" | "boolean" | "date" | "reference" | "void" | "array";
 
-export abstract class TypeMapperImpl implements TypeMapper, Importer {
-    private importHandler!: Imports;
-
-    private isGenericArray(node: TypeNode): node is NodeWithTypeArguments {
-        return "typeArguments" in node;
+export class TypeMapper {
+    private static isGenericArray(node?: TypeNode): node is NodeWithTypeArguments {
+        return node != undefined && "typeArguments" in node!;
     }
 
-    protected abstract getKnownType(type: KnownTypes): string;
-
-    protected abstract getVoidType(): string;
-
-    public setImportHandler(handler: Imports): void {
-        this.importHandler = handler;
-    }
-
-    public getImportHandler(): Imports {
-        return this.importHandler;
-    }
-
-    public get(node: TypeNode): string | undefined {
-        const kind = this.toKnownType(node);
+    public static get(node: TypedDeclaration, typeChecker: TypeChecker): string | KnownTypes {
+        let kind = this.toKnownType(typeChecker, node, node.type);
         switch (kind) {
-            case KnownTypes.Reference: {
-                return ((node as TypeReferenceNode).typeName as Identifier).escapedText!
+            case "reference": {
+                return ((node.type as TypeReferenceNode).typeName as Identifier).escapedText!
             }
-            case KnownTypes.Array: {
-                let typeKind, knownTypeKind;
-                let knownType = this.getKnownType(kind);
-                if (this.isGenericArray(node)) {
-                    typeKind = this.toKnownType(((node as NodeWithTypeArguments).typeArguments as NodeArray<TypeNode>)[0]);
+            case "array": {
+                let typeKind;
+                if (this.isGenericArray(node.type)) {
+                    typeKind = this.toKnownType(typeChecker, node, ((node.type as NodeWithTypeArguments).typeArguments as NodeArray<TypeNode>)[0]);
                 } else {
-                    typeKind = this.toKnownType(((node as ArrayTypeNode).elementType as TypeNode));
+                    typeKind = this.toKnownType(typeChecker, node, ((node.type as ArrayTypeNode).elementType as TypeNode));
                 }
-                knownTypeKind = this.getKnownType(typeKind);
-                return `${knownTypeKind}${knownType}`;
+                return typeKind;
             }
-            case KnownTypes.Void: return this.getVoidType();
-            default:
-                return this.getKnownType(kind);
+            default: return kind;
         }
     }
 
-    public toKnownType(node: TypeNode): KnownTypes {
-        switch (node?.kind) {
+    public static toKnownType(typeChecker: TypeChecker, node: TypedDeclaration, typeNode?: TypeNode): KnownTypes {
+        switch (typeNode?.kind) {
             case SyntaxKind.NumberKeyword:
-                return KnownTypes.Number;
+                return "number";
             case SyntaxKind.StringKeyword:
-                return KnownTypes.String;
+                return "string";
             case SyntaxKind.BooleanKeyword:
-                return KnownTypes.Boolean;
+                return "boolean";
             case SyntaxKind.ArrayType:
-                return KnownTypes.Array;
+                return "array";
             default: {
-                if (node?.kind == SyntaxKind.TypeReference) {
-                    const referenceType = ((node as TypeReferenceNode).typeName as Identifier).escapedText!;
+                if (typeNode?.kind == SyntaxKind.TypeReference) {
+                    const referenceType = ((typeNode as TypeReferenceNode).typeName as Identifier).escapedText!;
                     if (referenceType == "Date") {
-                        return KnownTypes.Date;
+                        return "date";
                     } else if (referenceType == "Array") {
-                        return KnownTypes.Array;
+                        return "array";
                     }
-                    return KnownTypes.Reference;
+                    return "reference";
                 }
-                return KnownTypes.Void;
+
+                // try to infer the type by accessing the node
+                const type = typeChecker.getTypeAtLocation(node) as IntrinsicNamed;
+                return type.intrinsicName == "number"
+                    ? "number"
+                    : type.intrinsicName == "string"
+                        ? "string"
+                        : "void";
             }
         }
     }

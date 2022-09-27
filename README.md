@@ -74,8 +74,11 @@ For example:
 - Values: **csharp** | **go** 
 - Default value: _go_
 
-`--dest`: Destination
+`--template`: Custom template to perform the transformation. The extension must be '.t' followed by the language extension, for example: csharp => .tcs.
+- Values: **Path to the custom tempate** 
+- Default value: _''_
 
+`--dest`: Destination
 - Values: **console** | **file**
 - - file has an extra parameter \<destination path>
 - Default value: _console_

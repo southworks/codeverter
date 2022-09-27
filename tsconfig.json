@@ -5,6 +5,8 @@
   "exclude": [
     "node_modules",
     "src/test/**",
+    "src/csharp/**",
+    "src/go/**",
     "playground/**"
   ],
   "compilerOptions": {

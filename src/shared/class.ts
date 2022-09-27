@@ -6,7 +6,6 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { Writter } from "../writter/writter";
 import {
     ClassDeclaration,
     ConstructorDeclaration,
@@ -18,28 +17,18 @@ import {
     ParameterDeclaration,
     PropertyDeclaration
 } from "typescript";
-import { Property } from "./property";
-import { Factory, FactoryParams } from "./types/factory";
-import { Constructor } from "./constructor";
-import { Method } from "./method";
 import { ClassElement } from "./class-element";
 import { ParameterConverter } from "./parameter-converter";
+import {
+    ClassSourceElement,
+    NamedElement,
+    ParametrizedSourceElement,
+    ValuedSourceElement
+} from "./types/source-element";
 
-export abstract class Class extends ClassElement<ClassDeclaration> implements ParameterConverter {
-
+export class Class extends ClassElement<ClassDeclaration> implements ClassSourceElement, ParameterConverter {
     private extendsClauses: Array<string> = [];
     private implementsClauses: Array<string> = [];
-
-    protected constructor(params: FactoryParams,
-        propertyFactory: Factory<Property>,
-        constructorFactory: Factory<Constructor>,
-        methodFactory: Factory<Method>) {
-
-        super(params);
-        this.setFactory("ctr", constructorFactory);
-        this.setFactory("property", propertyFactory);
-        this.setFactory("method", methodFactory);
-    }
 
     protected setHeritages(node: ClassDeclaration): void {
         node.heritageClauses?.forEach(hc => {
@@ -51,14 +40,6 @@ export abstract class Class extends ClassElement<ClassDeclaration> implements Pa
                 }
             });
         });
-    }
-
-    protected getExtends(): Array<string> {
-        return this.extendsClauses;
-    }
-
-    protected getImplements(): Array<string> {
-        return this.implementsClauses;
     }
 
     protected addProperty(node: PropertyDeclaration): void {
@@ -94,5 +75,31 @@ export abstract class Class extends ClassElement<ClassDeclaration> implements Pa
         });
     }
 
-    public abstract print(writter: Writter): boolean;
+    get variables(): ValuedSourceElement[] {
+        return this.getValues("variable") as ValuedSourceElement[];
+    }
+
+    get constants(): ValuedSourceElement[] {
+        return this.getValues("constant") as ValuedSourceElement[];
+    }
+
+    get properties(): ValuedSourceElement[] {
+        return this.getValues("property") as ValuedSourceElement[];
+    }
+
+    get methods(): ParametrizedSourceElement[] {
+        return this.getValues("method") as ParametrizedSourceElement[];
+    }
+
+    get constructors(): ParametrizedSourceElement[] {
+        return this.getValues("ctr") as ParametrizedSourceElement[];
+    }
+
+    get extends(): NamedElement[] {
+        return this.extendsClauses.map(e => ({ name: e }));
+    }
+
+    get implements(): NamedElement[] {
+        return this.implementsClauses.map(e => ({ name: e }));
+    }
 }

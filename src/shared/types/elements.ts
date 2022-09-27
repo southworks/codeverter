@@ -12,6 +12,7 @@ import { SourceElement } from "./source-element";
  * Available factory types
  */
 export type ElementKind = "file"
+    | "imports"
     | "class"
     | "ctr"
     | "property"

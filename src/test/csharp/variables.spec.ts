@@ -1,30 +1,69 @@
-import { CSharpFile } from "../../csharp/csharp-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-
-const filename = "test.ts";
+import { CSharpGenerator } from "../../templating/csharp/csharp-generator";
 
 describe("CSharp: variables", () => {
     test("Variables different types", () => {
         const code = `
             let constant: string = "test";\n
             let numberConstant: number = 123;`;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new CSharpFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
 
-        const expected = new StringWritter(" ", 4);
+        const expected = new StringWritter();
         expected.write(`namespace Test`);
         expected.write("{");
         expected.write("    public static class Helper");
         expected.write("    {");
         expected.write(`        public static string Constant = "test";`);
-        expected.writeNewLine();
         expected.write(`        public static int NumberConstant = 123;`);
         expected.write("    }");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+
+    test("Variable inferred type", () => {
+        let code = `let constant = "test";\n`;
+        code = code + "let constant2 = 1;";
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write(`namespace Test`);
+        expected.write("{");
+        expected.write("    public static class Helper");
+        expected.write("    {");
+        expected.write(`        public static string Constant = "test";`);
+        expected.write(`        public static int Constant2 = 1;`);
+        expected.write("    }");
+        expected.write("}");
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+
+    test("empty string value", () => {
+        let code = `let va: string = "";`;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write(`namespace Test`);
+        expected.write("{");
+        expected.write("    public static class Helper");
+        expected.write("    {");
+        expected.write(`        public static string Va = "";`);
+        expected.write("    }");
+        expected.write("}");
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

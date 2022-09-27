@@ -1,8 +1,6 @@
-import { GoFile } from "../../go/go-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-
-const filename = "test.ts";
+import { GoGenerator } from "../../templating/go/go-generator";
 
 describe("GO: imports", () => {
     test("simple date property", () => {
@@ -11,19 +9,20 @@ describe("GO: imports", () => {
                 foo: Date;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
-        const expected = new StringWritter("\t", 1);
+        printFile(compilationResult, new GoGenerator(), strWritter);
+
+        const expected = new StringWritter();
         expected.write(`package test`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write(`import "time"`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type Test struct {");
         expected.write("\tFoo time.Time");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
@@ -35,20 +34,21 @@ describe("GO: imports", () => {
                 bar: Date;
             }
         `;
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code, filename);
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
-        const expected = new StringWritter("\t", 1);
+        printFile(compilationResult, new GoGenerator(), strWritter);
+
+        const expected = new StringWritter();
         expected.write(`package test`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write(`import "time"`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type Test struct {");
         expected.write("\tFoo time.Time");
         expected.write("\tBar time.Time");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
         expect(strWritter.getString()).toBe(expected.getString());
     });
 });

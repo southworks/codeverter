@@ -1,12 +1,10 @@
-import { GoFile } from "../../go/go-file";
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-
-const filename = "test.ts";
+import { GoGenerator } from "../../templating/go/go-generator";
 
 describe("GO: method", () => {
     test("simple method in class", () => {
-        const code = new StringWritter("\t", 1);
+        const code = new StringWritter();
         code.write("export class Test {");
         code.write("    public method(): string {");
         code.write("        let asd: string = \"holi\";");
@@ -14,24 +12,78 @@ describe("GO: method", () => {
         code.write("    }");
         code.write("}");
 
-        let { sourceFile, typeChecker } = compileTypeScriptCode(code.getString(), filename);
+        let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
 
         const strWritter = new StringWritter();
-        printFile(sourceFile, strWritter, new GoFile({ sourceFile, typeChecker }));
+        printFile(compilationResult, new GoGenerator(), strWritter);
 
-        const expected = new StringWritter("\t", 1);
+        const expected = new StringWritter();
         expected.write(`package test`);
-        expected.writeNewLine();
+        expected.write("");
         expected.write("type Test struct {");
         expected.write("}");
-        expected.writeNewLine();
-        expected.write("func (m *Test) Method() string {");
+        expected.write("");
+        expected.write("func (t *Test) Method() string {");
         expected.write("\tvar asd string = \"holi\"");
         expected.write("\t//        let asd: string = \"holi\";");
         expected.write("\t//        return asd;");
         expected.write("\treturn \"\"");
         expected.write("}");
-        expected.writeNewLine();
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+
+    test("return integer", () => {
+        const code = new StringWritter();
+        code.write("export class Test {");
+        code.write("    public method(): number {");
+        code.write("        let asd: number = 1;");
+        code.write("        return asd;");
+        code.write("    }");
+        code.write("}");
+
+        let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("}");
+        expected.write("");
+        expected.write("func (t *Test) Method() int {");
+        expected.write("\tvar asd int = 1");
+        expected.write("\t//        let asd: number = 1;");
+        expected.write("\t//        return asd;");
+        expected.write("\treturn 0");
+        expected.write("}");
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+
+    test("global function", () => {
+        const code = new StringWritter();
+        code.write("export function foo(): string {");
+        code.write("    return \"\";");
+        code.write("}");
+
+        let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write("func Foo() string {");
+        expected.write("\t//    return \"\";");
+        expected.write("\treturn \"\"");
+        expected.write("}");
+        expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());
     });

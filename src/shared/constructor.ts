@@ -8,16 +8,18 @@
 
 import { ConstructorDeclaration } from "typescript";
 import { Function } from "./function";
-import { isParameterConverter, ParameterConverter } from "./parameter-converter";
+import { isParameterConverter } from "./parameter-converter";
+import { FactoryParams } from "./types/factory";
 
-export abstract class Constructor extends Function<ConstructorDeclaration> {
-    public getName(): string {
-        return this.getParent()?.getName();
+export class Constructor extends Function<ConstructorDeclaration> {
+    constructor(params: FactoryParams) {
+        super(params);
+        this.static = false;
     }
 
     public parse(node: ConstructorDeclaration): void {
         super.parse(node);
-
+        this.name = this.getParent()?.name;
         /**
          * In Typescript can declare a property as a constructor parameter
          */

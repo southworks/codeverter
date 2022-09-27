@@ -1,6 +1,6 @@
 import Editor from "@monaco-editor/react";
 import { BaseSyntheticEvent, useEffect, useRef, useState } from "react";
-import { compileTypeScriptCode, StringWritter, AvailableLanguages, languageMap, printFileEx, TemplateHelpers } from "@southworks/codeverter";
+import { compileTypeScriptCode, StringWritter, AvailableLanguages, getLanguageGenerator, printFileEx } from "@southworks/codeverter";
 import "./App.css";
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
     const [isEditorReady, setIsEditorReady] = useState(false);
     const [transpiled, setTranspiled] = useState("// output code");
     const [showAdvancedTemplate, setShowAdvancedTemplate] = useState(false);
-    const langOptions = useRef<{ [x in AvailableLanguages]: string }>({
+    const langOptions = useRef<Partial<{ [x in AvailableLanguages]: string }>>({
         "csharp": "C#",
         "go": "GO"
     });
@@ -45,13 +45,9 @@ function App() {
     }
 
     function configLanguage(lang: AvailableLanguages): void {
-        const template = new languageMap[lang as AvailableLanguages]();
+        const template = getLanguageGenerator(lang as AvailableLanguages);
         setLanguage(lang);
-
-        const helpers = TemplateHelpers.build(template);
-        const templateStr = `<% ${TemplateHelpers.toString(helpers)} _%>\r\n${template.getTemplate()}`;
-
-        setTemplate(templateStr);
+        setTemplate(template.getTemplate());
     }
 
     function changeLanguage(e: BaseSyntheticEvent): void {

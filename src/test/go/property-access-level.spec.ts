@@ -1,6 +1,6 @@
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-import { GoGenerator } from "../../templating/go/go-template";
+import { GoGenerator } from "../../templating/go/go-generator";
 
 describe("GO: property access level", () => {
     test("no access modifier", () => {

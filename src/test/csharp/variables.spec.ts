@@ -1,6 +1,6 @@
 import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
-import { CSharpGenerator } from "../../templating/csharp/csharp-template";
+import { CSharpGenerator } from "../../templating/csharp/csharp-generator";
 
 describe("CSharp: variables", () => {
     test("Variables different types", () => {

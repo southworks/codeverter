@@ -7,7 +7,7 @@
  */
 
 import { TypedSourceElement } from "../shared/types/source-element";
-import { TemplateHelper } from "./template-helpers";
+import { TemplateHelper, TemplateHelpers } from "./template-helpers";
 
 export abstract class TemplateGenerator<H extends object = {}> {
     private content: string[] = [];
@@ -62,6 +62,10 @@ export abstract class TemplateGenerator<H extends object = {}> {
         return `helpers.ifAny(${values.join(", ")})`;
     }
 
+    protected getContent(): string {
+        return this.content.join("\n");
+    }
+
     /**
      * implement custom helpers
      */
@@ -72,6 +76,8 @@ export abstract class TemplateGenerator<H extends object = {}> {
     public abstract getExtension(): string;
 
     public getTemplate(): string {
-        return this.content.join("\n");
+        const content = this.getContent();
+        const helpers = TemplateHelpers.build(this);
+        return `<% ${TemplateHelpers.toString(helpers)} _%>\r\n${content}`;
     }
 }

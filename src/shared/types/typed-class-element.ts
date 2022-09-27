@@ -17,7 +17,7 @@ export class TypedClassElement<K extends TypedDeclaration> extends ClassElement<
 
     public parse(node: K): void {
         super.parse(node);
-        this.knownType = TypeMapper.toKnownType(node.type!);
-        this.type = TypeMapper.get(node.type!);
+        this.knownType = TypeMapper.toKnownType(this.getTypeChecker(), node, node.type);
+        this.type = TypeMapper.get(node, this.getTypeChecker());
     }
 }

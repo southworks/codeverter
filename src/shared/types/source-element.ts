@@ -57,7 +57,7 @@ export interface ParametrizedSourceElement<T extends FunctionLikeDeclarationBase
 };
 
 export interface ValuedSourceElement<T extends Declaration = Declaration> extends TypedSourceElement<T> {
-    value: string;
+    value: string | undefined;
 };
 
 export interface InterfaceSourceElement<T extends ClassDeclaration | InterfaceDeclaration = InterfaceDeclaration> extends VisibilitySourceElement<T> {

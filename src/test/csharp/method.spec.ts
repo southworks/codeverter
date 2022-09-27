@@ -26,7 +26,7 @@ describe("CSharp: method", () => {
         expected.write("        public string Method()");
         expected.write("        {");
         expected.write("            string asd = \"holi\";");
-        expected.write("            var testNoType = 123;");
+        expected.write("            int testNoType = 123;");
         expected.write("            //         let asd: string = \"holi\";");
         expected.write("            //         let testNoType = 123;");
         expected.write("            //         return asd;");

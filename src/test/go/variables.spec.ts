@@ -31,10 +31,26 @@ describe("GO: variables", () => {
         printFile(compilationResult, new GoGenerator(), strWritter);
 
         const expected = new StringWritter();
-        expected.write(`package test`);
+        expected.write("package test");
         expected.write("");
-        expected.write(`var Constant := "test"`);
-        expected.write(`var Constant2 := 1`);
+        expected.write(`var Constant string = "test"`);
+        expected.write(`var Constant2 int = 1`);
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+
+    test("empty string value", () => {
+        let code = `let va = "";`;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write("package test");
+        expected.write("");
+        expected.write(`var Va string = ""`);
         expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());

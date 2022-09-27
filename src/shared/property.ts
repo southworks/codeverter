@@ -11,10 +11,10 @@ import { ValuedSourceElement } from "./types/source-element";
 import { TypedClassElement } from "./types/typed-class-element";
 
 export class Property extends TypedClassElement<PropertyDeclaration> implements ValuedSourceElement {
-    public value!: string;
+    public value: string | undefined;
 
     public parse(node: PropertyDeclaration): void {
         super.parse(node);
-        this.value = node.initializer?.getText() ?? "";
+        this.value = node.initializer?.getText();
     }
 }

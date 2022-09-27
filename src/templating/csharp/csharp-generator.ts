@@ -111,7 +111,7 @@ export class CSharpGenerator extends TemplateGenerator<CSharpHelpers> {
         this.addNewLineIf("i != 0");
         this.addLine(this.printEnum("e"));
         this.endFor();
-        this.addLine(this.splitBlock("enumerates", "variables"));
+        this.addLine(this.splitBlock("enumerates", "variables.concat(constants)"));
         this.startFor("v", "variables");
         this.addLine(`        ${this.printVariable("v")}`);
         this.endFor();

@@ -11,10 +11,10 @@ import { ValuedSourceElement } from "./types/source-element";
 import { TypedClassElement } from "./types/typed-class-element";
 
 export class Variable extends TypedClassElement<VariableDeclaration> implements ValuedSourceElement {
-    public value!: string;
+    public value: string | undefined;
 
     public parse(node: VariableDeclaration): void {
         super.parse(node);
-        this.value = (node.initializer as LiteralExpression)?.text ?? "";
+        this.value = (node.initializer as LiteralExpression)?.text;
     }
 }

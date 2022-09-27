@@ -12,29 +12,36 @@ import {
     NodeArray,
     NodeWithTypeArguments,
     SyntaxKind,
+    Type,
+    TypeChecker,
     TypeNode,
     TypeReferenceNode
 } from "typescript";
+import { TypedDeclaration } from "./types/typed-declaration";
+
+interface IntrinsicNamed extends Type {
+    intrinsicName: string;
+}
 
 export type KnownTypes = "number" | "string" | "boolean" | "date" | "reference" | "void" | "array";
 
 export class TypeMapper {
-    private static isGenericArray(node: TypeNode): node is NodeWithTypeArguments {
-        return "typeArguments" in node;
+    private static isGenericArray(node?: TypeNode): node is NodeWithTypeArguments {
+        return node != undefined && "typeArguments" in node!;
     }
 
-    public static get(node: TypeNode): string | KnownTypes {
-        const kind = this.toKnownType(node);
+    public static get(node: TypedDeclaration, typeChecker: TypeChecker): string | KnownTypes {
+        let kind = this.toKnownType(typeChecker, node, node.type);
         switch (kind) {
             case "reference": {
-                return ((node as TypeReferenceNode).typeName as Identifier).escapedText!
+                return ((node.type as TypeReferenceNode).typeName as Identifier).escapedText!
             }
             case "array": {
                 let typeKind;
-                if (this.isGenericArray(node)) {
-                    typeKind = this.toKnownType(((node as NodeWithTypeArguments).typeArguments as NodeArray<TypeNode>)[0]);
+                if (this.isGenericArray(node.type)) {
+                    typeKind = this.toKnownType(typeChecker, node, ((node.type as NodeWithTypeArguments).typeArguments as NodeArray<TypeNode>)[0]);
                 } else {
-                    typeKind = this.toKnownType(((node as ArrayTypeNode).elementType as TypeNode));
+                    typeKind = this.toKnownType(typeChecker, node, ((node.type as ArrayTypeNode).elementType as TypeNode));
                 }
                 return typeKind;
             }
@@ -42,8 +49,8 @@ export class TypeMapper {
         }
     }
 
-    public static toKnownType(node: TypeNode): KnownTypes {
-        switch (node?.kind) {
+    public static toKnownType(typeChecker: TypeChecker, node: TypedDeclaration, typeNode?: TypeNode): KnownTypes {
+        switch (typeNode?.kind) {
             case SyntaxKind.NumberKeyword:
                 return "number";
             case SyntaxKind.StringKeyword:
@@ -53,8 +60,8 @@ export class TypeMapper {
             case SyntaxKind.ArrayType:
                 return "array";
             default: {
-                if (node?.kind == SyntaxKind.TypeReference) {
-                    const referenceType = ((node as TypeReferenceNode).typeName as Identifier).escapedText!;
+                if (typeNode?.kind == SyntaxKind.TypeReference) {
+                    const referenceType = ((typeNode as TypeReferenceNode).typeName as Identifier).escapedText!;
                     if (referenceType == "Date") {
                         return "date";
                     } else if (referenceType == "Array") {
@@ -62,7 +69,14 @@ export class TypeMapper {
                     }
                     return "reference";
                 }
-                return "void";
+
+                // try to infer the type by accessing the node
+                const type = typeChecker.getTypeAtLocation(node) as IntrinsicNamed;
+                return type.intrinsicName == "number"
+                    ? "number"
+                    : type.intrinsicName == "string"
+                        ? "string"
+                        : "void";
             }
         }
     }

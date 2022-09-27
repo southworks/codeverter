@@ -29,7 +29,7 @@ export interface CSharpHelpers {
 export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CSharpHelpers {
     return {
         generateInitializeValue: (e: ValuedSourceElement, semicolon: boolean) => {
-            if (!!e.value) {
+            if (e.value != undefined) {
                 if (e.knownType == "array") {
                     let defaultValue = e.value;
                     if (e.value.match("new Array")) {
@@ -146,7 +146,7 @@ export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CShar
             }).join("\n");
 
             if (v.properties.length && v.methods.length) {
-                result += "\n\n";
+                result += "\n";
             }
 
             result += v.methods.map(m => {

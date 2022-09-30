@@ -18,7 +18,7 @@ describe("GO: method", () => {
         printFile(compilationResult, new GoGenerator(), strWritter);
 
         const expected = new StringWritter();
-        expected.write(`package test`);
+        expected.write("package test");
         expected.write("");
         expected.write("type Test struct {");
         expected.write("}");
@@ -77,11 +77,57 @@ describe("GO: method", () => {
         printFile(compilationResult, new GoGenerator(), strWritter);
 
         const expected = new StringWritter();
-        expected.write(`package test`);
+        expected.write("package test");
         expected.write("");
         expected.write("func Foo() string {");
         expected.write("\t//    return \"\";");
         expected.write("\treturn \"\"");
+        expected.write("}");
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+
+    test("global function infer", () => {
+        const code = new StringWritter();
+        code.write("export function foo() {");
+        code.write("    return \"\";");
+        code.write("}");
+
+        let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write("package test");
+        expected.write("");
+        expected.write("func Foo() string {");
+        expected.write("\t//    return \"\";");
+        expected.write("\treturn \"\"");
+        expected.write("}");
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
+
+    test("global function infer void", () => {
+        const code = new StringWritter();
+        code.write("export function foo() {");
+        code.write("    return;");
+        code.write("}");
+
+        let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write("package test");
+        expected.write("");
+        expected.write("func Foo() {");
+        expected.write("\t//    return;");
+        expected.write("\treturn");
         expected.write("}");
         expected.write("");
 

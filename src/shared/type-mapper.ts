@@ -7,20 +7,24 @@
  */
 
 import {
+    ArrayLiteralExpression,
     ArrayTypeNode,
+    Expression,
     Identifier,
     NodeArray,
     NodeWithTypeArguments,
     SyntaxKind,
-    Type,
-    TypeChecker,
     TypeNode,
     TypeReferenceNode
 } from "typescript";
 import { TypedDeclaration } from "./types/typed-declaration";
 
-interface IntrinsicNamed extends Type {
-    intrinsicName: string;
+interface InitializerExpression extends Expression {
+    readonly expression: Expression;
+}
+
+interface InitializerNode extends TypedDeclaration {
+    initializer: InitializerExpression | TypeNode | ArrayLiteralExpression | TypedDeclaration;
 }
 
 export type KnownTypes = "number" | "string" | "boolean" | "date" | "reference" | "void" | "array";
@@ -30,33 +34,37 @@ export class TypeMapper {
         return node != undefined && "typeArguments" in node!;
     }
 
-    public static get(node: TypedDeclaration, typeChecker: TypeChecker): string | KnownTypes {
-        let kind = this.toKnownType(typeChecker, node, node.type);
+    private static get(kind: KnownTypes, node?: TypedDeclaration, typeNode?: TypeNode | Expression): string | KnownTypes {
         switch (kind) {
             case "reference": {
-                return ((node.type as TypeReferenceNode).typeName as Identifier).escapedText!
+                return ((typeNode as TypeReferenceNode).typeName as Identifier).escapedText!
             }
             case "array": {
-                let typeKind;
-                if (this.isGenericArray(node.type)) {
-                    typeKind = this.toKnownType(typeChecker, node, ((node.type as NodeWithTypeArguments).typeArguments as NodeArray<TypeNode>)[0]);
+                let tokenType = typeNode ? typeNode : (node as InitializerNode).initializer;
+                if (this.isGenericArray(tokenType as TypeNode)) {
+                    tokenType = ((tokenType as NodeWithTypeArguments).typeArguments as NodeArray<TypeNode>)[0];
                 } else {
-                    typeKind = this.toKnownType(typeChecker, node, ((node.type as ArrayTypeNode).elementType as TypeNode));
+                    tokenType = (tokenType as ArrayTypeNode)?.elementType ?? (tokenType as ArrayLiteralExpression).elements[0];
                 }
-                return typeKind;
+                return this.toKnownType(node, tokenType);
             }
             default: return kind;
         }
     }
 
-    public static toKnownType(typeChecker: TypeChecker, node: TypedDeclaration, typeNode?: TypeNode): KnownTypes {
+    private static toKnownType(node?: TypedDeclaration, typeNode?: TypeNode | Expression): KnownTypes {
         switch (typeNode?.kind) {
+            case SyntaxKind.NumericLiteral:
             case SyntaxKind.NumberKeyword:
                 return "number";
+            case SyntaxKind.StringLiteral:
             case SyntaxKind.StringKeyword:
                 return "string";
+            case SyntaxKind.FalseKeyword:
+            case SyntaxKind.TrueKeyword:
             case SyntaxKind.BooleanKeyword:
                 return "boolean";
+            case SyntaxKind.ArrayLiteralExpression:
             case SyntaxKind.ArrayType:
                 return "array";
             default: {
@@ -69,15 +77,25 @@ export class TypeMapper {
                     }
                     return "reference";
                 }
-
-                // try to infer the type by accessing the node
-                const type = typeChecker.getTypeAtLocation(node) as IntrinsicNamed;
-                return type.intrinsicName == "number"
-                    ? "number"
-                    : type.intrinsicName == "string"
-                        ? "string"
-                        : "void";
+                else if (typeNode?.kind == SyntaxKind.Identifier) {
+                    if ((typeNode as Identifier)?.escapedText == "Array") {
+                        return "array";
+                    }
+                }
+                const initializer = (node as InitializerNode)?.initializer;
+                if (initializer) {
+                    return this.toKnownType(initializer as TypedDeclaration, (initializer as InitializerExpression).expression ?? initializer);
+                }
+                return "void";
             }
+        }
+    }
+
+    public static getType(node?: TypedDeclaration, typeNode?: TypeNode | Expression): { knownType: KnownTypes, type: string | KnownTypes } {
+        const kind = this.toKnownType(node, typeNode);
+        return {
+            knownType: kind,
+            type: this.get(kind, node, typeNode)
         }
     }
 }

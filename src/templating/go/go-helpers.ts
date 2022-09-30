@@ -18,6 +18,7 @@ import {
 import { TemplateHelper } from "../template-helpers";
 
 export interface GoHelpers {
+    getArrayValue(v: ValuedSourceElement): string;
     fixName(e: VisibilitySourceElement): string;
     printVariable(v: ValuedSourceElement, global: boolean): string;
     printEnum(v: EnumSourceElement): string;
@@ -32,16 +33,27 @@ export interface GoHelpers {
 
 export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
     return {
+        getArrayValue: (v: ValuedSourceElement) => {
+            let defaultValue = helpers.getArrayDefault(v.value!);
+            let type = helpers.mapType(v);
+            return `${type}{${defaultValue}}`;
+        },
         printVariable: (v: ValuedSourceElement, global: boolean) => {
             const name = v.visibility == "public" && global
                 ? helpers.capitalize(v.name)
                 : helpers.toLowerCase(v.name);
-            const declarationPrefix = v.kind == "constant" ? "const" : "var";
+
+            // in go arrays cannot be constants
+            const declarationPrefix = (v.kind == "constant" && v.knownType != "array") ? "const" : "var";
             const asignChar = (v.kind == "constant" || v.knownType != "void") ? "=" : ":=";
 
             let value = v.value;
-            if (v.knownType == "string" || (v.knownType == "void" && isNaN(+v.value!))) {
+            if (v.knownType == "string") {
                 value = `"${v.value}"`;
+            } else if (v.knownType == "void" && v.value) {
+                value = `0 //${v.value}`;
+            } else if (v.knownType == "array") {
+                value = helpers.getArrayValue(v);
             }
             if (value == "") {
                 return ""; // cannot define empty const/var in go

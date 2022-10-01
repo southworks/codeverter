@@ -27,6 +27,8 @@ interface InitializerNode extends TypedDeclaration {
     initializer: InitializerExpression | TypeNode | ArrayLiteralExpression | TypedDeclaration;
 }
 
+type TypeMapperResult = { knownType: KnownTypes, type: string | KnownTypes };
+
 export type KnownTypes = "number" | "string" | "boolean" | "date" | "reference" | "void" | "array";
 
 export class TypeMapper {
@@ -91,7 +93,7 @@ export class TypeMapper {
         }
     }
 
-    public static getType(node?: TypedDeclaration, typeNode?: TypeNode | Expression): { knownType: KnownTypes, type: string | KnownTypes } {
+    public static getType(node?: TypedDeclaration, typeNode?: TypeNode | Expression): TypeMapperResult {
         const kind = this.toKnownType(node, typeNode);
         return {
             knownType: kind,

@@ -31,16 +31,13 @@ export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CShar
         generateInitializeValue: (e: ValuedSourceElement, semicolon: boolean) => {
             if (e.value != undefined) {
                 if (e.knownType == "array") {
-                    let defaultValue = e.value;
-                    if (e.value.match("new Array")) {
-                        defaultValue = e.value.match(/\((.*?)\)/g)?.toString().replace("(", "").replace(")", "") ?? e.value;
-                    } else if (e.value.includes("[") && e.value.includes("]")) {
-                        defaultValue = e.value.replace("[", "").replace("]", "");
-                    }
+                    let defaultValue = helpers.getArrayDefault(e.value);
                     defaultValue = defaultValue === "" ? defaultValue : ` ${defaultValue} `;
                     return ` = new ${helpers.mapType(e)} {${defaultValue}};`;
                 } else if (e.knownType == "date") {
                     return ` = new DateTime();`;
+                } else if (e.knownType == "void") {
+                    return ` = null; //${e.value}`;
                 } else if (e.knownType == "string") {
                     return ` = "${e.value}";`;
                 }

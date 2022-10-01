@@ -10,6 +10,7 @@ import { TypedSourceElement } from "../shared/types/source-element";
 import { TemplateGenerator } from "./template-generator";
 
 export interface TemplateHelper {
+    getArrayDefault(str: string): string;
     capitalize(str: string): string;
     camelize(str: string): string;
     toUpperCase(str: string): string;
@@ -69,6 +70,15 @@ export class TemplateHelpers {
     public static build(generator: TemplateGenerator): TemplateHelper {
         const defaulHelpers = {
             capitalize: (str: string) => { return str.replace(/\w/, c => c.toUpperCase()); },
+            getArrayDefault: (str: string) => {
+                let result = str;
+                if (str?.match("new Array")) {
+                    result = str.match(/\((.*?)\)/g)?.toString().replace("(", "").replace(")", "") ?? str;
+                } else if (str?.includes("[") && str.includes("]")) {
+                    result = str.replace("[", "").replace("]", "");
+                }
+                return result;
+            },
             camelize: (str: string) => { return str[0].toLowerCase() + str.substring(1) },
             toUpperCase: (str: string) => { return str.toUpperCase(); },
             toLowerCase: (str: string) => { return str.toLowerCase(); },

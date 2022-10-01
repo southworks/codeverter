@@ -13,9 +13,12 @@ import {
     isBlock,
     isVariableStatement,
     ParameterDeclaration,
-    Statement
+    ReturnStatement,
+    Statement,
+    SyntaxKind
 } from "typescript";
 import { addVaribles } from "./helpers/variable-helper";
+import { TypeMapper } from "./type-mapper";
 import { ParametrizedSourceElement, TypedSourceElement, ValuedSourceElement } from "./types/source-element";
 import { TypedClassElement } from "./types/typed-class-element";
 
@@ -57,6 +60,12 @@ export class Function<K extends FunctionLikeDeclarationBase = FunctionDeclaratio
 
     public parse(node: K): void {
         super.parse(node);
+        const returnStatement = (node.body as Block)?.statements.find(s => s.kind == SyntaxKind.ReturnStatement) as ReturnStatement;
+        if (!node.type && returnStatement?.expression) {
+            const { knownType, type } = TypeMapper.getType(node, returnStatement.expression);
+            this.knownType = knownType;
+            this.type = type;
+        }
         this.content = this.trimBody(node.body?.getText(this.getSourceFile()) ?? "");
 
         if (node.body && isBlock(node.body!)) {

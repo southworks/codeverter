@@ -7,7 +7,7 @@ describe("GO: method", () => {
         const code = new StringWritter();
         code.write("export class Test {");
         code.write("    public method(): string {");
-        code.write("        let asd: string = \"holi\";");
+        code.write("        let asd: string = \"test\";");
         code.write("        return asd;");
         code.write("    }");
         code.write("}");
@@ -24,8 +24,8 @@ describe("GO: method", () => {
         expected.write("}");
         expected.write("");
         expected.write("func (t *Test) Method() string {");
-        expected.write("\tvar asd string = \"holi\"");
-        expected.write("\t//        let asd: string = \"holi\";");
+        expected.write("\tasd := \"test\"");
+        expected.write("\t//        let asd: string = \"test\";");
         expected.write("\t//        return asd;");
         expected.write("\treturn \"\"");
         expected.write("}");
@@ -38,8 +38,8 @@ describe("GO: method", () => {
         const code = new StringWritter();
         code.write("export class Test {");
         code.write("    public method(): number {");
-        code.write("        let asd: number = 1;");
-        code.write("        return asd;");
+        code.write("        let test: number = 1;");
+        code.write("        return test;");
         code.write("    }");
         code.write("}");
 
@@ -55,9 +55,9 @@ describe("GO: method", () => {
         expected.write("}");
         expected.write("");
         expected.write("func (t *Test) Method() int {");
-        expected.write("\tvar asd int = 1");
-        expected.write("\t//        let asd: number = 1;");
-        expected.write("\t//        return asd;");
+        expected.write("\ttest := 1");
+        expected.write("\t//        let test: number = 1;");
+        expected.write("\t//        return test;");
         expected.write("\treturn 0");
         expected.write("}");
         expected.write("");

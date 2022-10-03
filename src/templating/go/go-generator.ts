@@ -46,7 +46,7 @@ export class GoGenerator extends TemplateGenerator<GoHelpers> {
             case "number": return " 0";
             case "string": return " \"\"";
             case "boolean": return " false";
-            case "date": return " new Date()";
+            case "date": return " time.Now()";
             case "void": return "";
             default:
                 return " null";

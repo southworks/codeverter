@@ -44,25 +44,33 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
                 : helpers.toLowerCase(v.name);
 
             // in go arrays cannot be constants
-            const declarationPrefix = (v.kind == "constant" && v.knownType != "array") ? "const" : "var";
-            const asignChar = (v.kind == "constant" || v.knownType != "void") ? "=" : ":=";
+            const declarationPrefix = (v.kind == "constant" && !["array", "date", "reference"].includes(v.knownType))
+                ? "const "
+                : global ? "var " : "";
+            const asignChar = v.knownType != "reference" && v.knownType != "void"
+                ? (v.kind == "constant" || global) ? " =" : " :="
+                : "";
 
             let value = v.value;
             if (v.knownType == "string") {
                 value = `"${v.value}"`;
             } else if (v.knownType == "void" && v.value) {
-                value = `0 //${v.value}`;
+                value = `interface{} // ${v.value}`;
             } else if (v.knownType == "array") {
                 value = helpers.getArrayValue(v);
+            } else if (v.knownType == "date") {
+                value = `time.Now() // ${v.value}`;
+            } else if (v.knownType == "reference") {
+                value = `// ${v.value}`;
             }
             if (value == "") {
                 return ""; // cannot define empty const/var in go
             }
-            let type = helpers.mapType(v);
+            let type = global ? helpers.mapType(v) : "";
             if (type != "") {
                 type = ` ${type}`;
             }
-            return `${declarationPrefix} ${name}${type} ${asignChar} ${value}`;
+            return `${declarationPrefix}${name}${type}${asignChar} ${value}`;
         },
         printEnum: (v: EnumSourceElement) => {
             let result = `const (`;

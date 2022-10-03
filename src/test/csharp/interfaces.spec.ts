@@ -61,7 +61,7 @@ describe("CSharp: interfaces", () => {
         expected.write("");
         expected.write("    public class Clock : IClockInterface");
         expected.write("    {");
-        expected.write("        public DateTime CurrentTime { get; set; } = new DateTime();");
+        expected.write("        public DateTime CurrentTime { get; set; } = new DateTime(); //new Date()");
         expected.write("");
         expected.write("        public Clock(int h, int m)");
         expected.write("        {");

@@ -19,7 +19,7 @@ export interface CSharpHelpers {
     generateInitializeValue(e: ValuedSourceElement, semicolon: boolean): string;
     interfaceName(val: string): string;
     printEnum(v: EnumSourceElement): string;
-    printVariable(v: ValuedSourceElement, global: boolean): string;
+    printVariable(v: ValuedSourceElement): string;
     printMethod(p: ClassSourceElement | InterfaceSourceElement, v: ParametrizedSourceElement): string;
     printProperty(v: ValuedSourceElement, isInterface: boolean): string;
     printInterface(v: InterfaceSourceElement): string;
@@ -35,11 +35,13 @@ export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CShar
                     defaultValue = defaultValue === "" ? defaultValue : ` ${defaultValue} `;
                     return ` = new ${helpers.mapType(e)} {${defaultValue}};`;
                 } else if (e.knownType == "date") {
-                    return ` = new DateTime();`;
+                    return ` = new DateTime(); //${e.value}`;
                 } else if (e.knownType == "void") {
                     return ` = null; //${e.value}`;
                 } else if (e.knownType == "string") {
                     return ` = "${e.value}";`;
+                } else if (e.knownType == "reference") {
+                    return ` = null; //${e.value}`;
                 }
                 return ` = ${e.value};`;
             }
@@ -66,18 +68,21 @@ export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CShar
             result += "\n        }";
             return result;
         },
-        printVariable: (v: ValuedSourceElement, global: boolean) => {
+        printVariable: (v: ValuedSourceElement) => {
             const name = v.kind == "constant" ? helpers.toUpperCase(v.name) : helpers.capitalize(v.name);
             const type = v.knownType == "void"
-                ? "var"
+                ? "object"
                 : helpers.mapType(v);
-            const modifier = global
-                ? v.kind == "constant"
-                    ? "const "
-                    : "static "
-                : v.kind == "constant"
-                    ? "const "
-                    : "var ";
+            let modifier;
+            if (v.kind == "constant") {
+                if (v.knownType == "number" || v.knownType == "string" || v.knownType == "boolean") {
+                    modifier = "const ";
+                } else {
+                    modifier = "static readonly ";
+                }
+            } else {
+                modifier = "static ";
+            }
             const defaultValue = helpers.generateInitializeValue(v, true);
             return `public ${modifier}${type} ${name}${defaultValue}`;
         },

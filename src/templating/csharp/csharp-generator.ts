@@ -18,7 +18,7 @@ export class CSharpGenerator extends TemplateGenerator<CSharpHelpers> {
     }
 
     private printVariable(varName: string): string {
-        return `<%-helpers.printVariable(${varName}, true)%>`;
+        return `<%-helpers.printVariable(${varName})%>`;
     }
 
     private printMethod(parent: string, varName: string): string {

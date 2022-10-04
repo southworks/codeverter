@@ -61,7 +61,9 @@ export class Function<K extends FunctionLikeDeclarationBase = FunctionDeclaratio
     public parse(node: K): void {
         super.parse(node);
         const returnStatement = (node.body as Block)?.statements.find(s => s.kind == SyntaxKind.ReturnStatement) as ReturnStatement;
-        if (!node.type && returnStatement?.expression) {
+        const needRefineType = (this.knownType == "array" && this.type == "void")
+            || (!node.type && returnStatement?.expression);
+        if (needRefineType) {
             const { knownType, type } = TypeMapper.getType(node, returnStatement.expression);
             this.knownType = knownType;
             this.type = type;

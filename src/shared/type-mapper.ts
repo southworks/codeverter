@@ -39,7 +39,13 @@ export class TypeMapper {
     private static get(kind: KnownTypes, node?: TypedDeclaration, typeNode?: TypeNode | Expression): string | KnownTypes {
         switch (kind) {
             case "reference": {
-                return ((typeNode as TypeReferenceNode).typeName as Identifier).escapedText!
+                let tokenType = typeNode ? typeNode : (node as InitializerNode).initializer;
+                if (tokenType?.kind == SyntaxKind.NewExpression) {
+                    tokenType = (tokenType as InitializerExpression).expression;
+                }
+                return tokenType?.kind == SyntaxKind.TypeReference
+                    ? ((tokenType as TypeReferenceNode).typeName as Identifier).escapedText!
+                    : (tokenType as Identifier)?.escapedText!;
             }
             case "array": {
                 let tokenType = typeNode ? typeNode : (node as InitializerNode).initializer;
@@ -68,21 +74,26 @@ export class TypeMapper {
                 return "boolean";
             case SyntaxKind.ArrayLiteralExpression:
             case SyntaxKind.ArrayType:
+            case SyntaxKind.TupleType:
                 return "array";
             default: {
-                if (typeNode?.kind == SyntaxKind.TypeReference) {
-                    const referenceType = ((typeNode as TypeReferenceNode).typeName as Identifier).escapedText!;
+                const isReference = typeNode?.kind == SyntaxKind.TypeReference
+                    || typeNode?.kind == SyntaxKind.Identifier
+                    || typeNode?.kind == SyntaxKind.NewExpression;
+                if (isReference) {
+                    const identifier = typeNode?.kind == SyntaxKind.TypeReference
+                        ? ((typeNode as TypeReferenceNode).typeName as Identifier)
+                        : typeNode?.kind == SyntaxKind.NewExpression
+                            ? ((typeNode as InitializerExpression).expression as Identifier)
+                            : (typeNode as Identifier);
+
+                    const referenceType = identifier?.escapedText!;
                     if (referenceType == "Date") {
                         return "date";
                     } else if (referenceType == "Array") {
                         return "array";
                     }
                     return "reference";
-                }
-                else if (typeNode?.kind == SyntaxKind.Identifier) {
-                    if ((typeNode as Identifier)?.escapedText == "Array") {
-                        return "array";
-                    }
                 }
                 const initializer = (node as InitializerNode)?.initializer;
                 if (initializer) {

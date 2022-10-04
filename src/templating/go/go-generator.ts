@@ -6,8 +6,6 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { KnownTypes } from "../../shared/type-mapper";
-import { TypedSourceElement } from "../../shared/types/source-element";
 import { TemplateGenerator } from "../template-generator";
 import { TemplateHelper } from "../template-helpers";
 import { getGoHelpers, GoHelpers } from "./go-helpers";
@@ -41,42 +39,8 @@ export class GoGenerator extends TemplateGenerator<GoHelpers> {
         return getGoHelpers(helpers);
     }
 
-    public getDefaultValueMap(e: TypedSourceElement): string {
-        switch (e.knownType) {
-            case "number": return " 0";
-            case "string": return " \"\"";
-            case "boolean": return " false";
-            case "date": return " new Date()";
-            case "void": return "";
-            default:
-                return " null";
-        }
-    }
-
     public getDefaultVisibilityOrder(): string[] {
         return ["private", "protected", "public"];
-    }
-    /**
-     * Use anonymous function to be able to call it again inside
-     * @param knowType 
-     * @param type 
-     * @returns 
-     */
-    public getTypeMap(e: TypedSourceElement): string {
-        const fn: Function = (kt: KnownTypes, t: string | KnownTypes) => {
-            switch (kt) {
-                case "number": return "int";
-                case "string": return "string";
-                case "boolean": return "bool";
-                case "date": return "time.Time";
-                case "reference": return t;
-                case "void": return "";
-                case "array": return `[]${fn(t, "")}`;
-                default:
-                    return "error";
-            }
-        };
-        return fn(e.knownType, e.type);
     }
 
     public getExtension(): string {

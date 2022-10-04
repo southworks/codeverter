@@ -6,7 +6,6 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { TypedSourceElement } from "../shared/types/source-element";
 import { TemplateHelper, TemplateHelpers } from "./template-helpers";
 
 export abstract class TemplateGenerator<H extends object = {}> {
@@ -71,8 +70,6 @@ export abstract class TemplateGenerator<H extends object = {}> {
      */
     public abstract getCustomHelpers(helpers: TemplateHelper & H): H;
     public abstract getDefaultVisibilityOrder(): string[];
-    public abstract getDefaultValueMap(e: TypedSourceElement): string;
-    public abstract getTypeMap(e: TypedSourceElement): string;
     public abstract getExtension(): string;
 
     public getTemplate(): string {

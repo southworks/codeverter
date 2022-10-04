@@ -6,20 +6,23 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
+import { KnownTypes } from "../../shared/type-mapper";
 import {
     ClassSourceElement,
     EnumSourceElement,
     InterfaceSourceElement,
     ParametrizedSourceElement,
+    TypedSourceElement,
     ValuedSourceElement
 } from "../../shared/types/source-element";
+import { CustomHelpers } from "../custom/custom-helpers";
 import { TemplateHelper } from "../template-helpers";
 
-export interface CSharpHelpers {
+export interface CSharpHelpers extends CustomHelpers {
     generateInitializeValue(e: ValuedSourceElement, semicolon: boolean): string;
     interfaceName(val: string): string;
     printEnum(v: EnumSourceElement): string;
-    printVariable(v: ValuedSourceElement, global: boolean): string;
+    printVariable(v: ValuedSourceElement): string;
     printMethod(p: ClassSourceElement | InterfaceSourceElement, v: ParametrizedSourceElement): string;
     printProperty(v: ValuedSourceElement, isInterface: boolean): string;
     printInterface(v: InterfaceSourceElement): string;
@@ -28,6 +31,34 @@ export interface CSharpHelpers {
 
 export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CSharpHelpers {
     return {
+        mapDefaultValue: (e: TypedSourceElement) => {
+            switch (e.knownType) {
+                case "number": return " 0";
+                case "string": return " \"\"";
+                case "boolean": return " false";
+                case "date": return " DateTime.Now";
+                case "void": return "";
+                case "array": return ` new ${helpers.mapType(e)} {}`;
+                default:
+                    return " null";
+            }
+        },
+        mapType: (e: TypedSourceElement) => {
+            const fn: Function = (kt: KnownTypes, t: string | KnownTypes) => {
+                switch (kt) {
+                    case "number": return "int";
+                    case "string": return "string";
+                    case "boolean": return "bool";
+                    case "date": return "DateTime";
+                    case "reference": return t;
+                    case "void": return "void";
+                    case "array": return `${fn(t, "")}[]`;
+                    default:
+                        return "error";
+                }
+            };
+            return fn(e.knownType, e.type);
+        },
         generateInitializeValue: (e: ValuedSourceElement, semicolon: boolean) => {
             if (e.value != undefined) {
                 if (e.knownType == "array") {
@@ -35,11 +66,13 @@ export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CShar
                     defaultValue = defaultValue === "" ? defaultValue : ` ${defaultValue} `;
                     return ` = new ${helpers.mapType(e)} {${defaultValue}};`;
                 } else if (e.knownType == "date") {
-                    return ` = new DateTime();`;
+                    return ` = new DateTime(); //${e.value}`;
                 } else if (e.knownType == "void") {
                     return ` = null; //${e.value}`;
                 } else if (e.knownType == "string") {
                     return ` = "${e.value}";`;
+                } else if (e.knownType == "reference") {
+                    return ` = null; //${e.value}`;
                 }
                 return ` = ${e.value};`;
             }
@@ -66,18 +99,21 @@ export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CShar
             result += "\n        }";
             return result;
         },
-        printVariable: (v: ValuedSourceElement, global: boolean) => {
+        printVariable: (v: ValuedSourceElement) => {
             const name = v.kind == "constant" ? helpers.toUpperCase(v.name) : helpers.capitalize(v.name);
             const type = v.knownType == "void"
-                ? "var"
+                ? "object"
                 : helpers.mapType(v);
-            const modifier = global
-                ? v.kind == "constant"
-                    ? "const "
-                    : "static "
-                : v.kind == "constant"
-                    ? "const "
-                    : "var ";
+            let modifier;
+            if (v.kind == "constant") {
+                if (v.knownType == "number" || v.knownType == "string" || v.knownType == "boolean") {
+                    modifier = "const ";
+                } else {
+                    modifier = "static readonly ";
+                }
+            } else {
+                modifier = "static ";
+            }
             const defaultValue = helpers.generateInitializeValue(v, true);
             return `public ${modifier}${type} ${name}${defaultValue}`;
         },

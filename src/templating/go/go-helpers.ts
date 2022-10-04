@@ -6,18 +6,21 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
+import { KnownTypes } from "../../shared/type-mapper";
 import {
     ClassSourceElement,
     EnumSourceElement,
     InterfaceSourceElement,
     ParametrizedSourceElement,
     RootSourceElement,
+    TypedSourceElement,
     ValuedSourceElement,
     VisibilitySourceElement
 } from "../../shared/types/source-element";
+import { CustomHelpers } from "../custom/custom-helpers";
 import { TemplateHelper } from "../template-helpers";
 
-export interface GoHelpers {
+export interface GoHelpers extends CustomHelpers {
     getArrayValue(v: ValuedSourceElement): string;
     fixName(e: VisibilitySourceElement): string;
     printVariable(v: ValuedSourceElement, global: boolean): string;
@@ -33,6 +36,34 @@ export interface GoHelpers {
 
 export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
     return {
+        mapDefaultValue: (e: TypedSourceElement) => {
+            switch (e.knownType) {
+                case "number": return "0";
+                case "string": return "\"\"";
+                case "boolean": return "false";
+                case "date": return "time.Now()";
+                case "void": return "";
+                case "array": return "nil";
+                default:
+                    return "nil";
+            }
+        },
+        mapType: (e: TypedSourceElement) => {
+            const fn: Function = (kt: KnownTypes, t: string | KnownTypes) => {
+                switch (kt) {
+                    case "number": return "int";
+                    case "string": return "string";
+                    case "boolean": return "bool";
+                    case "date": return "time.Time";
+                    case "reference": return `*${t}`;
+                    case "void": return "";
+                    case "array": return `[]${fn(t, "")}`;
+                    default:
+                        return "error";
+                }
+            };
+            return fn(e.knownType, e.type);
+        },
         getArrayValue: (v: ValuedSourceElement) => {
             let defaultValue = helpers.getArrayDefault(v.value!);
             let type = helpers.mapType(v);
@@ -41,28 +72,35 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
         printVariable: (v: ValuedSourceElement, global: boolean) => {
             const name = v.visibility == "public" && global
                 ? helpers.capitalize(v.name)
-                : helpers.toLowerCase(v.name);
+                : helpers.camelize(v.name);
 
-            // in go arrays cannot be constants
-            const declarationPrefix = (v.kind == "constant" && v.knownType != "array") ? "const" : "var";
-            const asignChar = (v.kind == "constant" || v.knownType != "void") ? "=" : ":=";
+            const declarationPrefix = (v.kind == "constant" && !["array", "date", "reference"].includes(v.knownType))
+                ? "const "
+                : global ? "var " : "";
+            const asignChar = v.knownType != "void"
+                ? (v.kind == "constant" || global) ? " =" : " :="
+                : "";
 
             let value = v.value;
             if (v.knownType == "string") {
                 value = `"${v.value}"`;
             } else if (v.knownType == "void" && v.value) {
-                value = `0 //${v.value}`;
+                value = `interface{} // ${v.value}`;
             } else if (v.knownType == "array") {
                 value = helpers.getArrayValue(v);
+            } else if (v.knownType == "date") {
+                value = `time.Now() // ${v.value}`;
+            } else if (v.knownType == "reference") {
+                value = `new(${v.type}) // ${v.value}`;
             }
             if (value == "") {
                 return ""; // cannot define empty const/var in go
             }
-            let type = helpers.mapType(v);
+            let type = global ? helpers.mapType(v) : "";
             if (type != "") {
                 type = ` ${type}`;
             }
-            return `${declarationPrefix} ${name}${type} ${asignChar} ${value}`;
+            return `${declarationPrefix}${name}${type}${asignChar} ${value}`;
         },
         printEnum: (v: EnumSourceElement) => {
             let result = `const (`;
@@ -101,7 +139,10 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
                     : "";
                 let result = `func ${receiver}${helpers.fixName(v)}(${params})${resultType} {`;
                 result = `${result}${helpers.printMethodBody(v)}`;
-                result = `${result}\n\treturn${helpers.mapDefaultValue(v)}`;
+                result = `${result}\n\treturn`;
+                if (v.knownType != "void") {
+                    result = `${result} ${helpers.mapDefaultValue(v)}`;
+                }
                 return `${result}\n}`;
             }
             return `${helpers.fixName(v)}(${params})${resultType}`;

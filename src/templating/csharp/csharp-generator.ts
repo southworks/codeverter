@@ -6,8 +6,6 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { KnownTypes } from "../../shared/type-mapper";
-import { TypedSourceElement } from "../../shared/types/source-element";
 import { TemplateGenerator } from "../template-generator";
 import { TemplateHelper } from "../template-helpers";
 import { CSharpHelpers, getCSharpHelpers } from "./csharp-helpers";
@@ -35,41 +33,6 @@ export class CSharpGenerator extends TemplateGenerator<CSharpHelpers> {
 
     public getCustomHelpers(helpers: TemplateHelper & CSharpHelpers): CSharpHelpers {
         return getCSharpHelpers(helpers);
-    }
-
-    public getDefaultValueMap(e: TypedSourceElement): string {
-        switch (e.type) {
-            case "number": return " 0";
-            case "string": return " \"\"";
-            case "boolean": return " false";
-            case "date": return " DateTime.Now";
-            case "void": return "";
-            default:
-                return " null";
-        }
-    }
-
-    /**
-     * Use anonymous function to be able to call it again inside
-     * @param knowType 
-     * @param type 
-     * @returns 
-     */
-    public getTypeMap(e: TypedSourceElement): string {
-        const fn: Function = (kt: KnownTypes, t: string | KnownTypes) => {
-            switch (kt) {
-                case "number": return "int";
-                case "string": return "string";
-                case "boolean": return "bool";
-                case "date": return "DateTime";
-                case "reference": return t;
-                case "void": return "void";
-                case "array": return `${fn(t, "")}[]`;
-                default:
-                    return "error";
-            }
-        };
-        return fn(e.knownType, e.type);
     }
 
     public getDefaultVisibilityOrder(): string[] {

@@ -6,18 +6,21 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
+import { KnownTypes } from "../../shared/type-mapper";
 import {
     ClassSourceElement,
     EnumSourceElement,
     InterfaceSourceElement,
     ParametrizedSourceElement,
     RootSourceElement,
+    TypedSourceElement,
     ValuedSourceElement,
     VisibilitySourceElement
 } from "../../shared/types/source-element";
+import { CustomHelpers } from "../custom/custom-helpers";
 import { TemplateHelper } from "../template-helpers";
 
-export interface GoHelpers {
+export interface GoHelpers extends CustomHelpers {
     getArrayValue(v: ValuedSourceElement): string;
     fixName(e: VisibilitySourceElement): string;
     printVariable(v: ValuedSourceElement, global: boolean): string;
@@ -33,6 +36,33 @@ export interface GoHelpers {
 
 export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
     return {
+        mapDefaultValue: (e: TypedSourceElement) => {
+            switch (e.knownType) {
+                case "number": return " 0";
+                case "string": return " \"\"";
+                case "boolean": return " false";
+                case "date": return " time.Now()";
+                case "void": return "";
+                default:
+                    return " null";
+            }
+        },
+        mapType: (e: TypedSourceElement) => {
+            const fn: Function = (kt: KnownTypes, t: string | KnownTypes) => {
+                switch (kt) {
+                    case "number": return "int";
+                    case "string": return "string";
+                    case "boolean": return "bool";
+                    case "date": return "time.Time";
+                    case "reference": return t;
+                    case "void": return "";
+                    case "array": return `[]${fn(t, "")}`;
+                    default:
+                        return "error";
+                }
+            };
+            return fn(e.knownType, e.type);
+        },
         getArrayValue: (v: ValuedSourceElement) => {
             let defaultValue = helpers.getArrayDefault(v.value!);
             let type = helpers.mapType(v);

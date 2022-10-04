@@ -74,12 +74,20 @@ export class TypeMapper {
                 return "boolean";
             case SyntaxKind.ArrayLiteralExpression:
             case SyntaxKind.ArrayType:
+            case SyntaxKind.TupleType:
                 return "array";
             default: {
-                if (typeNode?.kind == SyntaxKind.TypeReference || typeNode?.kind == SyntaxKind.Identifier) {
-                    const referenceType = typeNode?.kind == SyntaxKind.TypeReference
-                        ? ((typeNode as TypeReferenceNode).typeName as Identifier).escapedText!
-                        : (typeNode as Identifier)?.escapedText!;
+                const isReference = typeNode?.kind == SyntaxKind.TypeReference
+                    || typeNode?.kind == SyntaxKind.Identifier
+                    || typeNode?.kind == SyntaxKind.NewExpression;
+                if (isReference) {
+                    const identifier = typeNode?.kind == SyntaxKind.TypeReference
+                        ? ((typeNode as TypeReferenceNode).typeName as Identifier)
+                        : typeNode?.kind == SyntaxKind.NewExpression
+                            ? ((typeNode as InitializerExpression).expression as Identifier)
+                            : (typeNode as Identifier);
+
+                    const referenceType = identifier?.escapedText!;
                     if (referenceType == "Date") {
                         return "date";
                     } else if (referenceType == "Array") {

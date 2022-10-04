@@ -6,7 +6,6 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
-import { TypedSourceElement } from "../shared/types/source-element";
 import { TemplateGenerator } from "./template-generator";
 
 export interface TemplateHelper {
@@ -17,8 +16,6 @@ export interface TemplateHelper {
     toLowerCase(str: string): string;
     sanitize(str: string, replaceChar: string): string;
     orderBy(values: any[], field: string, order: string[]): [];
-    mapType(e: TypedSourceElement): string;
-    mapDefaultValue(e: TypedSourceElement): string;
     splitBlock(...values: any[]): string;
     ifAny(...values: any[]): boolean;
     defaultVisibilityOrder(): string[];
@@ -69,6 +66,7 @@ export class TemplateHelpers {
 
     public static build(generator: TemplateGenerator): TemplateHelper {
         const defaulHelpers = {
+            defaultVisibilityOrder: generator.getDefaultVisibilityOrder,
             capitalize: (str: string) => { return str.replace(/\w/, c => c.toUpperCase()); },
             getArrayDefault: (str: string) => {
                 let result = str;
@@ -90,9 +88,6 @@ export class TemplateHelpers {
                     return indexA - indexB;
                 });
             },
-            mapType: generator.getTypeMap,
-            mapDefaultValue: generator.getDefaultValueMap,
-            defaultVisibilityOrder: generator.getDefaultVisibilityOrder,
             splitBlock: (...values: any[]) => {
                 if (values.every(v => v && v.length)) {
                     return "\n";

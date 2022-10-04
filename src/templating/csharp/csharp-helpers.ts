@@ -6,16 +6,19 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
+import { KnownTypes } from "../../shared/type-mapper";
 import {
     ClassSourceElement,
     EnumSourceElement,
     InterfaceSourceElement,
     ParametrizedSourceElement,
+    TypedSourceElement,
     ValuedSourceElement
 } from "../../shared/types/source-element";
+import { CustomHelpers } from "../custom/custom-helpers";
 import { TemplateHelper } from "../template-helpers";
 
-export interface CSharpHelpers {
+export interface CSharpHelpers extends CustomHelpers {
     generateInitializeValue(e: ValuedSourceElement, semicolon: boolean): string;
     interfaceName(val: string): string;
     printEnum(v: EnumSourceElement): string;
@@ -28,6 +31,34 @@ export interface CSharpHelpers {
 
 export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CSharpHelpers {
     return {
+        mapDefaultValue: (e: TypedSourceElement) => {
+            switch (e.knownType) {
+                case "number": return " 0";
+                case "string": return " \"\"";
+                case "boolean": return " false";
+                case "date": return " DateTime.Now";
+                case "void": return "";
+                case "array": return ` new ${helpers.mapType(e)} {}`;
+                default:
+                    return " null";
+            }
+        },
+        mapType: (e: TypedSourceElement) => {
+            const fn: Function = (kt: KnownTypes, t: string | KnownTypes) => {
+                switch (kt) {
+                    case "number": return "int";
+                    case "string": return "string";
+                    case "boolean": return "bool";
+                    case "date": return "DateTime";
+                    case "reference": return t;
+                    case "void": return "void";
+                    case "array": return `${fn(t, "")}[]`;
+                    default:
+                        return "error";
+                }
+            };
+            return fn(e.knownType, e.type);
+        },
         generateInitializeValue: (e: ValuedSourceElement, semicolon: boolean) => {
             if (e.value != undefined) {
                 if (e.knownType == "array") {

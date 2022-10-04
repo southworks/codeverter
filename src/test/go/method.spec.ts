@@ -7,8 +7,8 @@ describe("GO: method", () => {
         const code = new StringWritter();
         code.write("export class Test {");
         code.write("    public method(): string {");
-        code.write("        let asd: string = \"test\";");
-        code.write("        return asd;");
+        code.write("        let test: string = \"test\";");
+        code.write("        return test;");
         code.write("    }");
         code.write("}");
 
@@ -24,9 +24,9 @@ describe("GO: method", () => {
         expected.write("}");
         expected.write("");
         expected.write("func (t *Test) Method() string {");
-        expected.write("\tasd := \"test\"");
-        expected.write("\t//        let asd: string = \"test\";");
-        expected.write("\t//        return asd;");
+        expected.write("\ttest := \"test\"");
+        expected.write("\t//        let test: string = \"test\";");
+        expected.write("\t//        return test;");
         expected.write("\treturn \"\"");
         expected.write("}");
         expected.write("");

@@ -7,9 +7,9 @@ describe("CSharp: method", () => {
         const code = new StringWritter();
         code.write("export class Test {");
         code.write("    public method(): string {");
-        code.write("        let asd: string = \"holi\";");
+        code.write("        let test: string = \"test\";");
         code.write("        let testNoType = 123;");
-        code.write("        return asd;");
+        code.write("        return test;");
         code.write("    }");
         code.write("}");
 
@@ -25,11 +25,11 @@ describe("CSharp: method", () => {
         expected.write("    {");
         expected.write("        public string Method()");
         expected.write("        {");
-        expected.write("            string asd = \"holi\";");
+        expected.write("            string test = \"test\";");
         expected.write("            int testNoType = 123;");
-        expected.write("            //         let asd: string = \"holi\";");
+        expected.write("            //         let test: string = \"test\";");
         expected.write("            //         let testNoType = 123;");
-        expected.write("            //         return asd;");
+        expected.write("            //         return test;");
         expected.write("            return \"\";");
         expected.write("        }");
         expected.write("    }");

@@ -38,13 +38,14 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
     return {
         mapDefaultValue: (e: TypedSourceElement) => {
             switch (e.knownType) {
-                case "number": return " 0";
-                case "string": return " \"\"";
-                case "boolean": return " false";
-                case "date": return " time.Now()";
+                case "number": return "0";
+                case "string": return "\"\"";
+                case "boolean": return "false";
+                case "date": return "time.Now()";
                 case "void": return "";
+                case "array": return "nil";
                 default:
-                    return " null";
+                    return "nil";
             }
         },
         mapType: (e: TypedSourceElement) => {
@@ -54,7 +55,7 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
                     case "string": return "string";
                     case "boolean": return "bool";
                     case "date": return "time.Time";
-                    case "reference": return t;
+                    case "reference": return `*${t}`;
                     case "void": return "";
                     case "array": return `[]${fn(t, "")}`;
                     default:
@@ -71,13 +72,12 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
         printVariable: (v: ValuedSourceElement, global: boolean) => {
             const name = v.visibility == "public" && global
                 ? helpers.capitalize(v.name)
-                : helpers.toLowerCase(v.name);
+                : helpers.camelize(v.name);
 
-            // in go arrays cannot be constants
             const declarationPrefix = (v.kind == "constant" && !["array", "date", "reference"].includes(v.knownType))
                 ? "const "
                 : global ? "var " : "";
-            const asignChar = v.knownType != "reference" && v.knownType != "void"
+            const asignChar = v.knownType != "void"
                 ? (v.kind == "constant" || global) ? " =" : " :="
                 : "";
 
@@ -91,7 +91,7 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
             } else if (v.knownType == "date") {
                 value = `time.Now() // ${v.value}`;
             } else if (v.knownType == "reference") {
-                value = `// ${v.value}`;
+                value = `new(${v.type}) // ${v.value}`;
             }
             if (value == "") {
                 return ""; // cannot define empty const/var in go
@@ -139,7 +139,10 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
                     : "";
                 let result = `func ${receiver}${helpers.fixName(v)}(${params})${resultType} {`;
                 result = `${result}${helpers.printMethodBody(v)}`;
-                result = `${result}\n\treturn${helpers.mapDefaultValue(v)}`;
+                result = `${result}\n\treturn`;
+                if (v.knownType != "void") {
+                    result = `${result} ${helpers.mapDefaultValue(v)}`;
+                }
                 return `${result}\n}`;
             }
             return `${helpers.fixName(v)}(${params})${resultType}`;

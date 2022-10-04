@@ -36,8 +36,8 @@ describe("GO: constant", () => {
         const expected = new StringWritter();
         expected.write("package test");
         expected.write("");
-        expected.write("var Constant Foo // new Foo()");
-        expected.write("var ConstantInf Foo // new Foo()");
+        expected.write("var Constant *Foo = new(Foo) // new Foo()");
+        expected.write("var ConstantInf *Foo = new(Foo) // new Foo()");
         expected.write("");
 
         expect(strWritter.getString()).toBe(expected.getString());

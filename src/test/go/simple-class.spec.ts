@@ -48,7 +48,7 @@ describe("GO: class", () => {
         expected.write("}");
         expected.write("");
         expected.write("type Test2 struct {");
-        expected.write("\tFoo2 Test");
+        expected.write("\tFoo2 *Test");
         expected.write("}");
         expected.write("");
 

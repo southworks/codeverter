@@ -8,6 +8,7 @@
 
 import {
     Block,
+    Expression,
     FunctionDeclaration,
     FunctionLikeDeclarationBase,
     isBlock,
@@ -18,7 +19,7 @@ import {
     SyntaxKind
 } from "typescript";
 import { addVaribles } from "./helpers/variable-helper";
-import { TypeMapper } from "./type-mapper";
+import { TypeMapper, TypeMapperResult } from "./type-mapper";
 import { ParametrizedSourceElement, TypedSourceElement, ValuedSourceElement } from "./types/source-element";
 import { TypedClassElement } from "./types/typed-class-element";
 
@@ -64,9 +65,16 @@ export class Function<K extends FunctionLikeDeclarationBase = FunctionDeclaratio
         const needRefineType = (this.knownType == "array" && this.type == "void")
             || (!node.type && returnStatement?.expression);
         if (needRefineType) {
-            const { knownType, type } = TypeMapper.getType(node, returnStatement.expression);
-            this.knownType = knownType;
-            this.type = type;
+            let typeResult: TypeMapperResult = { knownType: "void", type: "void" };
+            if ((needRefineType as Expression).kind != undefined) {
+                let typeAtLocation = this.getTypeChecker().getTypeAtLocation(needRefineType as Expression);
+                typeResult = TypeMapper.getTypeFromType(typeAtLocation);
+            }
+            if (typeResult.knownType == "void") {
+                typeResult = TypeMapper.getType(node, returnStatement.expression);
+            }
+            this.knownType = typeResult.knownType;
+            this.type = typeResult.type;
         }
         this.content = this.trimBody(node.body?.getText(this.getSourceFile()) ?? "");
 

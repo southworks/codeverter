@@ -14,6 +14,8 @@ import {
     NodeArray,
     NodeWithTypeArguments,
     SyntaxKind,
+    Type,
+    TypeFlags,
     TypeNode,
     TypeReferenceNode
 } from "typescript";
@@ -27,7 +29,7 @@ interface InitializerNode extends TypedDeclaration {
     initializer: InitializerExpression | TypeNode | ArrayLiteralExpression | TypedDeclaration;
 }
 
-type TypeMapperResult = { knownType: KnownTypes, type: string | KnownTypes };
+export type TypeMapperResult = { knownType: KnownTypes, type: string | KnownTypes };
 
 export type KnownTypes = "number" | "string" | "boolean" | "date" | "reference" | "void" | "array";
 
@@ -109,6 +111,33 @@ export class TypeMapper {
         return {
             knownType: kind,
             type: this.get(kind, node, typeNode)
+        }
+    }
+
+    public static getTypeFromType(typeNode: Type): TypeMapperResult {
+        let type: KnownTypes;
+        switch (typeNode.flags) {
+            case TypeFlags.BooleanLike:
+            case TypeFlags.BooleanLiteral:
+            case TypeFlags.Boolean: type = "boolean";
+                break;
+            case TypeFlags.String:
+            case TypeFlags.StringLike:
+            case TypeFlags.StringLiteral:
+            case TypeFlags.Boolean: type = "string";
+                break;
+            case TypeFlags.BigInt:
+            case TypeFlags.BigIntLike:
+            case TypeFlags.BigIntLiteral:
+            case TypeFlags.Number:
+            case TypeFlags.NumberLike:
+            case TypeFlags.NumberLiteral: type = "number";
+                break;
+            default: type = "void";
+        }
+        return {
+            knownType: type,
+            type: type
         }
     }
 }

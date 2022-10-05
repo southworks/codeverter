@@ -1126,4 +1126,129 @@ describe("CSharp: method", () => {
             });
         });
     });
+
+    describe("complex type inference", () => {
+        test("infer operation int", () => {
+            const code = new StringWritter();
+            code.write("export class Test {");
+            code.write("    public method() {");
+            code.write("        return 1 + 2;");
+            code.write("    }");
+            code.write("}");
+
+            let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+            const strWritter = new StringWritter();
+            printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+            const expected = new StringWritter();
+            expected.write("namespace Test");
+            expected.write("{");
+            expected.write("    public class Test");
+            expected.write("    {");
+            expected.write("        public int Method()");
+            expected.write("        {");
+            expected.write("            //         return 1 + 2;");
+            expected.write("            return 0;");
+            expected.write("        }");
+            expected.write("    }");
+            expected.write("}");
+            expected.write("");
+
+            expect(strWritter.getString()).toBe(expected.getString());
+        });
+
+        test("infer operation boolean", () => {
+            const code = new StringWritter();
+            code.write("export class Test {");
+            code.write("    public method() {");
+            code.write("        return true && false;");
+            code.write("    }");
+            code.write("}");
+
+            let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+            const strWritter = new StringWritter();
+            printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+            const expected = new StringWritter();
+            expected.write("namespace Test");
+            expected.write("{");
+            expected.write("    public class Test");
+            expected.write("    {");
+            expected.write("        public bool Method()");
+            expected.write("        {");
+            expected.write("            //         return true && false;");
+            expected.write("            return false;");
+            expected.write("        }");
+            expected.write("    }");
+            expected.write("}");
+            expected.write("");
+
+            expect(strWritter.getString()).toBe(expected.getString());
+        });
+
+        test("infer operation string", () => {
+            const code = new StringWritter();
+            code.write("export class Test {");
+            code.write("    public method() {");
+            code.write("        return 'test' + 'test';");
+            code.write("    }");
+            code.write("}");
+
+            let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+            const strWritter = new StringWritter();
+            printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+            const expected = new StringWritter();
+            expected.write("namespace Test");
+            expected.write("{");
+            expected.write("    public class Test");
+            expected.write("    {");
+            expected.write("        public string Method()");
+            expected.write("        {");
+            expected.write("            //         return 'test' + 'test';");
+            expected.write("            return \"\";");
+            expected.write("        }");
+            expected.write("    }");
+            expected.write("}");
+            expected.write("");
+
+            expect(strWritter.getString()).toBe(expected.getString());
+        });
+
+        test("infer operation string variable", () => {
+            const code = new StringWritter();
+            code.write("export class Test {");
+            code.write("    public method() {");
+            code.write("        let ret = 'test';");
+            code.write("        return ret;");
+            code.write("    }");
+            code.write("}");
+
+            let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+            const strWritter = new StringWritter();
+            printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+            const expected = new StringWritter();
+            expected.write("namespace Test");
+            expected.write("{");
+            expected.write("    public class Test");
+            expected.write("    {");
+            expected.write("        public string Method()");
+            expected.write("        {");
+            expected.write("            string ret = \"test\";");
+            expected.write("            //         let ret = 'test';");
+            expected.write("            //         return ret;");
+            expected.write("            return \"\";");
+            expected.write("        }");
+            expected.write("    }");
+            expected.write("}");
+            expected.write("");
+
+            expect(strWritter.getString()).toBe(expected.getString());
+        });
+    });
 });

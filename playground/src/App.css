@@ -119,3 +119,16 @@ select {
     background-color: #1E1E1E;
     color: white !important;
 }
+
+.MuiFormControlLabel-root>.MuiFormControlLabel-label {
+    font-family: Poppins, sans-serif !important;
+}
+
+.MuiButtonBase-root.Mui-checked {
+    color: #fc4c02 !important;
+}
+
+.MuiSwitch-track {
+    background-color: #fc4c02 !important;
+    opacity: 0.5 !important;
+}

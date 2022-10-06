@@ -1345,4 +1345,96 @@ describe("CSharp: method", () => {
             expect(strWritter.getString()).toBe(expected.getString());
         });
     });
+
+    describe("parameters", () => {
+        test("explicit", () => {
+            const code = new StringWritter();
+            code.write("export class Test {");
+            code.write("    public method(val: number) {");
+            code.write("        return val + 2;");
+            code.write("    }");
+            code.write("}");
+
+            let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+            const strWritter = new StringWritter();
+            printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+            const expected = new StringWritter();
+            expected.write("namespace Test");
+            expected.write("{");
+            expected.write("    public class Test");
+            expected.write("    {");
+            expected.write("        public int Method(int val)");
+            expected.write("        {");
+            expected.write("            //         return val + 2;");
+            expected.write("            return 0;");
+            expected.write("        }");
+            expected.write("    }");
+            expected.write("}");
+            expected.write("");
+
+            expect(strWritter.getString()).toBe(expected.getString());
+        });
+
+        test("infer any", () => {
+            const code = new StringWritter();
+            code.write("export class Test {");
+            code.write("    public method(val) {");
+            code.write("        return val + 1;");
+            code.write("    }");
+            code.write("}");
+
+            let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+            const strWritter = new StringWritter();
+            printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+            const expected = new StringWritter();
+            expected.write("namespace Test");
+            expected.write("{");
+            expected.write("    public class Test");
+            expected.write("    {");
+            expected.write("        public void Method(object val)");
+            expected.write("        {");
+            expected.write("            //         return val + 1;");
+            expected.write("            return;");
+            expected.write("        }");
+            expected.write("    }");
+            expected.write("}");
+            expected.write("");
+
+            expect(strWritter.getString()).toBe(expected.getString());
+        });
+
+        test("explicit any", () => {
+            const code = new StringWritter();
+            code.write("export class Test {");
+            code.write("    public method(val: any) {");
+            code.write("        return val + 1;");
+            code.write("    }");
+            code.write("}");
+
+            let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+            const strWritter = new StringWritter();
+            printFile(compilationResult, new CSharpGenerator(), strWritter);
+
+            const expected = new StringWritter();
+            expected.write("namespace Test");
+            expected.write("{");
+            expected.write("    public class Test");
+            expected.write("    {");
+            expected.write("        public void Method(object val)");
+            expected.write("        {");
+            expected.write("            //         return val + 1;");
+            expected.write("            return;");
+            expected.write("        }");
+            expected.write("    }");
+            expected.write("}");
+            expected.write("");
+
+            expect(strWritter.getString()).toBe(expected.getString());
+        });
+    });
 });

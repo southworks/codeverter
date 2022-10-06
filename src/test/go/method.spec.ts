@@ -1200,4 +1200,75 @@ describe("GO: method", () => {
             expect(strWritter.getString()).toBe(expected.getString());
         });
     });
+
+    describe("parameters", () => {
+        test("explicit", () => {
+            const code = new StringWritter();
+            code.write("function method(val: number) {");
+            code.write("    return val + 2;");
+            code.write("}");
+
+            let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+            const strWritter = new StringWritter();
+            printFile(compilationResult, new GoGenerator(), strWritter);
+
+            const expected = new StringWritter();
+            expected.write("package test");
+            expected.write("");
+            expected.write("func Method(val int) int {");
+            expected.write("\t//    return val + 2;");
+            expected.write("\treturn 0");
+            expected.write("}");
+            expected.write("");
+
+            expect(strWritter.getString()).toBe(expected.getString());
+        });
+
+        test("infer any", () => {
+            const code = new StringWritter();
+            code.write("function method(val) {");
+            code.write("    return val + 1;");
+            code.write("}");
+
+            let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+            const strWritter = new StringWritter();
+            printFile(compilationResult, new GoGenerator(), strWritter);
+
+            const expected = new StringWritter();
+            expected.write("package test");
+            expected.write("");
+            expected.write("func Method(val interface{}) {");
+            expected.write("\t//    return val + 1;");
+            expected.write("\treturn");
+            expected.write("}");
+            expected.write("");
+
+            expect(strWritter.getString()).toBe(expected.getString());
+        });
+
+        test("explicit any", () => {
+            const code = new StringWritter();
+            code.write("function method(val: any) {");
+            code.write("    return val + 1;");
+            code.write("}");
+
+            let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+            const strWritter = new StringWritter();
+            printFile(compilationResult, new GoGenerator(), strWritter);
+
+            const expected = new StringWritter();
+            expected.write("package test");
+            expected.write("");
+            expected.write("func Method(val interface{}) {");
+            expected.write("\t//    return val + 1;");
+            expected.write("\treturn");
+            expected.write("}");
+            expected.write("");
+
+            expect(strWritter.getString()).toBe(expected.getString());
+        });
+    });
 });

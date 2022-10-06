@@ -58,6 +58,7 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
                     case "reference": return `*${t}`;
                     case "void": return "";
                     case "array": return `[]${fn(t, "")}`;
+                    case "any": return "interface{}";
                     default:
                         return "error";
                 }

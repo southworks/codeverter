@@ -132,7 +132,8 @@ export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CShar
             if (!forInterface) {
                 result += "\n        {\n";
                 result += v.variables.concat(v.constants).map(va => {
-                    const constModifier = va.kind == "constant" ? "const " : "";
+                    const refType = va.knownType == "reference" || va.knownType == "date" || va.knownType == "array";
+                    const constModifier = (va.kind == "constant" && !refType) ? "const " : "";
                     const typeModifier = va.knownType == "void"
                         ? "var"
                         : helpers.mapType(va);
@@ -140,7 +141,7 @@ export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CShar
                     return `            ${constModifier}${typeModifier} ${helpers.camelize(va.name)}${defaultValue}`;
                 }).join("\n");
 
-                if (v.variables.length && v.content.length) {
+                if ((v.variables.length || v.constants.length) && v.content.length) {
                     result += "\n";
                 }
 

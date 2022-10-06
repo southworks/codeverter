@@ -74,11 +74,12 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
                 ? helpers.capitalize(v.name)
                 : helpers.camelize(v.name);
 
-            const declarationPrefix = (v.kind == "constant" && !["array", "date", "reference"].includes(v.knownType))
+            const isRef = ["array", "date", "reference"].includes(v.knownType);
+            const declarationPrefix = (v.kind == "constant" && !isRef)
                 ? "const "
                 : global ? "var " : "";
             const asignChar = v.knownType != "void"
-                ? (v.kind == "constant" || global) ? " =" : " :="
+                ? ((v.kind == "constant" && !isRef) || global) ? " =" : " :="
                 : "";
 
             let value = v.value;

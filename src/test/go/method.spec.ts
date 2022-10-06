@@ -1002,6 +1002,86 @@ describe("GO: method", () => {
                 expect(strWritter.getString()).toBe(expected.getString());
             });
         });
+
+        describe("constants", () => {
+            test("explicit", () => {
+                const code = new StringWritter();
+                code.write("function method(): void {");
+                code.write("    const varStr: string = \"test\";");
+                code.write("    const varBool: boolean = false;");
+                code.write("    const varNum: number = 1;");
+                code.write("    const varArray: number[] = [1, 2];");
+                code.write("    const varDate: Date = new Date();");
+                code.write("    const varRef: Test = new Test();");
+                code.write("}");
+
+                let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+                const strWritter = new StringWritter();
+                printFile(compilationResult, new GoGenerator(), strWritter);
+
+                const expected = new StringWritter();
+                expected.write("package test");
+                expected.write("");
+                expected.write("func Method() {");
+                expected.write("\tconst varStr = \"test\"");
+                expected.write("\tconst varBool = false");
+                expected.write("\tconst varNum = 1");
+                expected.write("\tvarArray := []int{1, 2}");
+                expected.write("\tvarDate := time.Now() // new Date()");
+                expected.write("\tvarRef := new(Test) // new Test()");
+                expected.write("\t//    const varStr: string = \"test\";");
+                expected.write("\t//    const varBool: boolean = false;");
+                expected.write("\t//    const varNum: number = 1;");
+                expected.write("\t//    const varArray: number[] = [1, 2];");
+                expected.write("\t//    const varDate: Date = new Date();");
+                expected.write("\t//    const varRef: Test = new Test();");
+                expected.write("\treturn");
+                expected.write("}");
+                expected.write("");
+
+                expect(strWritter.getString()).toBe(expected.getString());
+            });
+
+            test("infer", () => {
+                const code = new StringWritter();
+                code.write("function method(): void {");
+                code.write("    const varStr = \"test\";");
+                code.write("    const varBool = false;");
+                code.write("    const varNum = 1;");
+                code.write("    const varArray = [1, 2];");
+                code.write("    const varDate = new Date();");
+                code.write("    const varRef = new Test();");
+                code.write("}");
+
+                let compilationResult = compileTypeScriptCode(code.getString(), "test.ts");
+
+                const strWritter = new StringWritter();
+                printFile(compilationResult, new GoGenerator(), strWritter);
+
+                const expected = new StringWritter();
+                expected.write("package test");
+                expected.write("");
+                expected.write("func Method() {");
+                expected.write("\tconst varStr = \"test\"");
+                expected.write("\tconst varBool = false");
+                expected.write("\tconst varNum = 1");
+                expected.write("\tvarArray := []int{1, 2}");
+                expected.write("\tvarDate := time.Now() // new Date()");
+                expected.write("\tvarRef := new(Test) // new Test()");
+                expected.write("\t//    const varStr = \"test\";");
+                expected.write("\t//    const varBool = false;");
+                expected.write("\t//    const varNum = 1;");
+                expected.write("\t//    const varArray = [1, 2];");
+                expected.write("\t//    const varDate = new Date();");
+                expected.write("\t//    const varRef = new Test();");
+                expected.write("\treturn");
+                expected.write("}");
+                expected.write("");
+
+                expect(strWritter.getString()).toBe(expected.getString());
+            });
+        });
     });
 
     describe("complex type inference", () => {

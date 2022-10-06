@@ -53,6 +53,7 @@ export function getCSharpHelpers(helpers: TemplateHelper & CSharpHelpers): CShar
                     case "reference": return t;
                     case "void": return "void";
                     case "array": return `${fn(t, "")}[]`;
+                    case "any": return "object";
                     default:
                         return "error";
                 }

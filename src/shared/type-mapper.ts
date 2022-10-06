@@ -31,7 +31,7 @@ interface InitializerNode extends TypedDeclaration {
 
 export type TypeMapperResult = { knownType: KnownTypes, type: string | KnownTypes };
 
-export type KnownTypes = "number" | "string" | "boolean" | "date" | "reference" | "void" | "array";
+export type KnownTypes = "number" | "string" | "boolean" | "date" | "reference" | "void" | "array" | "any";
 
 export class TypeMapper {
     private static isGenericArray(node?: TypeNode): node is NodeWithTypeArguments {
@@ -78,6 +78,8 @@ export class TypeMapper {
             case SyntaxKind.ArrayType:
             case SyntaxKind.TupleType:
                 return "array";
+            case SyntaxKind.AnyKeyword:
+                return "any";
             default: {
                 const isReference = typeNode?.kind == SyntaxKind.TypeReference
                     || typeNode?.kind == SyntaxKind.Identifier

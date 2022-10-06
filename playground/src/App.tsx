@@ -1,12 +1,14 @@
-import Editor from "@monaco-editor/react";
-import { BaseSyntheticEvent, useEffect, useRef, useState } from "react";
-import { compileTypeScriptCode, StringWritter, AvailableLanguages, getLanguageGenerator, printFileEx } from "@southworks/codeverter";
+import { useRef, useState } from "react";
+import { AvailableLanguages } from "@southworks/codeverter";
+import { BasicProps, Toolbar, ToolbarProps } from "./components/Toolbar";
+import { MainEditor, MainEditorProps } from "./components/MainEditor";
+import { Header } from "./components/Header";
 import "./App.css";
 
-function App() {
+export const App = () => {
     const sourceEditorRef = useRef(null);
     const templateEditorRef = useRef(null);
-    const [theme, setTheme] = useState("vs-light");
+    const [isDarkTheme, setIsDarkTheme] = useState(false);
     const [template, setTemplate] = useState("");
     const [language, setLanguage] = useState("");
     const [isEditorReady, setIsEditorReady] = useState(false);
@@ -17,140 +19,44 @@ function App() {
         "go": "GO"
     });
 
-    useEffect(() => {
-        configLanguage("csharp");
-    }, []);
-
-    function didMountSource(editor: any): void {
-        sourceEditorRef.current = editor;
-        setIsEditorReady(true);
-    }
-
-    /**
-     * Disable editor errors to "handle" ejs syntax
-     * @param monaco 
-     */
-    function handleEditorWillMount(monaco: any): void {
-        monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-            diagnosticCodesToIgnore: [1109, 1005, 1127, 1435, 1068, 1136]
-        });
-    }
-
-    function didMountTemplate(editor: any, monaco: any) {
-        templateEditorRef.current = editor;
-    }
-
-    function changeTheme(e: BaseSyntheticEvent): void {
-        setTheme(e.target.value);
-    }
-
-    function configLanguage(lang: AvailableLanguages): void {
-        const template = getLanguageGenerator(lang as AvailableLanguages);
-        setLanguage(lang);
-        setTemplate(template.getTemplate());
-    }
-
-    function changeLanguage(e: BaseSyntheticEvent): void {
-        let change = true;
-        if (showAdvancedTemplate) {
-            change = window.confirm("The template will be restore as default. Do you want to continue?");
-        }
-        if (change) {
-            const lang = e.target.value;
-            configLanguage(lang as AvailableLanguages);
-            setTranspiled("//  output code");
+    const getBasicProps = (): BasicProps => {
+        return {
+            language,
+            isDarkTheme,
+            showAdvancedTemplate,
+            sourceEditorRef,
+            templateEditorRef
         }
     }
 
-    function convertContent(): void {
-        const code = (sourceEditorRef.current as any).getValue();
-        const tmpl = (templateEditorRef.current as any).getValue();
-        if (!!code) {
-            const a = compileTypeScriptCode(code, "codeverter.ts");
-            const writter = new StringWritter();
-            printFileEx(a, tmpl, writter);
-            setTranspiled(writter.getString());
+    const getToolbarProps = (): ToolbarProps & BasicProps => {
+        return {
+            isEditorReady,
+            langOptions,
+            ...getBasicProps(),
+            setTranspiled,
+            setIsDarkTheme,
+            setShowAdvancedTemplate,
+            setLanguage,
+            setTemplate
         }
     }
 
-    function toggleAdvanced(): void {
-        setShowAdvancedTemplate(current => !current);
+    const getEditorProps = (): MainEditorProps & BasicProps => {
+        return {
+            template,
+            transpiled,
+            ...getBasicProps(),
+            setIsEditorReady
+        }
     }
 
     return (
-        <div className={`app ${theme === "vs-dark" ? "dark-mode" : ""}`}>
-            <div className="centered title">
-                <a className="centered" href="https://www.southworks.com/" target={"_blank"}>
-                    <img src="logo.png" width="212" />
-                </a>
-                <h1>Codeverter playground</h1>
-            </div>
-            <div className="toolbar">
-                <div>
-                    <label htmlFor="lang">Target language</label>
-                    <select id="lang" onChange={changeLanguage} value={language}>
-                        {Object.keys(langOptions.current).map((k, i) => (
-                            <option key={i} value={k}>{langOptions.current[k as AvailableLanguages]}</option>
-                        ))}
-                    </select>
-                    <button className="home-hero-v3-update-link-badge" onClick={toggleAdvanced} disabled={!isEditorReady}>
-                        {showAdvancedTemplate ? "Hide" : "Show"} template
-                    </button>
-                    <button className="home-hero-v3-update-link-badge" onClick={convertContent} disabled={!isEditorReady}>Convert!</button>
-                </div>
-                <div>
-                    <label htmlFor="theme">Theme</label>
-                    <select id="theme" onChange={changeTheme}>
-                        <option value="vs-light">Light</option>
-                        <option value="vs-dark">Dark</option>
-                    </select>
-                </div>
-            </div>
+        <div className={`app ${isDarkTheme ? "dark-mode" : ""}`}>
+            <Header />
+            <Toolbar {...getToolbarProps()} />
             <hr />
-            <div className="main-container">
-                <div className="page-container">
-                    {
-                        <>
-                            <div className={`editor-container ${showAdvancedTemplate ? "" : "d-none"}`}>
-                                <div className="editor-title">Template</div>
-                                <Editor
-                                    width="33vw"
-                                    theme={theme}
-                                    language="javascript"
-                                    value={template}
-                                    loading={"Loading..."}
-                                    onMount={didMountTemplate}
-                                    beforeMount={handleEditorWillMount}
-                                />
-                            </div>
-                        </>
-                    }
-                </div>
-                <div className="page-container">
-                    <div className="editor-container">
-                        <div className="editor-title">Source code (*.ts)</div>
-                        <Editor
-                            className="editor-divider"
-                            width={showAdvancedTemplate ? "33vw" : "50vw"}
-                            theme={theme}
-                            language="typescript"
-                            value="// input code"
-                            loading={"Loading..."}
-                            onMount={didMountSource}
-                        />
-                    </div>
-                    <div className="editor-container">
-                        <div className="editor-title">Target code</div>
-                        <Editor
-                            width={showAdvancedTemplate ? "33vw" : "50vw"}
-                            theme={theme}
-                            language={language}
-                            value={transpiled}
-                            loading={"Loading..."}
-                        />
-                    </div>
-                </div>
-            </div>
+            <MainEditor {...getEditorProps()} />
         </div>
     );
 }

@@ -128,7 +128,7 @@ namespace xxx
 
 ||C#|GO|Visual Basic|
 |-|-|-|-|
-|:x:umeric|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
+|Numeric|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
 |String|:heavy_check_mark:|:heavy_check_mark:|:x:|
 |Implicit|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
 

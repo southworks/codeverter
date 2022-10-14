@@ -123,8 +123,8 @@
              const forInterface = p && p.kind == "interface";
              const visibility = forInterface ? "" : `${helpers.capitalize(v.visibility)} `;
              let result = v.knownType == "void"
-             ?`        ${visibility}Sub ${helpers.capitalize(v.name)}(${parameters})`
-             :`        ${visibility}Function ${helpers.capitalize(v.name)}(${parameters}) As ${helpers.mapType(v)}`;
+                ?`        ${visibility}Sub ${helpers.capitalize(v.name)}(${parameters})`
+                :`        ${visibility}Function ${helpers.capitalize(v.name)}(${parameters}) As ${helpers.mapType(v)}`;
              if (!forInterface) {
                  result += "\n";
                  result += v.variables.concat(v.constants).map(va => {
@@ -149,14 +149,14 @@
                      result += `\n            return${helpers.mapDefaultValue(v)}`;
                  }
 
-                 if( v.knownType != "void"){
+                 if(v.knownType != "void"){
                     result += v.variables.length || v.content.length
-                    ? "\n        End Function"
-                    : "        End Function";
+                        ? "\n        End Function"
+                        : "        End Function";
                  }else{
                     result += v.variables.length || v.content.length
-                     ? "\n        End Sub"
-                     : "        End Sub";
+                        ? "\n        End Sub"
+                        : "        End Sub";
                  }
                  
              }
@@ -224,4 +224,5 @@
          }
      }
  }
+
  

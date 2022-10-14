@@ -2,7 +2,7 @@ import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
 import { VBGenerator } from "../../templating/vb/vb-generator";
 
-describe("Vb: constant", () => {
+describe("vb: constant", () => {
     test("datetime", () => {
         const code = new StringWritter();
         code.write("const constant: Date = new Date();");

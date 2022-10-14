@@ -2,7 +2,7 @@ import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
 import { VBGenerator } from "../../templating/vb/vb-generator";
 
-describe("CSharp: interfaces", () => {
+describe("vb: interfaces", () => {
     test("Simple interface", () => {
         const code = `
             export interface MyInterface {

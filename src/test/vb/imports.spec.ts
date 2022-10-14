@@ -1,4 +1,4 @@
-describe("CSharp: imports", () => {
+describe("vb: imports", () => {
     test("TODO", () => {
     });
 });

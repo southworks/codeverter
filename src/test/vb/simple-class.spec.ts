@@ -2,7 +2,7 @@ import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
 import { VBGenerator } from "../../templating/vb/vb-generator";
 
-describe("CSharp: class", () => {
+describe("vb: class", () => {
     test("simple class", () => {
         const code = `
             export class Test {

@@ -16,7 +16,8 @@ export const App = () => {
     const [showAdvancedTemplate, setShowAdvancedTemplate] = useState(false);
     const langOptions = useRef<Partial<{ [x in AvailableLanguages]: string }>>({
         "csharp": "C#",
-        "go": "GO"
+        "go": "GO",
+        "vb": "Visual Basic"
     });
 
     const getBasicProps = (): BasicProps => {

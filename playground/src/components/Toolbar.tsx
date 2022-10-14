@@ -6,6 +6,7 @@ type LangOptions = React.MutableRefObject<Partial<{
     go: string;
     csharp: string;
     custom: string;
+    vb: string
 }>>
 
 export interface BasicProps {

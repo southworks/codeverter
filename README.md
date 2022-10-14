@@ -85,29 +85,9 @@ For example:
 
 # Support
 
+Fully documented support at [Wiki](https://github.com/southworks/codeverter/wiki)
+
 ## Constants/Variables
-
-#### Examples
-
-|TS|C#|GO|Visual Basic
-|-|-|-|-|
-|`const  CONST_VALUE: string = "THIS IS A CONSTANT";`|`public const string CONST_VALUE = "THIS IS A CONSTANT";`|`const CONST_VALUE string = "THIS IS A CONSTANT"`|`Const CONST_VALUE As String = "THIS IS A CONSTANT"`|
-|`let  foo: number = 50;`|`public static int Foo = 50;`|`var Foo int = 50`|`Dim Foo AS Integer  = 50`
-|`var  foo: number = 50;`|`public static int Foo = 50;`|`var Foo int = 50`|`Dim Foo AS Integer  = 50`
-
-- In C# those are wrapped into a static class
-
-```csharp
-namespace xxx
-{
-    public static class Helper
-    {
-        public static int Foo = 50;
-    }
-}
-```
-
-#### Support
 
 ||C#|GO|Visual Basic|
 |-|-|-|-|
@@ -116,16 +96,6 @@ namespace xxx
 
 ## Enums
 
-#### Examples
-
-|TS|C#|GO|Visual Basic|
-|-|-|-|-|
-|<pre><code>export enum Animals {<div>  Dog = 1,</div><div>  Cat = 2</div>}</code></pre>|<pre><code>public enum Animals<div>{</div><div>  Dog = 1,</div><div>  Cat = 2</div>}</code></pre>|<pre><code>const (<div>  Dog int = 1</div><div>  Cat = 2</div>)</code></pre>|<pre><code>Enum Animals<div></div><div>  Dog = 1</div><div>  Cat = 2</div>End Enum</code></pre>|
-|<pre><code>export enum Animals {<div>  Dog = "dog",</div><div>  Cat = "cat"</div>}</code></pre>|<pre><code>public enum Animals<div>{</div><div>  Dog = "dog",</div><div>  Cat = "cat"</div>}</code></pre>|<pre><code>const (<div>  Dog string = "dog"</div><div>  Cat = "cat"</div>)</code></pre>|<pre><code>Enum Animals<div></div><div>  Dog</div><div>  Cat</div>End Enum</code></pre>|
-|<pre><code>export enum Animals {<div>  Dog,</div><div>  Cat</div>}</code></pre>|<pre><code>public enum Animals {<div>  Dog,</div><div>  Cat</div>}</code></pre>|<pre><code>const (<div>  Dog int = iota</div><div>  Cat</div>)</code></pre>|<pre><code>Enum Animals<div></div><div>  Dog</div><div>  Cat</div>End Enum</code></pre>|
-
-#### Support
-
 ||C#|GO|Visual Basic|
 |-|-|-|-|
 |Numeric|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
@@ -133,14 +103,6 @@ namespace xxx
 |Implicit|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
 
 ## Interfaces
-
-#### Examples
-
-|TS|C#|GO|Visual Basic|
-|-|-|-|-|
-|<pre><code>export interface Printable {<div>  content: string;</div><div>  doPrint(): void;</div>}</code></pre>|<pre><code>public interface IPrintable<div>{</div><div>  string Content { get; set; }</div><div>  void DoPrint();</div>}</code></pre>|<pre><code>type Printable interface {<div>  DoPrint()</div>}</code></pre>|<pre><code>Public Interface IPrintable<div></div><div>  Property Content As String</div><div>  Sub DoPrint()</div>End Interface</code></pre>|
-
-#### Support
 
 ||C#|GO|Visual Basic|
 |-|-|-|-|
@@ -151,8 +113,6 @@ namespace xxx
 
 ## Classes
 
-#### Support
-
 ||C#|GO|Visual Basic|
 |-|-|-|-|
 |Inheritance|:heavy_check_mark:|:heavy_check_mark:*|:heavy_check_mark:|
@@ -161,18 +121,10 @@ namespace xxx
 |Static|P|P||
 
 _*In a go way, using composition_
+
 _\*\*Using naming conventions_
 
 ### Constructors
-
-#### Examples
-
-Consider a class named **Cat**
-|TS|C#|GO|Visual Basic|
-|-|-|-|-|
-|<pre><code>constructor(arg: number) {<div>  /\*content*/</div>}</code></pre>|<pre><code>public Cat(int arg)<div>{</div><div>  // /\*content*/</div>}</code></pre>|<pre><code>func NewCat(arg int) \*Cat {<div>  c := Cat{}</div><div>  // /\*content*/</div><div>  return &c</div>}</code></pre>|<pre><code>Public Sub Cat(arg As Integer)<div></div><div>  // /\*content*/</div>End Sub</code></pre>|
-
-#### Support
 
 ||C#|GO|Visual Basic|
 |-|-|-|-|
@@ -182,16 +134,6 @@ Consider a class named **Cat**
 
 ### Properties
 
-#### Examples
-
-|TS|C#|GO|Visual Basic|
-|-|-|-|-|
-|`public name: string;`|`public string Name { get; set; }`|`Name string`|`Public Property Name AS String`|
-|`protected name: string;`|`protected string Name { get; set; }`|`name string`|`Protected Property Name AS String`|
-|`private name: string;`|`private string Name { get; set; }`|`name string`|`Private Property Name AS String`|
-
-#### Support
-
 ||C#|GO|Visual Basic|
 |-|-|-|-|
 |Visibility|:heavy_check_mark:|:heavy_check_mark:*|:heavy_check_mark:|
@@ -199,14 +141,6 @@ Consider a class named **Cat**
 _*Naming convention for pubic or private, protected is considered private_
 
 ### Methods/Functions
-
-#### Examples
-
-||C#|GO|Visual Basic|
-|-|-|-|-|
-|<pre><code>public  foo(): void {<div>  /* a lot of work! */ </div>}</code></pre>|<pre><code>public void Foo()<div>{</div><div>  ///\* a lot of work! */</div><div>  return;</div>}</code></pre>|<pre><code>func (f \*Cat) Foo() {<div>  ///\* a lot of work! */</div><div>  return</div>}</code></pre>|<pre><code>Public Sub Foo()<div></div><div>  '         /* a lot of work! */</div><div></div>End Sub</code></pre>
-
-#### Support
 
 ||C#|GO|Visual Basic|
 |-|-|-|-|
@@ -216,4 +150,5 @@ _*Naming convention for pubic or private, protected is considered private_
 |Default return value|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:**|
 
 _*Naming convention for pubic or private, protected is considered private_  
+
 _\*\*As functions_

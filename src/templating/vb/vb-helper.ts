@@ -149,7 +149,7 @@
                      result += `\n            return${helpers.mapDefaultValue(v)}`;
                  }
 
-                 if(v.knownType != "void"){
+                 if (v.knownType != "void"){
                     result += v.variables.length || v.content.length
                         ? "\n        End Function"
                         : "        End Function";
@@ -224,5 +224,4 @@
          }
      }
  }
-
  

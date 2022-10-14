@@ -2,7 +2,7 @@ import { StringWritter } from "../../writter/string-writter";
 import { compileTypeScriptCode, printFile } from "../../lib";
 import { VBGenerator } from "../../templating/vb/vb-generator";
 
-describe("CSharp: property access level", () => {
+describe("vb: property access level", () => {
     test("no access modifier", () => {
         const code = `
             export class Test {

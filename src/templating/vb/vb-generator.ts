@@ -6,11 +6,11 @@
  * found in the LICENSE file at https://github.com/southworks/codeverter/blob/main/LICENSE
  */
 
- import { TemplateGenerator } from "../template-generator";
- import { TemplateHelper } from "../template-helpers";
- import { VBHelpers, getVBHelpers } from "./vb-helper";
+import { TemplateGenerator } from "../template-generator";
+import { TemplateHelper } from "../template-helpers";
+import { VBHelpers, getVBHelpers } from "./vb-helper";
 
- export class VBGenerator extends TemplateGenerator {
+export class VBGenerator extends TemplateGenerator {
     private printEnum(varName: string): string {
         return `<%-helpers.printEnum(${varName})%>`;
     }
@@ -29,7 +29,7 @@
 
     private printClass(varName: string): string {
         return `<%-helpers.printClass(${varName})%>`;
-    }   
+    }
 
     public getCustomHelpers(helpers: TemplateHelper & VBHelpers): VBHelpers {
         return getVBHelpers(helpers);

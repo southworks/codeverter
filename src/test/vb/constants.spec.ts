@@ -13,7 +13,7 @@ describe("vb: constant", () => {
         printFile(compilationResult, new VBGenerator(), strWritter);
 
         const expected = new StringWritter();
-        expected.write("Namespace Test");    
+        expected.write("Namespace Test");
         expected.write("    Module Helper");
         expected.write("        ReadOnly CONSTANT As Date = new DateTime() 'new Date()");
         expected.write("        ReadOnly CONSTANTINF As Date = new DateTime() 'new Date()");
@@ -33,7 +33,7 @@ describe("vb: constant", () => {
         printFile(compilationResult, new VBGenerator(), strWritter);
 
         const expected = new StringWritter();
-        expected.write("Namespace Test");  
+        expected.write("Namespace Test");
         expected.write("    Module Helper");
         expected.write("        ReadOnly CONSTANT As Foo = New Foo() 'new Foo()");
         expected.write("        ReadOnly CONSTANTINF As Foo = New Foo() 'new Foo()");
@@ -55,7 +55,7 @@ describe("vb: constant", () => {
         printFile(compilationResult, new VBGenerator(), strWritter);
 
         const expected = new StringWritter();
-        expected.write("Namespace Test");       
+        expected.write("Namespace Test");
         expected.write("    Module Helper");
         expected.write("        ReadOnly CONSTANT As Integer() = { 1, 2, 3 }");
         expected.write("        ReadOnly CONSTANTINF As Integer() = { 1, 2, 3 }");
@@ -117,7 +117,7 @@ describe("vb: constant", () => {
         printFile(compilationResult, new VBGenerator(), strWritter);
 
         const expected = new StringWritter();
-        expected.write("Namespace Test");  
+        expected.write("Namespace Test");
         expected.write("    Module Helper");
         expected.write(`        Const CONSTANT As Boolean = true`);
         expected.write(`        Const CONSTANTINF As Boolean = true`);

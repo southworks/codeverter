@@ -13,7 +13,7 @@ describe("vb: variables", () => {
         printFile(compilationResult, new VBGenerator(), strWritter);
 
         const expected = new StringWritter();
-        expected.write("Namespace Test");    
+        expected.write("Namespace Test");
         expected.write("    Module Helper");
         expected.write("        Dim Variable As Date = new DateTime() 'new Date()");
         expected.write("        Dim VariableInf As Date = new DateTime() 'new Date()");
@@ -33,7 +33,7 @@ describe("vb: variables", () => {
         printFile(compilationResult, new VBGenerator(), strWritter);
 
         const expected = new StringWritter();
-        expected.write("Namespace Test");  
+        expected.write("Namespace Test");
         expected.write("    Module Helper");
         expected.write("        Dim Variable As Foo = New Foo() 'new Foo()");
         expected.write("        Dim VariableInf As Foo = New Foo() 'new Foo()");
@@ -55,7 +55,7 @@ describe("vb: variables", () => {
         printFile(compilationResult, new VBGenerator(), strWritter);
 
         const expected = new StringWritter();
-        expected.write("Namespace Test");       
+        expected.write("Namespace Test");
         expected.write("    Module Helper");
         expected.write("        Dim Variable As Integer() = { 1, 2, 3 }");
         expected.write("        Dim VariableInf As Integer() = { 1, 2, 3 }");
@@ -118,7 +118,7 @@ describe("vb: variables", () => {
         printFile(compilationResult, new VBGenerator(), strWritter);
 
         const expected = new StringWritter();
-        expected.write("Namespace Test");  
+        expected.write("Namespace Test");
         expected.write("    Module Helper");
         expected.write(`        Dim Variable As Boolean = true`);
         expected.write(`        Dim VariableInf As Boolean = true`);

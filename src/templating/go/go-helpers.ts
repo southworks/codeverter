@@ -169,11 +169,11 @@ export function getGoHelpers(helpers: TemplateHelper & GoHelpers): GoHelpers {
                 let type = helpers.mapType(p);
                 return `${p.name} ${type}`;
             }).join(", ");
-
-            let result = `func New${helpers.capitalize(v.name)}(${params}) *${helpers.fixName(v)} {`;
+            let newPrefix = v.visibility == "private" ? "new" : "New";
+            let result = `func ${newPrefix}${helpers.capitalize(v.name)}(${params}) *${helpers.fixName(v.parent as VisibilitySourceElement)} {`;
 
             const firstLetter = v.name.charAt(0).toLowerCase();
-            const init = `${firstLetter} := ${helpers.fixName(v)}{}`;
+            const init = `${firstLetter} := ${helpers.fixName(v.parent as VisibilitySourceElement)}{}`;
             result = `${result}\n\t${init}`;
             result = `${result}${helpers.printMethodBody(v)}`;
             result = `${result}\n\treturn &${firstLetter}`;

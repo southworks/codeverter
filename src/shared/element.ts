@@ -12,12 +12,12 @@ import { ElementFactory, Factory, FactoryParams } from "./types/factory";
 import { SourceElement } from "./types/source-element";
 
 export abstract class Element<K extends NamedDeclaration> implements SourceElement<K> {
-    private parent!: SourceElement;
     private elementFactory: ElementFactory;
     private values: ElementValues = new ElementValues();
 
     public name!: string;
     public kind!: ElementKind;
+    public parent!: SourceElement;
 
     protected constructor(params: FactoryParams) {
         this.elementFactory = params.elementFactory;
@@ -25,7 +25,7 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
 
     private addElementAndParse(kind: ElementKind, node: Declaration): void {
         let element = this.createElement(kind);
-        element.setParent(this);
+        element.parent = this;
         if (node) {
             element.parse(node);
         }
@@ -64,9 +64,5 @@ export abstract class Element<K extends NamedDeclaration> implements SourceEleme
 
     public parse(node: K): void {
         this.name = (node.name as Identifier)?.escapedText ?? "";
-    }
-
-    public setParent(element: SourceElement): void {
-        this.parent = element;
     }
 }

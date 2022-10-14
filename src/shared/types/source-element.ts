@@ -26,7 +26,7 @@ export type SourceElementNamed<T extends Declaration = Declaration> = Parseable<
 
 export interface SourceElement<T extends Declaration = Declaration> extends SourceElementNamed<T> {
     kind: ElementKind;
-    setParent(element: SourceElement): void;
+    parent: SourceElement;
 };
 
 export interface VisibilitySourceElement<T extends Declaration = Declaration> extends SourceElement<T> {

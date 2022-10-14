@@ -90,4 +90,30 @@ describe("GO: constructor", () => {
 
         expect(strWritter.getString()).toBe(expected.getString());
     });
+
+    test("private", () => {
+        const code = `
+            export class Test {
+                private constructor() {
+                }
+            }`;
+        let compilationResult = compileTypeScriptCode(code, "test.ts");
+
+        const strWritter = new StringWritter();
+        printFile(compilationResult, new GoGenerator(), strWritter);
+
+        const expected = new StringWritter();
+        expected.write(`package test`);
+        expected.write("");
+        expected.write("type Test struct {");
+        expected.write("}");
+        expected.write("");
+        expected.write("func newTest() *Test {");
+        expected.write("\tt := Test{}");
+        expected.write("\treturn &t");
+        expected.write("}");
+        expected.write("");
+
+        expect(strWritter.getString()).toBe(expected.getString());
+    });
 });

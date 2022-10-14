@@ -153,7 +153,7 @@
                     result += v.variables.length || v.content.length
                         ? "\n        End Function"
                         : "        End Function";
-                 }else{
+                 } else {
                     result += v.variables.length || v.content.length
                         ? "\n        End Sub"
                         : "        End Sub";
